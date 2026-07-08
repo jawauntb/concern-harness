@@ -24,9 +24,11 @@ from .task_tree import (
 )
 from .tournament import (
     CandidatePatchTournamentRunner,
+    CandidateReviewSignal,
     CandidateRun,
     CandidateScore,
     TournamentRunResult,
+    extract_candidate_review_signals,
     score_candidate_result,
     select_winning_candidate,
 )
@@ -52,9 +54,11 @@ __all__ = [
     "validate_child_result",
     "apply_child_result",
     "CandidatePatchTournamentRunner",
+    "CandidateReviewSignal",
     "CandidateRun",
     "CandidateScore",
     "TournamentRunResult",
+    "extract_candidate_review_signals",
     "score_candidate_result",
     "select_winning_candidate",
 ]

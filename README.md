@@ -117,7 +117,8 @@ before the parent edit/test loop begins.
 `CandidatePatchTournamentRunner` can also run multiple candidate agents in
 isolated repo copies, score their verified patches by checks, concern coverage,
 and diff focus, then apply only the best verified patch back to the target
-workspace.
+workspace. Open reviewer or adversarial findings can down-rank otherwise passing
+candidates through `review_signals`.
 
 ## Layout
 
