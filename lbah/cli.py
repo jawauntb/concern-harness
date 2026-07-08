@@ -48,11 +48,15 @@ from .coding import (
     CodingWorkspace,
     ModelCodingAgent,
     SWEBenchBackendKind,
+    SWEBenchCacheLevel,
     SWEBenchEvaluationOptions,
     SWEBenchExecutionBackend,
+    SWEBenchOfficialHarnessSpec,
     ScriptedCodingAgent,
     load_swebench_instances,
     run_swebench_smoke_suite,
+    write_official_swebench_inputs,
+    write_swebench_subset_manifests,
 )
 from .coding.actions import CodingAction
 from .coding.runner import load_coding_task
@@ -478,6 +482,14 @@ def code_run(
 @click.option("--backend", type=click.Choice(["local", "docker"]), default="local", show_default=True)
 @click.option("--docker-image", default="", help="Docker image used when --backend docker.")
 @click.option("--include-pass-to-pass/--skip-pass-to-pass", default=True, show_default=True)
+@click.option("--official/--no-official", default=False, show_default=True, help="Write official SWE-bench harness prediction files and commands.")
+@click.option("--official-dataset", default="princeton-nlp/SWE-bench_Verified", show_default=True)
+@click.option("--official-run-id", default="lbah-code", show_default=True)
+@click.option("--official-max-workers", default=1, type=int, show_default=True)
+@click.option("--official-cache-level", type=click.Choice(["none", "base", "env", "instance"]), default="env", show_default=True)
+@click.option("--official-timeout", default=None, type=int)
+@click.option("--official-namespace", default="")
+@click.option("--subset-sizes", default="5,20,50", show_default=True, help="Comma-separated official subset manifest sizes.")
 @click.option("--out", "out_dir", required=True, help="Directory to write suite artifacts.")
 def code_swebench(
     instances_path: str,
@@ -492,6 +504,14 @@ def code_swebench(
     backend: str,
     docker_image: str,
     include_pass_to_pass: bool,
+    official: bool,
+    official_dataset: str,
+    official_run_id: str,
+    official_max_workers: int,
+    official_cache_level: str,
+    official_timeout: int | None,
+    official_namespace: str,
+    subset_sizes: str,
     out_dir: str,
 ) -> None:
     """Run a SWE-bench-style smoke suite through LBAH-Code."""
@@ -536,13 +556,37 @@ def code_swebench(
             ),
         )
         suite = run_swebench_smoke_suite(instances, agent_factory, options)
+        official_inputs = None
+        if official:
+            official_spec = SWEBenchOfficialHarnessSpec(
+                dataset_name=official_dataset,
+                run_id=official_run_id,
+                max_workers=official_max_workers,
+                cache_level=cast(SWEBenchCacheLevel, official_cache_level),
+                timeout=official_timeout,
+                namespace=official_namespace or None,
+            )
+            official_inputs = write_official_swebench_inputs(
+                Path(out_dir) / "official",
+                suite.results,
+                spec=official_spec,
+                model_name_or_path=official_run_id,
+            )
+            write_swebench_subset_manifests(
+                Path(out_dir) / "official" / "subsets",
+                official_inputs.instance_ids,
+                sizes=_parse_int_list(subset_sizes),
+                predictions_path=official_inputs.predictions_path,
+                spec=official_spec,
+            )
     except Exception as exc:
         raise click.ClickException(str(exc)) from exc
 
     failures = ", ".join(f"{kind}={count}" for kind, count in sorted(suite.failure_counts.items()))
+    official_msg = f" official={official_inputs.command_path}" if official_inputs else ""
     click.echo(
         f"[swebench] solved={suite.solved}/{suite.total} "
-        f"rate={suite.solve_rate:.2f} failures={failures or '-'} out={out_dir}"
+        f"rate={suite.solve_rate:.2f} failures={failures or '-'} out={out_dir}{official_msg}"
     )
 
 
@@ -578,6 +622,20 @@ def _rate(rows: list[dict], key: str) -> float:
     if not rows:
         return 0.0
     return sum(1 for r in rows if r.get(key)) / len(rows)
+
+
+def _parse_int_list(raw: str) -> list[int]:
+    values: list[int] = []
+    for part in raw.replace(" ", ",").split(","):
+        if not part:
+            continue
+        value = int(part)
+        if value <= 0:
+            raise ValueError("subset sizes must be positive integers")
+        values.append(value)
+    if not values:
+        raise ValueError("at least one subset size is required")
+    return values
 
 
 def _summary_table(groups: list[dict]) -> str:
