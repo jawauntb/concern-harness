@@ -120,6 +120,10 @@ and diff focus, then apply only the best verified patch back to the target
 workspace. Open reviewer or adversarial findings can down-rank otherwise passing
 candidates through `review_signals`.
 
+For benchmark comparability, `SWEBenchInstance` and
+`swebench_to_coding_task()` convert SWE-bench-style JSON/JSONL rows into
+fixed-budget coding tasks and comparable run artifacts.
+
 ## Layout
 
 - `lbah/core/` schemas, runner, scorer, ledger, certificates

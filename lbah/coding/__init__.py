@@ -16,6 +16,16 @@ from .recursive import (
     validate_child_result,
 )
 from .runner import CodingHarnessRunner, CodingRunResult
+from .swebench import (
+    SWEBenchInstance,
+    infer_swebench_allowed_paths,
+    load_swebench_instances,
+    parse_swebench_test_list,
+    swebench_run_artifact,
+    swebench_test_command,
+    swebench_to_coding_task,
+    write_swebench_run_artifact,
+)
 from .task_tree import (
     ChildTaskResult,
     ChildTaskSpec,
@@ -43,6 +53,14 @@ __all__ = [
     "CodingLedger",
     "CodingHarnessRunner",
     "CodingRunResult",
+    "SWEBenchInstance",
+    "parse_swebench_test_list",
+    "infer_swebench_allowed_paths",
+    "swebench_test_command",
+    "swebench_to_coding_task",
+    "load_swebench_instances",
+    "swebench_run_artifact",
+    "write_swebench_run_artifact",
     "CodingWorkspace",
     "ModelCodingAgent",
     "ChildTaskResult",

@@ -171,6 +171,30 @@ Open `blocker`, `major`, and `minor` findings subtract from the candidate score.
 candidate. This is the tournament-level hook for recursive adversarial review:
 tests can pass while reviewer concerns still change which patch wins.
 
+## SWE-Bench Adapters
+
+`SWEBenchInstance` and `swebench_to_coding_task()` convert SWE-bench-style
+JSON/JSONL rows into fixed-budget `CodingTask`s:
+
+```python
+from lbah.coding import SWEBenchInstance, swebench_to_coding_task
+
+instance = SWEBenchInstance.from_mapping(row)
+task = swebench_to_coding_task(instance, repo_path="/repos/django", max_steps=40)
+```
+
+The adapter normalizes `FAIL_TO_PASS` / `PASS_TO_PASS`, creates a pytest command
+over the failing tests, and preserves benchmark metadata in the task. It does
+not constrain `allowed_paths` from the gold patch by default; gold-patch path
+inference is available only when explicitly requested for oracle/dev
+comparisons. `swebench_run_artifact()` and `write_swebench_run_artifact()`
+serialize comparable outputs with instance id, repo, base commit, final diff,
+modified files, and the full LBAH-Code run.
+
+This is the benchmark contract layer, not a Docker evaluator. A full
+SWE-bench Verified runner still needs per-repo checkout/container orchestration
+around these task adapters.
+
 ## Model-Backed Agents
 
 `ModelCodingAgent` wraps any existing `ModelAdapter` that exposes `complete()`.
@@ -212,5 +236,4 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
-   artifacts.
+1. Add per-repo checkout/container orchestration for SWE-bench Lite/Verified.
