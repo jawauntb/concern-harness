@@ -1,0 +1,5 @@
+name: http_agent
+type: http_agent
+url: http://localhost:9000/act
+headers: {}
+timeout: 120

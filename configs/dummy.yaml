@@ -1,0 +1,4 @@
+name: dummy_first_slot
+type: dummy
+policy: first_slot
+seed: 0

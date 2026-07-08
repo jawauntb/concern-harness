@@ -1,0 +1,4 @@
+name: dummy_last_slot
+type: dummy
+policy: last_slot
+seed: 0

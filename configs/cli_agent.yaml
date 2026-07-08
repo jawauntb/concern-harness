@@ -1,0 +1,7 @@
+name: external_cli_agent
+type: cli_agent
+command:
+  - python
+  - my_agent.py
+cwd: ./sandbox_repo
+timeout: 120
