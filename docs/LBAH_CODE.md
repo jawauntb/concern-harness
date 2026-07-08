@@ -223,6 +223,8 @@ lbah code swebench \
   --instances swebench-lite.jsonl \
   --repo-root /repos \
   --model-agent configs/local_coding_agent.yaml \
+  --official \
+  --official-dataset princeton-nlp/SWE-bench_Verified \
   --limit 5 \
   --out runs/swebench_smoke/
 ```
@@ -235,15 +237,38 @@ Artifacts include:
 - `instances/<id>/final.diff`
 - `instances/<id>/logs/fail_to_pass.json`
 - `instances/<id>/logs/pass_to_pass.json`
+- `official/predictions.jsonl` when `--official` is enabled
+- `official/run_evaluation_command.json`
+- `official/subsets/n5.json`, `n20.json`, and `n50.json`
 
 Failure taxonomy is explicit: checkout failure, test patch failure, harness
 error, agent verifier failure, no patch, FAIL_TO_PASS failure, PASS_TO_PASS
 regression, or success. This turns failed benchmark runs into sortable
 engineering signal instead of one opaque score.
 
-This is still a smoke evaluator, not the official SWE-bench harness. The next
-benchmarking step is binding these contracts to the official per-repo
-environment specs and container images for leaderboard-grade reproducibility.
+The smoke evaluator is the fast local signal. With `--official`, LBAH also
+writes the official SWE-bench harness inputs:
+
+```bash
+python -m swebench.harness.run_evaluation \
+  --dataset_name princeton-nlp/SWE-bench_Verified \
+  --predictions_path runs/swebench_smoke/official/predictions.jsonl \
+  --max_workers 8 \
+  --run_id lbah-code \
+  --cache_level env \
+  --instance_ids ...
+```
+
+This mirrors the official Docker harness contract: a prediction row contains
+`instance_id`, `model_name_or_path`, and `model_patch`, and the official
+`swebench.harness.run_evaluation` command owns the base/env/instance image
+setup, patch application, test execution, and grading. The generated subset
+manifests make n=5, n=20, and n=50 runs repeatable while scaling toward full
+Verified or Lite runs.
+
+The remaining leaderboard step is operational rather than architectural:
+install the official `swebench` package, provision Docker storage/CPU, and run
+the generated command against the desired subset or full dataset.
 
 ## Model-Backed Agents
 
@@ -286,5 +311,5 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Bind SWE-bench smoke evaluation to official per-repo environment specs and
-   images for leaderboard-grade reproducibility.
+1. Run the generated official SWE-bench commands on n=5, n=20, and n=50 subsets
+   with Docker provisioned, then track solve-rate and failure-taxonomy deltas.

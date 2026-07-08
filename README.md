@@ -132,9 +132,14 @@ lbah code swebench \
   --instances swebench-lite.jsonl \
   --repo-root /repos \
   --model-agent configs/local_coding_agent.yaml \
+  --official \
   --limit 5 \
   --out runs/swebench_smoke/
 ```
+
+The `--official` flag writes `official/predictions.jsonl`,
+`official/run_evaluation_command.json`, and n=5/n=20/n=50 subset manifests so
+the same patches can be replayed through `swebench.harness.run_evaluation`.
 
 ## Layout
 

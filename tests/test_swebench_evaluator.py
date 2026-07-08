@@ -12,15 +12,21 @@ from lbah.coding import (
     CodingAction,
     CodingRunResult,
     SWEBenchEvaluationOptions,
+    SWEBenchEvaluationResult,
     SWEBenchExecutionBackend,
     SWEBenchInstance,
+    SWEBenchOfficialHarnessSpec,
     ScriptedCodingAgent,
+    build_swebench_subset_manifests,
     classify_swebench_failure,
+    official_swebench_command,
     prepare_swebench_workspace,
     resolve_swebench_repo_source,
     run_swebench_instance,
     run_swebench_smoke_suite,
     swebench_eval_commands,
+    swebench_prediction_rows,
+    write_official_swebench_inputs,
 )
 from lbah.coding.workspace import CommandResult
 
@@ -220,6 +226,87 @@ def test_backend_records_missing_executable_as_command_result(tmp_path: Path):
     assert "FileNotFoundError" in result.stderr
 
 
+def test_official_prediction_rows_and_command_contract(tmp_path: Path):
+    source, base_commit = _source_repo(tmp_path)
+    result = run_swebench_instance(
+        _instance(base_commit),
+        _agent_factory,
+        SWEBenchEvaluationOptions(
+            repo_source=str(source),
+            out_dir=str(tmp_path / "runs"),
+            max_steps=5,
+            test_command_template=[sys.executable, "-m", "pytest", "-q", "{tests}"],
+        ),
+    )
+    spec = SWEBenchOfficialHarnessSpec(
+        dataset_name="princeton-nlp/SWE-bench_Lite",
+        run_id="lbah-test",
+        max_workers=2,
+        timeout=900,
+    )
+
+    rows = swebench_prediction_rows([result], model_name_or_path="lbah-test")
+    command = official_swebench_command(
+        spec,
+        predictions_path=tmp_path / "predictions.jsonl",
+        instance_ids=[result.instance_id],
+    )
+
+    assert rows == [
+        {
+            "instance_id": "toy__calc-1",
+            "model_name_or_path": "lbah-test",
+            "model_patch": result.final_diff,
+        }
+    ]
+    assert command[:3] == ["python", "-m", "swebench.harness.run_evaluation"]
+    assert "--dataset_name" in command
+    assert "princeton-nlp/SWE-bench_Lite" in command
+    assert "--instance_ids" in command
+    assert "toy__calc-1" in command
+    assert "--timeout" in command
+
+
+def test_write_official_inputs_and_subset_manifests(tmp_path: Path):
+    result = CodingRunResult(
+        task_id="swebench:toy__calc-1",
+        agent="scripted",
+        success=True,
+        steps=1,
+        final_diff="diff --git a/pkg/calc.py b/pkg/calc.py",
+        modified_files=["pkg/calc.py"],
+        ledger={"concerns": []},
+    )
+
+    official_result = SWEBenchEvaluationResult(
+        instance_id="toy__calc-1",
+        repo="toy/calc",
+        success=True,
+        failure_kind="success",
+        coding_result=result,
+        final_diff=result.final_diff,
+        modified_files=result.modified_files,
+    )
+    inputs = write_official_swebench_inputs(
+        tmp_path / "official",
+        [official_result],
+        spec=SWEBenchOfficialHarnessSpec(run_id="lbah-test"),
+    )
+    manifests = build_swebench_subset_manifests(
+        inputs.instance_ids,
+        sizes=[1, 5],
+        predictions_path=inputs.predictions_path,
+        spec=SWEBenchOfficialHarnessSpec(run_id="lbah-test"),
+    )
+
+    assert Path(inputs.predictions_path).read_text().strip()
+    assert Path(inputs.instance_ids_path).read_text().strip() == "toy__calc-1"
+    assert json.loads(Path(inputs.command_path).read_text())["command"] == inputs.command
+    assert [manifest.name for manifest in manifests] == ["n1", "n5"]
+    assert manifests[1].instance_ids == ["toy__calc-1"]
+    assert "--instance_ids" in manifests[0].official_command
+
+
 def test_code_swebench_cli_runs_smoke_suite(tmp_path: Path):
     source, base_commit = _source_repo(tmp_path)
     instances_path = tmp_path / "instances.jsonl"
@@ -259,6 +346,13 @@ def test_code_swebench_cli_runs_smoke_suite(tmp_path: Path):
             str(actions_path),
             "--max-steps",
             "5",
+            "--official",
+            "--official-dataset",
+            "princeton-nlp/SWE-bench_Lite",
+            "--official-run-id",
+            "lbah-test",
+            "--subset-sizes",
+            "1,5",
             "--out",
             str(out_dir),
         ],
@@ -266,4 +360,7 @@ def test_code_swebench_cli_runs_smoke_suite(tmp_path: Path):
 
     assert result.exit_code == 0, result.output
     assert "solved=1/1" in result.output
+    assert "official=" in result.output
     assert json.loads((out_dir / "summary.json").read_text())["solved"] == 1
+    assert (out_dir / "official" / "predictions.jsonl").exists()
+    assert (out_dir / "official" / "subsets" / "n1.json").exists()

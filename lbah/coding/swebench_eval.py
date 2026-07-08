@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Callable, Literal
+from typing import Any, Callable, Iterable, Literal
 
 from pydantic import BaseModel, Field
 
@@ -125,6 +125,45 @@ class SWEBenchSuiteResult(BaseModel):
     solve_rate: float
     failure_counts: dict[str, int] = Field(default_factory=dict)
     results: list[SWEBenchEvaluationResult] = Field(default_factory=list)
+
+
+SWEBenchCacheLevel = Literal["none", "base", "env", "instance"]
+
+
+class SWEBenchOfficialHarnessSpec(BaseModel):
+    """Command contract for the official Docker-based SWE-bench harness."""
+
+    dataset_name: str = "princeton-nlp/SWE-bench_Verified"
+    split: str = "test"
+    run_id: str = "lbah-code"
+    max_workers: int = 1
+    cache_level: SWEBenchCacheLevel = "env"
+    timeout: int | None = None
+    namespace: str | None = None
+    modal: bool = False
+    clean: bool = True
+
+
+class SWEBenchOfficialHarnessInputs(BaseModel):
+    """Files and command needed to replay LBAH patches in the official harness."""
+
+    predictions_path: str
+    instance_ids_path: str
+    command_path: str
+    command: list[str]
+    instance_ids: list[str]
+    dataset_name: str
+    run_id: str
+
+
+class SWEBenchSubsetManifest(BaseModel):
+    """Stable measured-subset manifest for repeated n=5/n=20/n=50 runs."""
+
+    name: str
+    size: int
+    instance_ids: list[str]
+    predictions_path: str | None = None
+    official_command: list[str] = Field(default_factory=list)
 
 
 class SWEBenchPreparationError(RuntimeError):
@@ -315,6 +354,183 @@ def run_swebench_smoke_suite(
         )
         (out_dir / "summary.json").write_text(suite.model_dump_json(indent=2))
     return suite
+
+
+def swebench_prediction_rows(
+    results: Iterable[SWEBenchEvaluationResult],
+    *,
+    model_name_or_path: str = "lbah-code",
+    include_empty: bool = True,
+) -> list[dict[str, str]]:
+    """Convert LBAH run results into official SWE-bench prediction rows."""
+
+    rows: list[dict[str, str]] = []
+    for result in results:
+        if not include_empty and not result.final_diff:
+            continue
+        rows.append(
+            {
+                "instance_id": result.instance_id,
+                "model_name_or_path": model_name_or_path,
+                "model_patch": result.final_diff,
+            }
+        )
+    return rows
+
+
+def write_swebench_predictions(
+    path: str | Path,
+    results: Iterable[SWEBenchEvaluationResult],
+    *,
+    model_name_or_path: str = "lbah-code",
+    include_empty: bool = True,
+) -> Path:
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    rows = swebench_prediction_rows(
+        results,
+        model_name_or_path=model_name_or_path,
+        include_empty=include_empty,
+    )
+    destination.write_text("\n".join(json.dumps(row) for row in rows) + ("\n" if rows else ""))
+    return destination
+
+
+def official_swebench_command(
+    spec: SWEBenchOfficialHarnessSpec,
+    *,
+    predictions_path: str | Path,
+    instance_ids: list[str] | None = None,
+) -> list[str]:
+    command = [
+        "python",
+        "-m",
+        "swebench.harness.run_evaluation",
+        "--dataset_name",
+        spec.dataset_name,
+        "--split",
+        spec.split,
+        "--predictions_path",
+        str(predictions_path),
+        "--max_workers",
+        str(spec.max_workers),
+        "--run_id",
+        spec.run_id,
+        "--cache_level",
+        spec.cache_level,
+        "--clean",
+        str(spec.clean),
+    ]
+    if spec.timeout is not None:
+        command.extend(["--timeout", str(spec.timeout)])
+    if spec.namespace:
+        command.extend(["--namespace", spec.namespace])
+    if spec.modal:
+        command.extend(["--modal", "true"])
+    if instance_ids:
+        command.append("--instance_ids")
+        command.extend(instance_ids)
+    return command
+
+
+def write_official_swebench_inputs(
+    out_dir: str | Path,
+    results: Iterable[SWEBenchEvaluationResult],
+    *,
+    spec: SWEBenchOfficialHarnessSpec | None = None,
+    model_name_or_path: str = "lbah-code",
+) -> SWEBenchOfficialHarnessInputs:
+    active_spec = spec or SWEBenchOfficialHarnessSpec()
+    destination = Path(out_dir)
+    destination.mkdir(parents=True, exist_ok=True)
+    result_list = list(results)
+    predictions_path = write_swebench_predictions(
+        destination / "predictions.jsonl",
+        result_list,
+        model_name_or_path=model_name_or_path,
+    )
+    instance_ids = [result.instance_id for result in result_list]
+    instance_ids_path = destination / "instance_ids.txt"
+    instance_ids_path.write_text("\n".join(instance_ids) + ("\n" if instance_ids else ""))
+    command = official_swebench_command(
+        active_spec,
+        predictions_path=predictions_path,
+        instance_ids=instance_ids,
+    )
+    command_path = destination / "run_evaluation_command.json"
+    command_path.write_text(
+        json.dumps(
+            {
+                "command": command,
+                "spec": active_spec.model_dump(),
+                "source": "official swebench.harness.run_evaluation contract",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return SWEBenchOfficialHarnessInputs(
+        predictions_path=str(predictions_path),
+        instance_ids_path=str(instance_ids_path),
+        command_path=str(command_path),
+        command=command,
+        instance_ids=instance_ids,
+        dataset_name=active_spec.dataset_name,
+        run_id=active_spec.run_id,
+    )
+
+
+def build_swebench_subset_manifests(
+    instance_ids: list[str],
+    *,
+    sizes: Iterable[int] = (5, 20, 50),
+    predictions_path: str | None = None,
+    spec: SWEBenchOfficialHarnessSpec | None = None,
+) -> list[SWEBenchSubsetManifest]:
+    active_spec = spec or SWEBenchOfficialHarnessSpec()
+    manifests: list[SWEBenchSubsetManifest] = []
+    for size in sizes:
+        selected = instance_ids[: max(size, 0)]
+        command = (
+            official_swebench_command(
+                active_spec,
+                predictions_path=predictions_path,
+                instance_ids=selected,
+            )
+            if predictions_path is not None
+            else []
+        )
+        manifests.append(
+            SWEBenchSubsetManifest(
+                name=f"n{size}",
+                size=size,
+                instance_ids=selected,
+                predictions_path=predictions_path,
+                official_command=command,
+            )
+        )
+    return manifests
+
+
+def write_swebench_subset_manifests(
+    out_dir: str | Path,
+    instance_ids: list[str],
+    *,
+    sizes: Iterable[int] = (5, 20, 50),
+    predictions_path: str | None = None,
+    spec: SWEBenchOfficialHarnessSpec | None = None,
+) -> list[SWEBenchSubsetManifest]:
+    destination = Path(out_dir)
+    destination.mkdir(parents=True, exist_ok=True)
+    manifests = build_swebench_subset_manifests(
+        instance_ids,
+        sizes=sizes,
+        predictions_path=predictions_path,
+        spec=spec,
+    )
+    for manifest in manifests:
+        (destination / f"{manifest.name}.json").write_text(manifest.model_dump_json(indent=2))
+    return manifests
 
 
 def summarize_swebench_results(results: list[SWEBenchEvaluationResult]) -> SWEBenchSuiteResult:
