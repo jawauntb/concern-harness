@@ -52,9 +52,10 @@ def generate(seed: int) -> TaskSpec:
             "id": "topic",
             "name": "question topic",
             "value": topic,
-            "concern": 0.7,
+            "concern": 0.5,  # a query hint, not a transport-must-survive concern
             "source": "instruction",
             "required_surfaces": ["final_answer"],
+            "match_mode": "substring",
         },
         {
             "id": "cite_canonical",
