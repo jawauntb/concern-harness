@@ -256,7 +256,7 @@ def test_official_prediction_rows_and_command_contract(tmp_path: Path):
         {
             "instance_id": "toy__calc-1",
             "model_name_or_path": "lbah-test",
-            "model_patch": result.final_diff,
+            "model_patch": result.final_diff if result.final_diff.endswith("\n") else f"{result.final_diff}\n",
         }
     ]
     assert command[:3] == ["python", "-m", "swebench.harness.run_evaluation"]

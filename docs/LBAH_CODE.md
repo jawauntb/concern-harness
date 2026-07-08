@@ -270,6 +270,96 @@ The remaining leaderboard step is operational rather than architectural:
 install the official `swebench` package, provision Docker storage/CPU, and run
 the generated command against the desired subset or full dataset.
 
+### Official Runner Workflow
+
+Install the optional benchmark dependencies when you are ready to run measured
+subsets:
+
+```bash
+python -m pip install -e '.[swebench]'
+```
+
+Export a small public subset for the LBAH smoke runner:
+
+```bash
+python scripts/export_swebench_instances.py \
+  --dataset princeton-nlp/SWE-bench_Lite \
+  --split test \
+  --limit 5 \
+  --out runs/swebench_lite_n5/instances.jsonl
+```
+
+Generate LBAH patches and official replay artifacts:
+
+```bash
+doppler run --project cofounder --config dev -- \
+  lbah code swebench \
+    --instances runs/swebench_lite_n5/instances.jsonl \
+    --model-agent configs/provider_big.yaml \
+    --official \
+    --official-dataset princeton-nlp/SWE-bench_Lite \
+    --official-run-id lbah-lite-n5 \
+    --subset-sizes 5 \
+    --out runs/swebench_lite_n5
+```
+
+Grade those patches with the official harness on Modal:
+
+```bash
+python scripts/run_official_swebench.py \
+  runs/swebench_lite_n5/official/subsets/n5.json \
+  --target modal \
+  --doppler \
+  --doppler-project cofounder \
+  --doppler-config dev \
+  --max-workers 8
+```
+
+Use local execution only for tiny validation runs on machines with Docker and
+enough disk. On ARM Macs, the runner defaults local commands to `--namespace ''`
+so official images build locally instead of pulling incompatible x86 images.
+This repository's default path is Modal for n=5/n=20/n=50 sweeps.
+
+Official SWE-bench Modal grading is CPU/build/test bound. The upstream
+`swebench.harness.modal_eval` runner parallelizes instances with
+`--max_workers`, but its Modal sandbox currently hardcodes CPU execution and
+does not expose L4/GPU selection. Use high `--max-workers` for official grading;
+reserve L4s for a separate Modal patch-generation worker when running local or
+open-weight coding models.
+
+For parallel L4-backed patch generation, use the Modal generation script:
+
+```bash
+doppler run --project cofounder --config dev -- \
+  env LBAH_MODAL_GPU=L4 LBAH_MODAL_MAX_CONTAINERS=20 \
+  python -m modal run scripts/modal_lbah_swebench_generate.py \
+    --instances runs/swebench_lite_n5/instances.jsonl \
+    --model-agent configs/provider_big.yaml \
+    --out runs/swebench_lite_n5_modal_l4 \
+    --official-dataset princeton-nlp/SWE-bench_Lite \
+    --run-id lbah-lite-n5-modal-l4 \
+    --limit 5 \
+    --max-steps 20
+```
+
+Then grade the generated predictions with official CPU-parallel Modal:
+
+```bash
+python scripts/run_official_swebench.py \
+  runs/swebench_lite_n5_modal_l4/official/run_evaluation_command.json \
+  --target modal \
+  --doppler \
+  --doppler-project cofounder \
+  --doppler-config dev \
+  --max-workers 20 \
+  --run-id lbah-lite-n5-official
+```
+
+The first Modal proofs are recorded in `docs/results/SWEBENCH_MODAL_PROBE.md`:
+a one-instance SWE-bench Lite run resolved `astropy__astropy-12907`, and an
+L4-parallel n=5 generation plus official Modal grading run resolved 3/5 with
+zero empty patches or harness errors.
+
 ## Model-Backed Agents
 
 `ModelCodingAgent` wraps any existing `ModelAdapter` that exposes `complete()`.

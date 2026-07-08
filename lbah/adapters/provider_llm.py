@@ -70,13 +70,20 @@ class ProviderLLMAdapter:
                 system = m["content"]
             else:
                 formatted.append(m)
-        resp = client.messages.create(
-            model=self.model,
-            system=system,
-            messages=formatted,
-            temperature=self.temperature if temperature is None else temperature,
-            max_tokens=self.max_tokens if max_tokens is None else max_tokens,
-        )
+        request = {
+            "model": self.model,
+            "system": system,
+            "messages": formatted,
+            "temperature": self.temperature if temperature is None else temperature,
+            "max_tokens": self.max_tokens if max_tokens is None else max_tokens,
+        }
+        try:
+            resp = client.messages.create(**request)
+        except Exception as exc:
+            if "`temperature` is deprecated" not in str(exc):
+                raise
+            request.pop("temperature", None)
+            resp = client.messages.create(**request)
         usage = getattr(resp, "usage", None)
         if usage is not None:
             self.last_tokens = int(getattr(usage, "input_tokens", 0)) + int(
