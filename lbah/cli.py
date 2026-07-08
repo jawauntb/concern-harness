@@ -16,7 +16,7 @@ import os
 import statistics
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import click
 import yaml
@@ -47,7 +47,12 @@ from .coding import (
     CodingTask,
     CodingWorkspace,
     ModelCodingAgent,
+    SWEBenchBackendKind,
+    SWEBenchEvaluationOptions,
+    SWEBenchExecutionBackend,
     ScriptedCodingAgent,
+    load_swebench_instances,
+    run_swebench_smoke_suite,
 )
 from .coding.actions import CodingAction
 from .coding.runner import load_coding_task
@@ -457,6 +462,87 @@ def code_run(
     click.echo(
         f"[code {task.task_id}] success={result.success} steps={result.steps} "
         f"modified={','.join(result.modified_files) or '-'}"
+    )
+
+
+@code_group.command(name="swebench")
+@click.option("--instances", "instances_path", required=True, type=click.Path(exists=True), help="SWE-bench-style JSON or JSONL instances.")
+@click.option("--repo-source", default="", help="Single local source repo path to clone for every instance.")
+@click.option("--repo-root", default="", help="Root containing repos by owner/name, owner__name, or name.")
+@click.option("--actions", "actions_path", default=None, type=click.Path(exists=True))
+@click.option("--model-agent", "model_agent_cfg", default=None, type=click.Path(exists=True), help="Model config to drive a model-backed coding agent.")
+@click.option("--limit", default=None, type=int, help="Maximum number of instances to run.")
+@click.option("--offset", default=0, type=int, help="Instance offset within the input file.")
+@click.option("--max-steps", default=40, type=int, show_default=True)
+@click.option("--timeout", "timeout_seconds", default=300.0, type=float, show_default=True)
+@click.option("--backend", type=click.Choice(["local", "docker"]), default="local", show_default=True)
+@click.option("--docker-image", default="", help="Docker image used when --backend docker.")
+@click.option("--include-pass-to-pass/--skip-pass-to-pass", default=True, show_default=True)
+@click.option("--out", "out_dir", required=True, help="Directory to write suite artifacts.")
+def code_swebench(
+    instances_path: str,
+    repo_source: str,
+    repo_root: str,
+    actions_path: str | None,
+    model_agent_cfg: str | None,
+    limit: int | None,
+    offset: int,
+    max_steps: int,
+    timeout_seconds: float,
+    backend: str,
+    docker_image: str,
+    include_pass_to_pass: bool,
+    out_dir: str,
+) -> None:
+    """Run a SWE-bench-style smoke suite through LBAH-Code."""
+    if bool(actions_path) == bool(model_agent_cfg):
+        raise click.ClickException("provide exactly one of --actions or --model-agent")
+    if backend == "docker" and not docker_image:
+        raise click.ClickException("--backend docker requires --docker-image")
+
+    try:
+        instances = load_swebench_instances(instances_path, limit=limit, offset=offset)
+        if actions_path is not None:
+            def scripted_agent_factory(_instance, _task):
+                return _load_scripted_coding_agent(actions_path)
+            agent_factory = scripted_agent_factory
+        else:
+            assert model_agent_cfg is not None
+            cfg = _load_yaml(model_agent_cfg)
+            model = _build_agent_from_config(cfg)
+            if not callable(getattr(model, "complete", None)):
+                raise ValueError("--model-agent config must build a ModelAdapter with complete()")
+
+            def model_agent_factory(_instance, _task):
+                return ModelCodingAgent(
+                    model,
+                    name=cfg.get("coding_name") or f"{cfg.get('name', cfg.get('type', 'model'))}_coder",
+                    temperature=float(cfg.get("coding_temperature", cfg.get("temperature", 0.0))),
+                    max_tokens=int(cfg.get("coding_max_tokens", cfg.get("max_tokens", 2048))),
+                )
+            agent_factory = model_agent_factory
+
+        options = SWEBenchEvaluationOptions(
+            repo_source=repo_source or None,
+            repo_root=repo_root or None,
+            out_dir=out_dir,
+            max_steps=max_steps,
+            timeout_seconds=timeout_seconds,
+            include_pass_to_pass=include_pass_to_pass,
+            backend=SWEBenchExecutionBackend(
+                kind=cast(SWEBenchBackendKind, backend),
+                docker_image=docker_image or None,
+                timeout_seconds=timeout_seconds,
+            ),
+        )
+        suite = run_swebench_smoke_suite(instances, agent_factory, options)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    failures = ", ".join(f"{kind}={count}" for kind, count in sorted(suite.failure_counts.items()))
+    click.echo(
+        f"[swebench] solved={suite.solved}/{suite.total} "
+        f"rate={suite.solve_rate:.2f} failures={failures or '-'} out={out_dir}"
     )
 
 

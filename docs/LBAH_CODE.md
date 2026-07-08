@@ -18,9 +18,9 @@ coding task
   -> CodingRunResult with trace, checks, final diff
 ```
 
-Recursive child harnessing and candidate patch tournaments now exist as bounded
-Python API layers on top of the same parent loop. SWE-bench adapters are still
-next steps.
+Recursive child harnessing, candidate patch tournaments, and SWE-bench smoke
+evaluation now exist as bounded Python API layers on top of the same parent
+loop.
 
 ## CLI Quickstart
 
@@ -191,9 +191,59 @@ comparisons. `swebench_run_artifact()` and `write_swebench_run_artifact()`
 serialize comparable outputs with instance id, repo, base commit, final diff,
 modified files, and the full LBAH-Code run.
 
-This is the benchmark contract layer, not a Docker evaluator. A full
-SWE-bench Verified runner still needs per-repo checkout/container orchestration
-around these task adapters.
+This adapter is the benchmark contract layer. The smoke evaluator below adds
+checkout, test-patch, execution, and artifact orchestration around it.
+
+## SWE-Bench Smoke Evaluation
+
+`run_swebench_instance()` prepares a per-instance workspace, applies the
+SWE-bench `test_patch`, runs the LBAH-Code verify-and-iterate loop, then runs
+FAIL_TO_PASS and PASS_TO_PASS tests as benchmark evidence:
+
+```python
+from lbah.coding import SWEBenchEvaluationOptions, run_swebench_instance
+
+result = run_swebench_instance(instance, agent_factory, SWEBenchEvaluationOptions(
+    repo_root="/repos",
+    out_dir="runs/swebench_smoke",
+    max_steps=40,
+))
+```
+
+The evaluator can clone from a single `repo_source`, resolve repos under a
+`repo_root` by `owner/name`, `owner__name`, or `name`, or fall back to
+`https://github.com/{repo}.git`. It supports a local backend and a Docker test
+backend that wraps configured test commands with `docker run -v
+<repo>:/workspace -w /workspace <image> ...`.
+
+The smoke-suite CLI runs JSON/JSONL subsets:
+
+```bash
+lbah code swebench \
+  --instances swebench-lite.jsonl \
+  --repo-root /repos \
+  --model-agent configs/local_coding_agent.yaml \
+  --limit 5 \
+  --out runs/swebench_smoke/
+```
+
+Artifacts include:
+
+- `summary.json` and `runs.jsonl` for the suite
+- `instances/<id>/evaluation.json`
+- `instances/<id>/coding_run.json`
+- `instances/<id>/final.diff`
+- `instances/<id>/logs/fail_to_pass.json`
+- `instances/<id>/logs/pass_to_pass.json`
+
+Failure taxonomy is explicit: checkout failure, test patch failure, harness
+error, agent verifier failure, no patch, FAIL_TO_PASS failure, PASS_TO_PASS
+regression, or success. This turns failed benchmark runs into sortable
+engineering signal instead of one opaque score.
+
+This is still a smoke evaluator, not the official SWE-bench harness. The next
+benchmarking step is binding these contracts to the official per-repo
+environment specs and container images for leaderboard-grade reproducibility.
 
 ## Model-Backed Agents
 
@@ -236,4 +286,5 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Add per-repo checkout/container orchestration for SWE-bench Lite/Verified.
+1. Bind SWE-bench smoke evaluation to official per-repo environment specs and
+   images for leaderboard-grade reproducibility.

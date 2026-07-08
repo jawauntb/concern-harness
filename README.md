@@ -122,7 +122,19 @@ candidates through `review_signals`.
 
 For benchmark comparability, `SWEBenchInstance` and
 `swebench_to_coding_task()` convert SWE-bench-style JSON/JSONL rows into
-fixed-budget coding tasks and comparable run artifacts.
+fixed-budget coding tasks and comparable run artifacts. `lbah code swebench`
+then runs smoke subsets by cloning/checking out each repo, applying
+`test_patch`, running the harness, and writing per-instance failure taxonomy,
+test logs, diffs, and suite summaries.
+
+```
+lbah code swebench \
+  --instances swebench-lite.jsonl \
+  --repo-root /repos \
+  --model-agent configs/local_coding_agent.yaml \
+  --limit 5 \
+  --out runs/swebench_smoke/
+```
 
 ## Layout
 
