@@ -1,0 +1,15 @@
+mode             n   success  wall_avg  errors
+----------------------------------------------
+harness        220      0.99      4.84       0
+raw            220      0.43      5.55       3
+raw+schema     220      0.00      0.00     220
+
+Per-suite:
+suite                   mode             n   success
+----------------------------------------------------
+moved_bottleneck        harness        110      0.97
+moved_bottleneck        raw            110      0.85
+moved_bottleneck        raw+schema     110      0.00
+tool_constraints        harness        110      1.00
+tool_constraints        raw            110      0.00
+tool_constraints        raw+schema     110      0.00

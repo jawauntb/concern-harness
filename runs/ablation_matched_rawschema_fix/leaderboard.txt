@@ -1,0 +1,9 @@
+mode             n   success  wall_avg  errors
+----------------------------------------------
+raw+schema     220      1.00      8.09       0
+
+Per-suite:
+suite                   mode             n   success
+----------------------------------------------------
+moved_bottleneck        raw+schema     110      0.99
+tool_constraints        raw+schema     110      1.00

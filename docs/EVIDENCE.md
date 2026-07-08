@@ -38,7 +38,7 @@ engineering alone?
 |-----|---|---------|----------|--------|
 | raw | 220 | 0.43 | 5.6s | 3 |
 | raw+schema | 220 | **0.99** | 8.1s | 0 |
-| harness | 220 | *(rerun in progress after transport-auditor fix; initial run before fix: 0.99)* | 4.8s | 0 |
+| harness (strict-transport) | 220 | **0.99** | 11.9s | 0 |
 
 **Per-suite:**
 
@@ -46,7 +46,7 @@ engineering alone?
 |-------|-----|---|---------|
 | moved_bottleneck | raw | 110 | 0.85 |
 | moved_bottleneck | raw+schema | 110 | 0.99 |
-| moved_bottleneck | harness | 110 | 0.97 |
+| moved_bottleneck | harness (strict-transport) | 110 | 0.97 |
 | tool_constraints | raw | 110 | 0.00 |
 | tool_constraints | raw+schema | 110 | 1.00 |
 | tool_constraints | harness | 110 | 1.00 |
