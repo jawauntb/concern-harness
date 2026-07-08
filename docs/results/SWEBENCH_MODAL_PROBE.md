@@ -191,3 +191,96 @@ policies to each column before Modal dispatch. The first five roles are
 the manifest and summary preserve those labels so the next n=5/n=20 run can
 measure whether policy diversity changes the oracle union before any
 submission-time ranker is trusted.
+
+## Role-Diverse Candidate Matrix Probe
+
+Date: 2026-07-08
+
+Generated three role-diverse candidate patches per SWE-bench Lite instance
+across Modal L4 workers, then graded each candidate column with the official
+Modal SWE-bench harness:
+
+```bash
+python scripts/export_swebench_instances.py \
+  --dataset princeton-nlp/SWE-bench_Lite \
+  --split test \
+  --limit 5 \
+  --out runs/swebench_lite_n5_role_probe/instances.jsonl
+
+doppler run --project cofounder --config dev -- \
+  env LBAH_MODAL_GPU=L4 LBAH_MODAL_MAX_CONTAINERS=40 \
+  python -m modal run scripts/modal_lbah_swebench_tournament.py \
+    --instances runs/swebench_lite_n5_role_probe/instances.jsonl \
+    --model-agent configs/provider_big.yaml \
+    --out runs/swebench_lite_n5_role_probe_candidates \
+    --official-dataset princeton-nlp/SWE-bench_Lite \
+    --run-id lbah-lite-n5-role-probe \
+    --candidates-per-instance 3 \
+    --limit 5 \
+    --max-steps 20 \
+    --timeout-seconds 120 \
+    --max-workers 20
+```
+
+The three candidate columns were graded with:
+
+```bash
+python scripts/run_official_swebench.py \
+  runs/swebench_lite_n5_role_probe_candidates/candidates/candidate_000/official/subsets/n5.json \
+  --target modal \
+  --doppler \
+  --doppler-project cofounder \
+  --doppler-config dev \
+  --max-workers 20 \
+  --run-id lbah-lite-n5-role-probe-candidate_000-official
+```
+
+The same official grading command was repeated for `candidate_001` and
+`candidate_002`, then summarized with:
+
+```bash
+python scripts/summarize_swebench_candidates.py \
+  --matrix runs/swebench_lite_n5_role_probe_candidates/candidate_matrix_manifest.json \
+  --report lbah-lite-n5-role-probe-candidate_000.lbah-lite-n5-role-probe-candidate_000-official.json \
+  --report lbah-lite-n5-role-probe-candidate_001.lbah-lite-n5-role-probe-candidate_001-official.json \
+  --report lbah-lite-n5-role-probe-candidate_002.lbah-lite-n5-role-probe-candidate_002-official.json \
+  --out runs/swebench_lite_n5_role_probe_candidates/official_candidate_summary.json
+```
+
+Official SWE-bench reports:
+
+| Candidate | Role | Submitted | Completed | Resolved | Unresolved | Empty | Errors |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `candidate_000` | Minimal patch | 5 | 5 | 2 | 3 | 0 | 0 |
+| `candidate_001` | Test-contract repair | 5 | 5 | 3 | 2 | 0 | 0 |
+| `candidate_002` | Root-cause repair | 5 | 4 | 2 | 2 | 1 | 0 |
+
+Post-hoc oracle union:
+
+- Resolved: 3/5
+- Unresolved: 2/5
+- Resolved IDs: `astropy__astropy-12907`, `astropy__astropy-14995`, `astropy__astropy-6938`
+- Unresolved IDs: `astropy__astropy-14182`, `astropy__astropy-14365`
+- Candidate-only delta: `candidate_001` and `candidate_002` solved
+  `astropy__astropy-14995`, which `candidate_000` missed.
+- Regression: `candidate_002` produced an empty patch for
+  `astropy__astropy-6938`, which both other candidates solved.
+
+Modal runs:
+
+- L4 role-diverse candidate generation:
+  https://modal.com/apps/generalintelligencecompany/main/ap-iGh6sykcnUWuXvN5YLqtJm
+- Official grading, `candidate_000`:
+  https://modal.com/apps/generalintelligencecompany/main/ap-vy0JMAAVwL2K9Gcl8AlNJ4
+- Official grading, `candidate_001`:
+  https://modal.com/apps/generalintelligencecompany/main/ap-I1hVFKkF5TvwwnCNp56wh1
+- Official grading, `candidate_002`:
+  https://modal.com/apps/generalintelligencecompany/main/ap-Hg7hcErNzRms8AeOO3gzws
+
+This is a sharper negative result than the first candidate matrix probe. Role
+policies changed the patches and produced a useful per-instance delta on
+`astropy__astropy-14995`, but they did not improve the n=5 oracle beyond 3/5
+and introduced one empty-patch regression. The next SOTA-facing lever is not
+more role labels by themselves; it is a ranker/model-diversity loop that can
+score candidates before official grading, plus generation guards that reject
+empty or no-op patches before a candidate column is allowed into the matrix.
