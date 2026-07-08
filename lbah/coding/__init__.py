@@ -9,7 +9,19 @@ verification and retry feedback.
 from .actions import CodingAction, CodingObservation, CodingTask
 from .agents import ModelCodingAgent, ScriptedCodingAgent
 from .ledger import CodingConcern, CodingLedger
+from .recursive import (
+    RecursiveCodingHarnessRunner,
+    ScriptedChildAgent,
+    apply_child_result,
+    validate_child_result,
+)
 from .runner import CodingHarnessRunner, CodingRunResult
+from .task_tree import (
+    ChildTaskResult,
+    ChildTaskSpec,
+    TaskTreeNode,
+    default_child_tasks,
+)
 from .workspace import CodingWorkspace
 
 __all__ = [
@@ -23,4 +35,12 @@ __all__ = [
     "CodingRunResult",
     "CodingWorkspace",
     "ModelCodingAgent",
+    "ChildTaskResult",
+    "ChildTaskSpec",
+    "TaskTreeNode",
+    "default_child_tasks",
+    "RecursiveCodingHarnessRunner",
+    "ScriptedChildAgent",
+    "validate_child_result",
+    "apply_child_result",
 ]

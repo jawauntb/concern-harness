@@ -18,8 +18,9 @@ coding task
   -> CodingRunResult with trace, checks, final diff
 ```
 
-This is not yet SWE-bench integration or recursive child harnessing. It is the
-core loop those features need.
+Recursive child harnessing now exists as a bounded Python API layer on top of
+the same parent loop. SWE-bench adapters and candidate patch tournaments are
+still next steps.
 
 ## CLI Quickstart
 
@@ -98,6 +99,38 @@ observe(observation) -> None
 `finish` action returns structured verifier feedback, and the agent can keep
 working until the step budget is exhausted.
 
+## Recursive Child Harnesses
+
+`RecursiveCodingHarnessRunner` runs typed child roles before the parent coding
+loop:
+
+```
+coding task
+  -> ChildTaskSpec repo_navigator / test_planner / patch_proposer / reviewer
+  -> child agent returns ChildTaskResult
+  -> validate required evidence, concern links, and ledger updates
+  -> reduce child evidence into CodingLedger
+  -> parent CodingHarnessRunner receives the recursive summary as context
+```
+
+Child tasks can be supplied explicitly through `CodingTask.metadata`:
+
+```yaml
+metadata:
+  recursive_children:
+    - child_id: nav
+      role: repo_navigator
+      goal: Find relevant implementation and tests.
+      concerns: [task]
+      evidence_required: [math_utils.py]
+```
+
+The runner blocks before any parent edits when a required child returns the
+wrong role, wrong id, failed/skipped status, missing evidence, invalid ledger
+updates, or proposed actions without rationale and concern linkage. This keeps
+recursive planning load-bearing: child work has to carry usable evidence into
+the parent patch loop rather than merely adding more prose.
+
 ## Model-Backed Agents
 
 `ModelCodingAgent` wraps any existing `ModelAdapter` that exposes `complete()`.
@@ -139,9 +172,7 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Add recursive child harnesses for inspection, patch proposal, review, and
-   test planning.
-2. Add candidate patch tournaments scored by tests, diff focus, concern
+1. Add candidate patch tournaments scored by tests, diff focus, concern
    coverage, and reviewer gates.
-3. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
+2. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
    artifacts.

@@ -109,6 +109,11 @@ Scripted actions remain useful for reproducible tests and demos; model-backed
 coding agents plug into the same `CodingHarnessRunner` contract. See
 [`docs/LBAH_CODE.md`](docs/LBAH_CODE.md).
 
+For stronger scaffolding, `RecursiveCodingHarnessRunner` can run bounded child
+roles for repo navigation, test planning, patch proposal, and adversarial
+review, then reduce validated child evidence into the same concern ledger
+before the parent edit/test loop begins.
+
 ## Layout
 
 - `lbah/core/` schemas, runner, scorer, ledger, certificates

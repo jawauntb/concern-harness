@@ -8,12 +8,16 @@ from click.testing import CliRunner
 
 from lbah.cli import cli
 from lbah.coding import (
+    ChildTaskResult,
     CodingAction,
     CodingHarnessRunner,
     CodingTask,
     CodingWorkspace,
     ModelCodingAgent,
+    RecursiveCodingHarnessRunner,
     ScriptedCodingAgent,
+    ScriptedChildAgent,
+    default_child_tasks,
 )
 from lbah.coding.agents import extract_action_json, model_response_content
 
@@ -37,6 +41,16 @@ class FakeModel:
         if not self.responses:
             return {"content": '{"action_type": "finish"}'}
         return self.responses.pop(0)
+
+
+class RecordingScriptedCodingAgent(ScriptedCodingAgent):
+    def __init__(self, actions: list[CodingAction]):
+        super().__init__(actions)
+        self.states: list[dict] = []
+
+    def propose_action(self, state: dict, ledger: dict) -> CodingAction:
+        self.states.append(state)
+        return super().propose_action(state, ledger)
 
 
 def _toy_repo(tmp_path: Path) -> Path:
@@ -312,3 +326,137 @@ def test_model_action_parse_error_is_feedback_and_can_retry(tmp_path: Path):
     assert result.trace[0]["action"]["action_type"] == "invalid_action"
     assert "proposal_error" in result.trace[0]["observation"]["message"]
     assert "proposal_error" in model.messages[1][1]["content"]
+
+
+def test_default_recursive_child_tasks_cover_core_roles(tmp_path: Path):
+    task = _task(_toy_repo(tmp_path))
+
+    specs = default_child_tasks(task)
+
+    assert [spec.role for spec in specs] == [
+        "repo_navigator",
+        "test_planner",
+        "patch_proposer",
+        "adversarial_reviewer",
+    ]
+    assert specs[0].allowed_paths == task.allowed_paths
+
+
+def test_recursive_runner_reduces_child_context_into_parent_loop(tmp_path: Path):
+    repo = _toy_repo(tmp_path)
+    task = _task(repo).model_copy(
+        update={
+            "metadata": {
+                "recursive_children": [
+                    {
+                        "child_id": "nav",
+                        "role": "repo_navigator",
+                        "goal": "Find the relevant implementation and tests.",
+                        "concerns": ["task"],
+                        "evidence_required": ["math_utils.py"],
+                    }
+                ]
+            }
+        }
+    )
+    parent_agent = RecordingScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a + b"},
+                rationale="Child navigation identified math_utils.py as the relevant file.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="tests", action_type="run_tests"),
+            CodingAction(action_id="finish", action_type="finish"),
+        ]
+    )
+    child_agent = ScriptedChildAgent(
+        [
+            ChildTaskResult(
+                child_id="nav",
+                role="repo_navigator",
+                status="passed",
+                summary="math_utils.py and test_math_utils.py are the relevant files.",
+                evidence=["math_utils.py contains add; test_math_utils.py covers add."],
+                ledger_updates=[
+                    {
+                        "id": "nav_evidence",
+                        "kind": "evidence",
+                        "text": "Child navigator located the implementation and test files.",
+                        "concern": 0.6,
+                        "status": "addressed",
+                        "evidence": ["math_utils.py and test_math_utils.py"],
+                    }
+                ],
+                confidence=0.9,
+            )
+        ]
+    )
+
+    result = RecursiveCodingHarnessRunner(
+        parent_agent,
+        CodingWorkspace(repo, task),
+        child_agent,
+        fail_fast_on_child_error=False,
+    ).run(task)
+
+    assert result.success
+    assert result.trace[0]["action"]["action_type"] == "recursive_child"
+    assert result.trace[1]["action"]["action_type"] == "recursive_summary"
+    assert parent_agent.states[0]["last_observation"]["data"]["recursive_children"][0]["child_id"] == "nav"
+    assert any(concern["id"] == "nav_evidence" for concern in result.ledger["concerns"])
+    assert "return a + b" in (repo / "math_utils.py").read_text()
+
+
+def test_recursive_runner_blocks_missing_required_child_evidence(tmp_path: Path):
+    repo = _toy_repo(tmp_path)
+    task = _task(repo).model_copy(
+        update={
+            "metadata": {
+                "recursive_children": [
+                    {
+                        "child_id": "review",
+                        "role": "adversarial_reviewer",
+                        "goal": "Review task risk before patching.",
+                        "evidence_required": ["risk review"],
+                    }
+                ]
+            }
+        }
+    )
+    parent_agent = RecordingScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a + b"},
+                rationale="Would patch if recursive review passed.",
+                concerns_addressed=["task", "risk_0"],
+            )
+        ]
+    )
+    child_agent = ScriptedChildAgent(
+        [
+            ChildTaskResult(
+                child_id="review",
+                role="adversarial_reviewer",
+                status="passed",
+                summary="Looks okay.",
+                evidence=["No concrete review label supplied."],
+                confidence=0.7,
+            )
+        ]
+    )
+
+    result = RecursiveCodingHarnessRunner(
+        parent_agent,
+        CodingWorkspace(repo, task),
+        child_agent,
+    ).run(task)
+
+    assert not result.success
+    assert "missing required evidence: risk review" in result.checks[0].reason
+    assert parent_agent.states == []
+    assert "return a - b" in (repo / "math_utils.py").read_text()
