@@ -5,6 +5,7 @@ from .cli_agent import CLIAgentAdapter
 from .local_llm import LocalLLMAdapter
 from .provider_llm import ProviderLLMAdapter
 from .moe_router import ConcernMoERouter
+from .claude_code_llm import ClaudeCodeCLIAdapter
 
 __all__ = [
     "ModelAdapter",
@@ -17,4 +18,5 @@ __all__ = [
     "LocalLLMAdapter",
     "ProviderLLMAdapter",
     "ConcernMoERouter",
+    "ClaudeCodeCLIAdapter",
 ]

@@ -23,6 +23,7 @@ import yaml
 
 from .adapters import (
     CLIAgentAdapter,
+    ClaudeCodeCLIAdapter,
     ConcernMoERouter,
     DummyAgent,
     HTTPAgentAdapter,
@@ -103,6 +104,13 @@ def _build_agent_from_config(cfg: dict) -> Any:
             url=cfg["url"],
             headers=cfg.get("headers") or {},
             timeout=float(cfg.get("timeout", 120)),
+        )
+    if kind == "claude_code_cli":
+        return ClaudeCodeCLIAdapter(
+            name=cfg.get("name", "claude_cli"),
+            model=cfg.get("model", "claude-opus-4-7"),
+            timeout=float(cfg.get("timeout", 90)),
+            extra_args=cfg.get("extra_args") or [],
         )
     if kind == "moe_router":
         experts: list[Expert] = []
