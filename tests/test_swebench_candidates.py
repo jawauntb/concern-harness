@@ -7,7 +7,11 @@ import pytest
 
 from lbah.coding import (
     SWEBenchOfficialHarnessSpec,
+    infer_swebench_candidate_id_from_path,
+    load_swebench_official_candidate_report,
+    summarize_swebench_candidate_reports,
     swebench_candidate_id,
+    write_swebench_candidate_summary,
     write_swebench_candidate_matrix,
 )
 
@@ -130,3 +134,121 @@ def test_candidate_matrix_non_strict_writes_partial_candidates(tmp_path: Path):
     assert manifest.failed_generations == ["candidate_001:repo__a-1:returncode=1"]
     assert manifest.missing_predictions == ["candidate_001:repo__a-1:missing_prediction"]
     assert Path(manifest.candidates[1].predictions_path).read_text() == ""
+
+
+def test_candidate_report_summary_tracks_oracle_union(tmp_path: Path):
+    instance_ids = ["repo__a-1", "repo__b-2", "repo__c-3"]
+    candidate_ids = [swebench_candidate_id(0), swebench_candidate_id(1)]
+    spec = SWEBenchOfficialHarnessSpec(run_id="lbah-candidates", modal=True)
+    manifest = write_swebench_candidate_matrix(
+        tmp_path,
+        [
+            _result(instance_id, candidate_index)
+            for instance_id in instance_ids
+            for candidate_index in range(2)
+        ],
+        spec=spec,
+        instance_ids=instance_ids,
+        candidate_ids=candidate_ids,
+        subset_sizes=[3],
+    )
+    first_report_path = _official_report(
+        tmp_path / "candidate_000_report.json",
+        submitted=instance_ids,
+        resolved=["repo__a-1"],
+        unresolved=["repo__b-2"],
+        errors=["repo__c-3"],
+    )
+    second_report_path = _official_report(
+        tmp_path / "candidate_001_report.json",
+        submitted=instance_ids,
+        resolved=["repo__b-2"],
+        unresolved=["repo__a-1", "repo__c-3"],
+    )
+
+    summary = summarize_swebench_candidate_reports(
+        manifest,
+        [
+            load_swebench_official_candidate_report("candidate_000", first_report_path),
+            load_swebench_official_candidate_report("candidate_001", second_report_path),
+        ],
+    )
+
+    assert summary.report_count == 2
+    assert summary.oracle_resolved_instances == 2
+    assert summary.oracle_resolved_ids == ["repo__a-1", "repo__b-2"]
+    assert summary.oracle_unresolved_ids == ["repo__c-3"]
+    assert summary.instance_outcomes[0].selected_candidate_id == "candidate_000"
+    assert summary.instance_outcomes[1].selected_candidate_id == "candidate_001"
+    assert summary.instance_outcomes[2].selected_status == "unresolved"
+
+
+def test_candidate_report_summary_records_missing_report(tmp_path: Path):
+    spec = SWEBenchOfficialHarnessSpec(run_id="lbah-candidates", modal=True)
+    manifest = write_swebench_candidate_matrix(
+        tmp_path,
+        [_result("repo__a-1", 0), _result("repo__a-1", 1)],
+        spec=spec,
+        instance_ids=["repo__a-1"],
+        candidate_ids=[swebench_candidate_id(0), swebench_candidate_id(1)],
+        subset_sizes=[1],
+    )
+    report_path = _official_report(
+        tmp_path / "candidate_000_report.json",
+        submitted=["repo__a-1"],
+        resolved=[],
+        unresolved=["repo__a-1"],
+    )
+
+    summary = summarize_swebench_candidate_reports(
+        manifest,
+        [load_swebench_official_candidate_report("candidate_000", report_path)],
+    )
+
+    assert summary.missing_report_candidate_ids == ["candidate_001"]
+    assert summary.instance_outcomes[0].missing_candidate_ids == ["candidate_001"]
+    out = tmp_path / "summary.json"
+    write_swebench_candidate_summary(out, summary)
+    assert json.loads(out.read_text())["oracle_unresolved_instances"] == 1
+
+
+def test_candidate_id_inference_uses_report_path():
+    assert (
+        infer_swebench_candidate_id_from_path("runs/candidates/candidate_042/official/report.json")
+        == "candidate_042"
+    )
+    with pytest.raises(ValueError, match="could not infer"):
+        infer_swebench_candidate_id_from_path("runs/no-candidate/report.json")
+
+
+def _official_report(
+    path: Path,
+    *,
+    submitted: list[str],
+    resolved: list[str],
+    unresolved: list[str],
+    errors: list[str] | None = None,
+) -> Path:
+    errors = errors or []
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "total_instances": len(submitted),
+                "submitted_instances": len(submitted),
+                "completed_instances": len(submitted),
+                "resolved_instances": len(resolved),
+                "unresolved_instances": len(unresolved),
+                "empty_patch_instances": 0,
+                "error_instances": len(errors),
+                "submitted_ids": submitted,
+                "completed_ids": submitted,
+                "resolved_ids": resolved,
+                "unresolved_ids": unresolved,
+                "empty_patch_ids": [],
+                "error_ids": errors,
+                "incomplete_ids": [],
+            }
+        )
+    )
+    return path

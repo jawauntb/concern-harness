@@ -108,10 +108,79 @@ worker. The grading result shows the pipeline can generate, package, and score
 parallel SWE-bench attempts without harness failures; remaining work is patch
 quality on the unresolved instances.
 
-## Next Measurement
+## Candidate Matrix Probe
 
-The next run should use `scripts/modal_lbah_swebench_tournament.py` with at
-least three candidates per instance. That run is expected to answer a different
-question than the n=5 probe above: whether candidate diversity plus a
-pre-official ranking policy can improve solved count without introducing empty
-patches or harness errors.
+Generated three candidate patches per SWE-bench Lite instance across Modal L4
+workers, then graded each candidate column with the official Modal SWE-bench
+harness:
+
+```bash
+doppler run --project cofounder --config dev -- \
+  env LBAH_MODAL_GPU=L4 LBAH_MODAL_MAX_CONTAINERS=40 \
+  python -m modal run scripts/modal_lbah_swebench_tournament.py \
+    --instances runs/swebench_lite_n5/instances.jsonl \
+    --model-agent configs/provider_big.yaml \
+    --out runs/swebench_lite_n5_candidates \
+    --official-dataset princeton-nlp/SWE-bench_Lite \
+    --run-id lbah-lite-n5-candidates \
+    --candidates-per-instance 3 \
+    --limit 5 \
+    --max-steps 20 \
+    --timeout-seconds 120 \
+    --max-workers 20
+
+python scripts/run_official_swebench.py \
+  runs/swebench_lite_n5_candidates/candidates/candidate_000/official/subsets/n5.json \
+  --target modal \
+  --doppler \
+  --doppler-project cofounder \
+  --doppler-config dev \
+  --max-workers 20 \
+  --run-id lbah-lite-n5-candidates-candidate_000-official
+```
+
+The same official grading command was repeated for `candidate_001` and
+`candidate_002`, then summarized with:
+
+```bash
+python scripts/summarize_swebench_candidates.py \
+  --matrix runs/swebench_lite_n5_candidates/candidate_matrix_manifest.json \
+  --report lbah-lite-n5-candidates-candidate_000.lbah-lite-n5-candidates-candidate_000-official.json \
+  --report lbah-lite-n5-candidates-candidate_001.lbah-lite-n5-candidates-candidate_001-official.json \
+  --report lbah-lite-n5-candidates-candidate_002.lbah-lite-n5-candidates-candidate_002-official.json \
+  --out runs/swebench_lite_n5_candidates/official_candidate_summary.json
+```
+
+Official SWE-bench reports:
+
+| Candidate | Submitted | Completed | Resolved | Unresolved | Empty | Errors |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `candidate_000` | 5 | 5 | 3 | 2 | 0 | 0 |
+| `candidate_001` | 5 | 5 | 3 | 2 | 0 | 0 |
+| `candidate_002` | 5 | 5 | 3 | 2 | 0 | 0 |
+
+Post-hoc oracle union:
+
+- Resolved: 3/5
+- Unresolved: 2/5
+- Resolved IDs: `astropy__astropy-12907`, `astropy__astropy-14995`, `astropy__astropy-6938`
+- Unresolved IDs: `astropy__astropy-14182`, `astropy__astropy-14365`
+- Every candidate column resolved and missed the same instance set.
+
+Modal runs:
+
+- L4 candidate generation:
+  https://modal.com/apps/generalintelligencecompany/main/ap-i59BUXNg2F23Ss8U985t4U
+- Official grading, `candidate_000`:
+  https://modal.com/apps/generalintelligencecompany/main/ap-rmpRlqxerX2lTCBv2Ia8ZO
+- Official grading, `candidate_001`:
+  https://modal.com/apps/generalintelligencecompany/main/ap-nPzW2ByXkqj0cGglAPljQc
+- Official grading, `candidate_002`:
+  https://modal.com/apps/generalintelligencecompany/main/ap-9uA65ZDFWBbASDq7tflqzs
+
+This is a useful negative result. Parallel candidate columns did not improve
+the small Astropy slice because the candidates were not meaningfully diverse
+under the current prompt. The next lever is a stronger diversity/ranking policy:
+distinct search roles, explicit child test-plan/reviewer feedback, temperature
+or model variation where supported, and pre-official scoring from verifier,
+ledger, and diff-focus signals.

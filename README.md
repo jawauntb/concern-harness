@@ -149,7 +149,11 @@ For wide generation, `scripts/modal_lbah_swebench_generate.py` maps instances
 across Modal workers and can request L4s with `LBAH_MODAL_GPU=L4`.
 For self-consistency sweeps, `scripts/modal_lbah_swebench_tournament.py`
 generates multiple candidates per instance across the same Modal pool and
-writes one official replay command per candidate column.
+writes one official replay command per candidate column. After grading each
+candidate column, `scripts/summarize_swebench_candidates.py` compares the
+official reports by instance and writes the post-hoc oracle union. Use that
+summary to tune pre-official ranking signals; do not treat official labels as a
+submission-time selector.
 
 ## Layout
 
