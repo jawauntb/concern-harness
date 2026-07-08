@@ -1,0 +1,7024 @@
+{
+  "raw": [
+    {
+      "task": "tool_constraints:6",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 109,
+      "total_tokens_est": 207,
+      "success": false,
+      "wall_seconds": 8.880236864089966
+    },
+    {
+      "task": "tool_constraints:10",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 215,
+      "success": false,
+      "wall_seconds": 9.62524700164795
+    },
+    {
+      "task": "tool_constraints:4",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 136,
+      "total_tokens_est": 236,
+      "success": false,
+      "wall_seconds": 9.866477966308594
+    },
+    {
+      "task": "tool_constraints:8",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 134,
+      "total_tokens_est": 233,
+      "success": false,
+      "wall_seconds": 10.426536083221436
+    },
+    {
+      "task": "tool_constraints:2",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 141,
+      "total_tokens_est": 240,
+      "success": false,
+      "wall_seconds": 10.521769046783447
+    },
+    {
+      "task": "tool_constraints:11",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 148,
+      "total_tokens_est": 247,
+      "success": false,
+      "wall_seconds": 10.497557878494263
+    },
+    {
+      "task": "tool_constraints:5",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 122,
+      "total_tokens_est": 222,
+      "success": false,
+      "wall_seconds": 10.62563419342041
+    },
+    {
+      "task": "tool_constraints:1",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 147,
+      "total_tokens_est": 247,
+      "success": false,
+      "wall_seconds": 10.72348427772522
+    },
+    {
+      "task": "tool_constraints:7",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 143,
+      "total_tokens_est": 241,
+      "success": false,
+      "wall_seconds": 11.05302906036377
+    },
+    {
+      "task": "tool_constraints:0",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 216,
+      "success": false,
+      "wall_seconds": 11.250432014465332
+    },
+    {
+      "task": "tool_constraints:3",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 135,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 12.038495063781738
+    },
+    {
+      "task": "tool_constraints:9",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 154,
+      "total_tokens_est": 253,
+      "success": false,
+      "wall_seconds": 12.030671119689941
+    },
+    {
+      "task": "tool_constraints:13",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 145,
+      "total_tokens_est": 245,
+      "success": false,
+      "wall_seconds": 6.634823322296143
+    },
+    {
+      "task": "tool_constraints:15",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 140,
+      "total_tokens_est": 239,
+      "success": false,
+      "wall_seconds": 5.879348993301392
+    },
+    {
+      "task": "tool_constraints:18",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 127,
+      "total_tokens_est": 226,
+      "success": false,
+      "wall_seconds": 5.770127058029175
+    },
+    {
+      "task": "tool_constraints:17",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 141,
+      "total_tokens_est": 240,
+      "success": false,
+      "wall_seconds": 5.92850923538208
+    },
+    {
+      "task": "tool_constraints:14",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 133,
+      "total_tokens_est": 233,
+      "success": false,
+      "wall_seconds": 6.719221830368042
+    },
+    {
+      "task": "tool_constraints:19",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 147,
+      "total_tokens_est": 247,
+      "success": false,
+      "wall_seconds": 6.138633966445923
+    },
+    {
+      "task": "tool_constraints:12",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 147,
+      "total_tokens_est": 247,
+      "success": false,
+      "wall_seconds": 8.709128379821777
+    },
+    {
+      "task": "tool_constraints:20",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 132,
+      "total_tokens_est": 232,
+      "success": false,
+      "wall_seconds": 7.242102861404419
+    },
+    {
+      "task": "tool_constraints:21",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 140,
+      "total_tokens_est": 240,
+      "success": false,
+      "wall_seconds": 7.092956304550171
+    },
+    {
+      "task": "tool_constraints:22",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 136,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 6.302344799041748
+    },
+    {
+      "task": "tool_constraints:23",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 129,
+      "total_tokens_est": 228,
+      "success": false,
+      "wall_seconds": 6.395410776138306
+    },
+    {
+      "task": "tool_constraints:16",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 120,
+      "total_tokens_est": 219,
+      "success": false,
+      "wall_seconds": 9.426087141036987
+    },
+    {
+      "task": "tool_constraints:25",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 136,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 5.5132832527160645
+    },
+    {
+      "task": "tool_constraints:24",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 127,
+      "total_tokens_est": 227,
+      "success": false,
+      "wall_seconds": 5.660421848297119
+    },
+    {
+      "task": "tool_constraints:29",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 202,
+      "success": false,
+      "wall_seconds": 5.290431022644043
+    },
+    {
+      "task": "tool_constraints:27",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 129,
+      "total_tokens_est": 228,
+      "success": false,
+      "wall_seconds": 6.4833526611328125
+    },
+    {
+      "task": "tool_constraints:26",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 151,
+      "total_tokens_est": 251,
+      "success": false,
+      "wall_seconds": 6.769797086715698
+    },
+    {
+      "task": "tool_constraints:30",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 153,
+      "total_tokens_est": 252,
+      "success": false,
+      "wall_seconds": 5.991856813430786
+    },
+    {
+      "task": "tool_constraints:31",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 128,
+      "total_tokens_est": 228,
+      "success": false,
+      "wall_seconds": 5.475301027297974
+    },
+    {
+      "task": "tool_constraints:32",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 121,
+      "total_tokens_est": 220,
+      "success": false,
+      "wall_seconds": 5.519649028778076
+    },
+    {
+      "task": "tool_constraints:34",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 124,
+      "total_tokens_est": 223,
+      "success": false,
+      "wall_seconds": 5.515002727508545
+    },
+    {
+      "task": "tool_constraints:33",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 139,
+      "total_tokens_est": 238,
+      "success": false,
+      "wall_seconds": 5.909493923187256
+    },
+    {
+      "task": "tool_constraints:28",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 242,
+      "success": false,
+      "wall_seconds": 9.223268270492554
+    },
+    {
+      "task": "tool_constraints:35",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 241,
+      "success": false,
+      "wall_seconds": 6.574792146682739
+    },
+    {
+      "task": "tool_constraints:37",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 120,
+      "total_tokens_est": 219,
+      "success": false,
+      "wall_seconds": 5.113479852676392
+    },
+    {
+      "task": "tool_constraints:36",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 125,
+      "total_tokens_est": 225,
+      "success": false,
+      "wall_seconds": 5.350270986557007
+    },
+    {
+      "task": "tool_constraints:38",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 129,
+      "total_tokens_est": 229,
+      "success": false,
+      "wall_seconds": 6.248824119567871
+    },
+    {
+      "task": "tool_constraints:41",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 129,
+      "total_tokens_est": 229,
+      "success": false,
+      "wall_seconds": 5.408578157424927
+    },
+    {
+      "task": "tool_constraints:40",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 143,
+      "total_tokens_est": 243,
+      "success": false,
+      "wall_seconds": 5.900811195373535
+    },
+    {
+      "task": "tool_constraints:42",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 148,
+      "total_tokens_est": 247,
+      "success": false,
+      "wall_seconds": 6.311193943023682
+    },
+    {
+      "task": "tool_constraints:39",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 151,
+      "total_tokens_est": 250,
+      "success": false,
+      "wall_seconds": 7.17648983001709
+    },
+    {
+      "task": "tool_constraints:46",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 133,
+      "total_tokens_est": 233,
+      "success": false,
+      "wall_seconds": 4.953634023666382
+    },
+    {
+      "task": "tool_constraints:45",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 137,
+      "total_tokens_est": 236,
+      "success": false,
+      "wall_seconds": 6.522490978240967
+    },
+    {
+      "task": "tool_constraints:48",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 105,
+      "total_tokens_est": 204,
+      "success": false,
+      "wall_seconds": 4.43199896812439
+    },
+    {
+      "task": "tool_constraints:44",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 152,
+      "total_tokens_est": 252,
+      "success": false,
+      "wall_seconds": 7.814191102981567
+    },
+    {
+      "task": "tool_constraints:47",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 144,
+      "total_tokens_est": 242,
+      "success": false,
+      "wall_seconds": 5.869778871536255
+    },
+    {
+      "task": "tool_constraints:43",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 149,
+      "total_tokens_est": 249,
+      "success": false,
+      "wall_seconds": 9.093421936035156
+    },
+    {
+      "task": "tool_constraints:50",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 129,
+      "total_tokens_est": 228,
+      "success": false,
+      "wall_seconds": 4.9628448486328125
+    },
+    {
+      "task": "tool_constraints:49",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 130,
+      "total_tokens_est": 229,
+      "success": false,
+      "wall_seconds": 6.733612775802612
+    },
+    {
+      "task": "tool_constraints:52",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 137,
+      "total_tokens_est": 236,
+      "success": false,
+      "wall_seconds": 5.154000759124756
+    },
+    {
+      "task": "tool_constraints:54",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 152,
+      "total_tokens_est": 252,
+      "success": false,
+      "wall_seconds": 5.755719900131226
+    },
+    {
+      "task": "tool_constraints:53",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 143,
+      "total_tokens_est": 241,
+      "success": false,
+      "wall_seconds": 5.837114095687866
+    },
+    {
+      "task": "tool_constraints:56",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 134,
+      "total_tokens_est": 232,
+      "success": false,
+      "wall_seconds": 5.46595025062561
+    },
+    {
+      "task": "tool_constraints:57",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 139,
+      "total_tokens_est": 239,
+      "success": false,
+      "wall_seconds": 5.0164711475372314
+    },
+    {
+      "task": "tool_constraints:51",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 242,
+      "success": false,
+      "wall_seconds": 8.439934968948364
+    },
+    {
+      "task": "tool_constraints:58",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 146,
+      "total_tokens_est": 245,
+      "success": false,
+      "wall_seconds": 6.088522672653198
+    },
+    {
+      "task": "tool_constraints:59",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 144,
+      "total_tokens_est": 243,
+      "success": false,
+      "wall_seconds": 5.8995139598846436
+    },
+    {
+      "task": "tool_constraints:55",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 154,
+      "total_tokens_est": 253,
+      "success": false,
+      "wall_seconds": 7.57457423210144
+    },
+    {
+      "task": "tool_constraints:60",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 145,
+      "total_tokens_est": 245,
+      "success": false,
+      "wall_seconds": 5.851637125015259
+    },
+    {
+      "task": "tool_constraints:62",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 139,
+      "total_tokens_est": 238,
+      "success": false,
+      "wall_seconds": 5.70552396774292
+    },
+    {
+      "task": "tool_constraints:64",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 128,
+      "total_tokens_est": 227,
+      "success": false,
+      "wall_seconds": 5.229524850845337
+    },
+    {
+      "task": "tool_constraints:66",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 137,
+      "total_tokens_est": 236,
+      "success": false,
+      "wall_seconds": 4.87398099899292
+    },
+    {
+      "task": "tool_constraints:63",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 139,
+      "total_tokens_est": 238,
+      "success": false,
+      "wall_seconds": 7.004333972930908
+    },
+    {
+      "task": "tool_constraints:65",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 131,
+      "total_tokens_est": 230,
+      "success": false,
+      "wall_seconds": 5.7094080448150635
+    },
+    {
+      "task": "tool_constraints:67",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 133,
+      "total_tokens_est": 231,
+      "success": false,
+      "wall_seconds": 5.253968954086304
+    },
+    {
+      "task": "tool_constraints:61",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 133,
+      "total_tokens_est": 232,
+      "success": false,
+      "wall_seconds": 9.501512050628662
+    },
+    {
+      "task": "tool_constraints:68",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 141,
+      "total_tokens_est": 241,
+      "success": false,
+      "wall_seconds": 5.433605909347534
+    },
+    {
+      "task": "tool_constraints:69",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 133,
+      "total_tokens_est": 232,
+      "success": false,
+      "wall_seconds": 5.829989194869995
+    },
+    {
+      "task": "tool_constraints:70",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 127,
+      "total_tokens_est": 227,
+      "success": false,
+      "wall_seconds": 5.746930122375488
+    },
+    {
+      "task": "tool_constraints:72",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 144,
+      "total_tokens_est": 244,
+      "success": false,
+      "wall_seconds": 5.801799774169922
+    },
+    {
+      "task": "tool_constraints:73",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 151,
+      "total_tokens_est": 251,
+      "success": false,
+      "wall_seconds": 6.025781869888306
+    },
+    {
+      "task": "tool_constraints:71",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 135,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 7.644338846206665
+    },
+    {
+      "task": "tool_constraints:75",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 114,
+      "total_tokens_est": 213,
+      "success": false,
+      "wall_seconds": 5.011803865432739
+    },
+    {
+      "task": "tool_constraints:74",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 242,
+      "success": false,
+      "wall_seconds": 5.376969814300537
+    },
+    {
+      "task": "tool_constraints:78",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 131,
+      "total_tokens_est": 229,
+      "success": false,
+      "wall_seconds": 5.621694803237915
+    },
+    {
+      "task": "tool_constraints:77",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 130,
+      "total_tokens_est": 230,
+      "success": false,
+      "wall_seconds": 5.73599100112915
+    },
+    {
+      "task": "tool_constraints:79",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 149,
+      "total_tokens_est": 248,
+      "success": false,
+      "wall_seconds": 5.759439945220947
+    },
+    {
+      "task": "tool_constraints:80",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 242,
+      "success": false,
+      "wall_seconds": 5.853612899780273
+    },
+    {
+      "task": "tool_constraints:76",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 157,
+      "total_tokens_est": 256,
+      "success": false,
+      "wall_seconds": 7.914772987365723
+    },
+    {
+      "task": "tool_constraints:82",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 146,
+      "total_tokens_est": 246,
+      "success": false,
+      "wall_seconds": 5.502842903137207
+    },
+    {
+      "task": "tool_constraints:81",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 128,
+      "total_tokens_est": 226,
+      "success": false,
+      "wall_seconds": 6.033151865005493
+    },
+    {
+      "task": "tool_constraints:83",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 134,
+      "total_tokens_est": 234,
+      "success": false,
+      "wall_seconds": 5.238938808441162
+    },
+    {
+      "task": "tool_constraints:84",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 147,
+      "total_tokens_est": 245,
+      "success": false,
+      "wall_seconds": 5.522986888885498
+    },
+    {
+      "task": "tool_constraints:85",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 132,
+      "total_tokens_est": 232,
+      "success": false,
+      "wall_seconds": 5.760666847229004
+    },
+    {
+      "task": "tool_constraints:86",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 139,
+      "total_tokens_est": 238,
+      "success": false,
+      "wall_seconds": 5.771783828735352
+    },
+    {
+      "task": "tool_constraints:88",
+      "prompt_tokens_est": 98,
+      "completion_tokens_est": 140,
+      "total_tokens_est": 238,
+      "success": false,
+      "wall_seconds": 5.286549091339111
+    },
+    {
+      "task": "tool_constraints:87",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 149,
+      "total_tokens_est": 249,
+      "success": false,
+      "wall_seconds": 6.2259461879730225
+    },
+    {
+      "task": "tool_constraints:89",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 150,
+      "total_tokens_est": 250,
+      "success": false,
+      "wall_seconds": 5.564574956893921
+    },
+    {
+      "task": "tool_constraints:91",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 132,
+      "total_tokens_est": 232,
+      "success": false,
+      "wall_seconds": 5.580279111862183
+    },
+    {
+      "task": "tool_constraints:90",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 154,
+      "total_tokens_est": 254,
+      "success": false,
+      "wall_seconds": 5.719111919403076
+    },
+    {
+      "task": "tool_constraints:94",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 134,
+      "total_tokens_est": 233,
+      "success": false,
+      "wall_seconds": 5.308494806289673
+    },
+    {
+      "task": "tool_constraints:92",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 135,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 6.502577066421509
+    },
+    {
+      "task": "tool_constraints:93",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 242,
+      "success": false,
+      "wall_seconds": 6.745471954345703
+    },
+    {
+      "task": "tool_constraints:97",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 140,
+      "total_tokens_est": 239,
+      "success": false,
+      "wall_seconds": 6.266383171081543
+    },
+    {
+      "task": "tool_constraints:98",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 135,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 6.157880067825317
+    },
+    {
+      "task": "tool_constraints:96",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 146,
+      "total_tokens_est": 246,
+      "success": false,
+      "wall_seconds": 7.052947044372559
+    },
+    {
+      "task": "tool_constraints:99",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 150,
+      "total_tokens_est": 250,
+      "success": false,
+      "wall_seconds": 5.8837151527404785
+    },
+    {
+      "task": "tool_constraints:100",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 137,
+      "total_tokens_est": 236,
+      "success": false,
+      "wall_seconds": 5.976315975189209
+    },
+    {
+      "task": "tool_constraints:95",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 146,
+      "total_tokens_est": 246,
+      "success": false,
+      "wall_seconds": 9.06600308418274
+    },
+    {
+      "task": "tool_constraints:101",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 140,
+      "total_tokens_est": 239,
+      "success": false,
+      "wall_seconds": 6.085977792739868
+    },
+    {
+      "task": "tool_constraints:104",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 142,
+      "total_tokens_est": 241,
+      "success": false,
+      "wall_seconds": 5.201655149459839
+    },
+    {
+      "task": "tool_constraints:103",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 144,
+      "total_tokens_est": 244,
+      "success": false,
+      "wall_seconds": 6.001481056213379
+    },
+    {
+      "task": "tool_constraints:102",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 144,
+      "total_tokens_est": 244,
+      "success": false,
+      "wall_seconds": 6.274673938751221
+    },
+    {
+      "task": "tool_constraints:105",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 127,
+      "total_tokens_est": 226,
+      "success": false,
+      "wall_seconds": 5.009382009506226
+    },
+    {
+      "task": "tool_constraints:106",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 132,
+      "total_tokens_est": 231,
+      "success": false,
+      "wall_seconds": 5.907861948013306
+    },
+    {
+      "task": "moved_bottleneck:0",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 45,
+      "total_tokens_est": 168,
+      "success": false,
+      "wall_seconds": 3.966660976409912
+    },
+    {
+      "task": "moved_bottleneck:2",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 57,
+      "total_tokens_est": 178,
+      "success": true,
+      "wall_seconds": 3.7859299182891846
+    },
+    {
+      "task": "moved_bottleneck:3",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 61,
+      "total_tokens_est": 182,
+      "success": true,
+      "wall_seconds": 3.9113149642944336
+    },
+    {
+      "task": "tool_constraints:107",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 135,
+      "total_tokens_est": 235,
+      "success": false,
+      "wall_seconds": 5.605524063110352
+    },
+    {
+      "task": "tool_constraints:108",
+      "prompt_tokens_est": 100,
+      "completion_tokens_est": 140,
+      "total_tokens_est": 240,
+      "success": false,
+      "wall_seconds": 5.6025919914245605
+    },
+    {
+      "task": "tool_constraints:109",
+      "prompt_tokens_est": 99,
+      "completion_tokens_est": 125,
+      "total_tokens_est": 224,
+      "success": false,
+      "wall_seconds": 5.654577016830444
+    },
+    {
+      "task": "moved_bottleneck:1",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 47,
+      "total_tokens_est": 169,
+      "success": true,
+      "wall_seconds": 5.324306011199951
+    },
+    {
+      "task": "moved_bottleneck:4",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 65,
+      "total_tokens_est": 188,
+      "success": true,
+      "wall_seconds": 4.0418970584869385
+    },
+    {
+      "task": "moved_bottleneck:6",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 169,
+      "success": true,
+      "wall_seconds": 3.855522632598877
+    },
+    {
+      "task": "moved_bottleneck:5",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 5.3726887702941895
+    },
+    {
+      "task": "moved_bottleneck:8",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 47,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 4.113991022109985
+    },
+    {
+      "task": "moved_bottleneck:10",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 61,
+      "total_tokens_est": 184,
+      "success": false,
+      "wall_seconds": 4.085634231567383
+    },
+    {
+      "task": "moved_bottleneck:11",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 58,
+      "total_tokens_est": 182,
+      "success": true,
+      "wall_seconds": 4.106748819351196
+    },
+    {
+      "task": "moved_bottleneck:12",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 61,
+      "total_tokens_est": 183,
+      "success": true,
+      "wall_seconds": 3.5838489532470703
+    },
+    {
+      "task": "moved_bottleneck:14",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 61,
+      "total_tokens_est": 182,
+      "success": true,
+      "wall_seconds": 3.8879191875457764
+    },
+    {
+      "task": "moved_bottleneck:13",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 177,
+      "success": true,
+      "wall_seconds": 4.377148151397705
+    },
+    {
+      "task": "moved_bottleneck:15",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 167,
+      "success": true,
+      "wall_seconds": 4.04408597946167
+    },
+    {
+      "task": "moved_bottleneck:16",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 178,
+      "success": false,
+      "wall_seconds": 4.112052917480469
+    },
+    {
+      "task": "moved_bottleneck:9",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 6.209985733032227
+    },
+    {
+      "task": "moved_bottleneck:7",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 60,
+      "total_tokens_est": 183,
+      "success": false,
+      "wall_seconds": 9.149980306625366
+    },
+    {
+      "task": "moved_bottleneck:17",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 175,
+      "success": true,
+      "wall_seconds": 5.447757959365845
+    },
+    {
+      "task": "moved_bottleneck:18",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 4.267693042755127
+    },
+    {
+      "task": "moved_bottleneck:19",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 62,
+      "total_tokens_est": 184,
+      "success": true,
+      "wall_seconds": 3.7333009243011475
+    },
+    {
+      "task": "moved_bottleneck:21",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 168,
+      "success": true,
+      "wall_seconds": 4.14120078086853
+    },
+    {
+      "task": "moved_bottleneck:22",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 169,
+      "success": true,
+      "wall_seconds": 3.994408130645752
+    },
+    {
+      "task": "moved_bottleneck:23",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 175,
+      "success": true,
+      "wall_seconds": 4.182290077209473
+    },
+    {
+      "task": "moved_bottleneck:24",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 63,
+      "total_tokens_est": 186,
+      "success": true,
+      "wall_seconds": 4.303245782852173
+    },
+    {
+      "task": "moved_bottleneck:26",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 4.195509910583496
+    },
+    {
+      "task": "moved_bottleneck:25",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 5.185019254684448
+    },
+    {
+      "task": "moved_bottleneck:27",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 172,
+      "success": true,
+      "wall_seconds": 4.702262878417969
+    },
+    {
+      "task": "moved_bottleneck:31",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 174,
+      "success": true,
+      "wall_seconds": 3.9613709449768066
+    },
+    {
+      "task": "moved_bottleneck:30",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 54,
+      "total_tokens_est": 176,
+      "success": true,
+      "wall_seconds": 4.112936019897461
+    },
+    {
+      "task": "moved_bottleneck:29",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 45,
+      "total_tokens_est": 166,
+      "success": true,
+      "wall_seconds": 4.251455068588257
+    },
+    {
+      "task": "moved_bottleneck:20",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 7.778135776519775
+    },
+    {
+      "task": "moved_bottleneck:28",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 5.042494058609009
+    },
+    {
+      "task": "moved_bottleneck:33",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 4.256285190582275
+    },
+    {
+      "task": "moved_bottleneck:32",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 172,
+      "success": true,
+      "wall_seconds": 4.525691032409668
+    },
+    {
+      "task": "moved_bottleneck:34",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 4.0065391063690186
+    },
+    {
+      "task": "moved_bottleneck:35",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 3.811638116836548
+    },
+    {
+      "task": "moved_bottleneck:36",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 177,
+      "success": true,
+      "wall_seconds": 3.641317129135132
+    },
+    {
+      "task": "moved_bottleneck:37",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 3.6273350715637207
+    },
+    {
+      "task": "moved_bottleneck:38",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 4.269019842147827
+    },
+    {
+      "task": "moved_bottleneck:39",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 4.18930196762085
+    },
+    {
+      "task": "moved_bottleneck:40",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 45,
+      "total_tokens_est": 166,
+      "success": true,
+      "wall_seconds": 4.861446857452393
+    },
+    {
+      "task": "moved_bottleneck:42",
+      "prompt_tokens_est": 120,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 4.435580015182495
+    },
+    {
+      "task": "moved_bottleneck:43",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 170,
+      "success": false,
+      "wall_seconds": 4.360585927963257
+    },
+    {
+      "task": "moved_bottleneck:44",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 167,
+      "success": true,
+      "wall_seconds": 4.12152099609375
+    },
+    {
+      "task": "moved_bottleneck:45",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 175,
+      "success": true,
+      "wall_seconds": 3.9741740226745605
+    },
+    {
+      "task": "moved_bottleneck:41",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 45,
+      "total_tokens_est": 168,
+      "success": true,
+      "wall_seconds": 5.6072399616241455
+    },
+    {
+      "task": "moved_bottleneck:46",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 54,
+      "total_tokens_est": 176,
+      "success": true,
+      "wall_seconds": 4.195007085800171
+    },
+    {
+      "task": "moved_bottleneck:47",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 71,
+      "total_tokens_est": 195,
+      "success": true,
+      "wall_seconds": 4.15618109703064
+    },
+    {
+      "task": "moved_bottleneck:48",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 47,
+      "total_tokens_est": 168,
+      "success": true,
+      "wall_seconds": 4.752656936645508
+    },
+    {
+      "task": "moved_bottleneck:49",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 75,
+      "total_tokens_est": 198,
+      "success": true,
+      "wall_seconds": 4.849853754043579
+    },
+    {
+      "task": "moved_bottleneck:51",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 3.5779199600219727
+    },
+    {
+      "task": "moved_bottleneck:55",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 47,
+      "total_tokens_est": 168,
+      "success": true,
+      "wall_seconds": 3.7427778244018555
+    },
+    {
+      "task": "moved_bottleneck:56",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 174,
+      "success": false,
+      "wall_seconds": 4.204899072647095
+    },
+    {
+      "task": "moved_bottleneck:50",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 175,
+      "success": true,
+      "wall_seconds": 6.774504899978638
+    },
+    {
+      "task": "moved_bottleneck:53",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 5.605542898178101
+    },
+    {
+      "task": "moved_bottleneck:59",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 177,
+      "success": true,
+      "wall_seconds": 4.524166822433472
+    },
+    {
+      "task": "moved_bottleneck:54",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 174,
+      "success": false,
+      "wall_seconds": 5.834547996520996
+    },
+    {
+      "task": "moved_bottleneck:57",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 57,
+      "total_tokens_est": 178,
+      "success": true,
+      "wall_seconds": 5.8849568367004395
+    },
+    {
+      "task": "moved_bottleneck:62",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 3.8867833614349365
+    },
+    {
+      "task": "moved_bottleneck:61",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 170,
+      "success": false,
+      "wall_seconds": 3.9812211990356445
+    },
+    {
+      "task": "moved_bottleneck:60",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 62,
+      "total_tokens_est": 184,
+      "success": true,
+      "wall_seconds": 4.934596061706543
+    },
+    {
+      "task": "moved_bottleneck:52",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 174,
+      "success": true,
+      "wall_seconds": 7.63293194770813
+    },
+    {
+      "task": "moved_bottleneck:58",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 54,
+      "total_tokens_est": 175,
+      "success": true,
+      "wall_seconds": 6.507344007492065
+    },
+    {
+      "task": "moved_bottleneck:63",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 62,
+      "total_tokens_est": 186,
+      "success": true,
+      "wall_seconds": 3.80975604057312
+    },
+    {
+      "task": "moved_bottleneck:64",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 56,
+      "total_tokens_est": 178,
+      "success": true,
+      "wall_seconds": 3.638126850128174
+    },
+    {
+      "task": "moved_bottleneck:69",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 167,
+      "success": true,
+      "wall_seconds": 3.875412940979004
+    },
+    {
+      "task": "moved_bottleneck:67",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 176,
+      "success": true,
+      "wall_seconds": 4.835053205490112
+    },
+    {
+      "task": "moved_bottleneck:71",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 4.169386863708496
+    },
+    {
+      "task": "moved_bottleneck:68",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 57,
+      "total_tokens_est": 178,
+      "success": true,
+      "wall_seconds": 4.840809106826782
+    },
+    {
+      "task": "moved_bottleneck:70",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 63,
+      "total_tokens_est": 185,
+      "success": true,
+      "wall_seconds": 4.414339065551758
+    },
+    {
+      "task": "moved_bottleneck:73",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 177,
+      "success": true,
+      "wall_seconds": 3.746809959411621
+    },
+    {
+      "task": "moved_bottleneck:72",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 61,
+      "total_tokens_est": 182,
+      "success": true,
+      "wall_seconds": 4.497191905975342
+    },
+    {
+      "task": "moved_bottleneck:74",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 3.891071081161499
+    },
+    {
+      "task": "moved_bottleneck:76",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 60,
+      "total_tokens_est": 184,
+      "success": true,
+      "wall_seconds": 3.953462839126587
+    },
+    {
+      "task": "moved_bottleneck:75",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 58,
+      "total_tokens_est": 182,
+      "success": true,
+      "wall_seconds": 4.429580926895142
+    },
+    {
+      "task": "moved_bottleneck:81",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 60,
+      "total_tokens_est": 183,
+      "success": false,
+      "wall_seconds": 4.132264137268066
+    },
+    {
+      "task": "moved_bottleneck:83",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 4.040676116943359
+    },
+    {
+      "task": "moved_bottleneck:85",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 4.179980754852295
+    },
+    {
+      "task": "moved_bottleneck:80",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 176,
+      "success": true,
+      "wall_seconds": 4.917918920516968
+    },
+    {
+      "task": "moved_bottleneck:84",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 62,
+      "total_tokens_est": 185,
+      "success": true,
+      "wall_seconds": 4.713670969009399
+    },
+    {
+      "task": "moved_bottleneck:78",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 168,
+      "success": true,
+      "wall_seconds": 5.620429992675781
+    },
+    {
+      "task": "moved_bottleneck:82",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 167,
+      "success": true,
+      "wall_seconds": 5.62554407119751
+    },
+    {
+      "task": "moved_bottleneck:87",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 64,
+      "total_tokens_est": 186,
+      "success": false,
+      "wall_seconds": 4.272446155548096
+    },
+    {
+      "task": "moved_bottleneck:77",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 47,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 6.4574949741363525
+    },
+    {
+      "task": "moved_bottleneck:86",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 171,
+      "success": true,
+      "wall_seconds": 5.473903179168701
+    },
+    {
+      "task": "moved_bottleneck:79",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 57,
+      "total_tokens_est": 180,
+      "success": true,
+      "wall_seconds": 6.666778802871704
+    },
+    {
+      "task": "moved_bottleneck:88",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 56,
+      "total_tokens_est": 179,
+      "success": true,
+      "wall_seconds": 5.67087984085083
+    },
+    {
+      "task": "moved_bottleneck:90",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 58,
+      "total_tokens_est": 181,
+      "success": true,
+      "wall_seconds": 3.487936019897461
+    },
+    {
+      "task": "moved_bottleneck:89",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 4.3105058670043945
+    },
+    {
+      "task": "moved_bottleneck:92",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 3.760251998901367
+    },
+    {
+      "task": "moved_bottleneck:93",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 59,
+      "total_tokens_est": 180,
+      "success": true,
+      "wall_seconds": 4.152480125427246
+    },
+    {
+      "task": "moved_bottleneck:96",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 172,
+      "success": true,
+      "wall_seconds": 3.7414710521698
+    },
+    {
+      "task": "moved_bottleneck:97",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 3.945903778076172
+    },
+    {
+      "task": "moved_bottleneck:95",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 70,
+      "total_tokens_est": 193,
+      "success": true,
+      "wall_seconds": 4.426144123077393
+    },
+    {
+      "task": "moved_bottleneck:98",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 54,
+      "total_tokens_est": 176,
+      "success": false,
+      "wall_seconds": 4.225265026092529
+    },
+    {
+      "task": "moved_bottleneck:94",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 5.446393728256226
+    },
+    {
+      "task": "moved_bottleneck:91",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 173,
+      "success": true,
+      "wall_seconds": 6.357197999954224
+    },
+    {
+      "task": "moved_bottleneck:99",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 54,
+      "total_tokens_est": 177,
+      "success": true,
+      "wall_seconds": 4.744144916534424
+    },
+    {
+      "task": "moved_bottleneck:100",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 175,
+      "success": false,
+      "wall_seconds": 4.0896618366241455
+    },
+    {
+      "task": "moved_bottleneck:102",
+      "prompt_tokens_est": 121,
+      "completion_tokens_est": 59,
+      "total_tokens_est": 180,
+      "success": true,
+      "wall_seconds": 3.914419174194336
+    },
+    {
+      "task": "moved_bottleneck:103",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 174,
+      "success": true,
+      "wall_seconds": 3.9616310596466064
+    },
+    {
+      "task": "moved_bottleneck:101",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 170,
+      "success": true,
+      "wall_seconds": 5.1048808097839355
+    },
+    {
+      "task": "moved_bottleneck:105",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 54,
+      "total_tokens_est": 176,
+      "success": false,
+      "wall_seconds": 3.9015438556671143
+    },
+    {
+      "task": "moved_bottleneck:108",
+      "prompt_tokens_est": 123,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 178,
+      "success": true,
+      "wall_seconds": 3.907346248626709
+    },
+    {
+      "task": "moved_bottleneck:109",
+      "prompt_tokens_est": 124,
+      "completion_tokens_est": 58,
+      "total_tokens_est": 182,
+      "success": true,
+      "wall_seconds": 3.7769460678100586
+    },
+    {
+      "task": "moved_bottleneck:107",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 86,
+      "total_tokens_est": 208,
+      "success": true,
+      "wall_seconds": 4.887360095977783
+    },
+    {
+      "task": "moved_bottleneck:106",
+      "prompt_tokens_est": 122,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 174,
+      "success": true,
+      "wall_seconds": 5.253816843032837
+    }
+  ],
+  "harness": [
+    {
+      "task": "tool_constraints:1",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 5.004796266555786
+    },
+    {
+      "task": "tool_constraints:2",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 5.135175943374634
+    },
+    {
+      "task": "tool_constraints:4",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 5.071150064468384
+    },
+    {
+      "task": "tool_constraints:0",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 5.6732378005981445
+    },
+    {
+      "task": "tool_constraints:3",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 5.587328910827637
+    },
+    {
+      "task": "tool_constraints:6",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 4.90618896484375
+    },
+    {
+      "task": "tool_constraints:5",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 5.129266977310181
+    },
+    {
+      "task": "tool_constraints:7",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 5.819783926010132
+    },
+    {
+      "task": "tool_constraints:9",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 5.522384881973267
+    },
+    {
+      "task": "tool_constraints:11",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.193645238876343
+    },
+    {
+      "task": "tool_constraints:10",
+      "prompt_tokens_est": 844,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 844,
+      "success": true,
+      "wall_seconds": 4.579531908035278
+    },
+    {
+      "task": "tool_constraints:13",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 3.763183832168579
+    },
+    {
+      "task": "tool_constraints:8",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 7.361418008804321
+    },
+    {
+      "task": "tool_constraints:14",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 3.97881817817688
+    },
+    {
+      "task": "tool_constraints:12",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.481250762939453
+    },
+    {
+      "task": "tool_constraints:16",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.63419508934021
+    },
+    {
+      "task": "tool_constraints:15",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 5.31463623046875
+    },
+    {
+      "task": "tool_constraints:18",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.846665859222412
+    },
+    {
+      "task": "tool_constraints:20",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.022970199584961
+    },
+    {
+      "task": "tool_constraints:22",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 3.9205949306488037
+    },
+    {
+      "task": "tool_constraints:17",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 5.58242392539978
+    },
+    {
+      "task": "tool_constraints:19",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 5.128325939178467
+    },
+    {
+      "task": "tool_constraints:21",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 5.205880880355835
+    },
+    {
+      "task": "tool_constraints:23",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.051748037338257
+    },
+    {
+      "task": "tool_constraints:24",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 5.151440143585205
+    },
+    {
+      "task": "tool_constraints:27",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.294051170349121
+    },
+    {
+      "task": "tool_constraints:26",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 5.729027986526489
+    },
+    {
+      "task": "tool_constraints:28",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.344022035598755
+    },
+    {
+      "task": "tool_constraints:29",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 4.318211793899536
+    },
+    {
+      "task": "tool_constraints:31",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 4.0138840675354
+    },
+    {
+      "task": "tool_constraints:30",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.400321006774902
+    },
+    {
+      "task": "tool_constraints:32",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.856919050216675
+    },
+    {
+      "task": "tool_constraints:33",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 4.18046498298645
+    },
+    {
+      "task": "tool_constraints:34",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.266992807388306
+    },
+    {
+      "task": "tool_constraints:35",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.188817977905273
+    },
+    {
+      "task": "tool_constraints:25",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 7.850035905838013
+    },
+    {
+      "task": "tool_constraints:37",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 4.033841133117676
+    },
+    {
+      "task": "tool_constraints:40",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.327836036682129
+    },
+    {
+      "task": "tool_constraints:36",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 5.680236101150513
+    },
+    {
+      "task": "tool_constraints:41",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.506319046020508
+    },
+    {
+      "task": "tool_constraints:42",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.173470973968506
+    },
+    {
+      "task": "tool_constraints:38",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.810775995254517
+    },
+    {
+      "task": "tool_constraints:39",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.934441089630127
+    },
+    {
+      "task": "tool_constraints:45",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.423983812332153
+    },
+    {
+      "task": "tool_constraints:44",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.945875883102417
+    },
+    {
+      "task": "tool_constraints:47",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 4.404879093170166
+    },
+    {
+      "task": "tool_constraints:43",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 5.987926006317139
+    },
+    {
+      "task": "tool_constraints:46",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 5.464306831359863
+    },
+    {
+      "task": "tool_constraints:48",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 5.015646934509277
+    },
+    {
+      "task": "tool_constraints:49",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.370388031005859
+    },
+    {
+      "task": "tool_constraints:50",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.234915018081665
+    },
+    {
+      "task": "tool_constraints:52",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.382075071334839
+    },
+    {
+      "task": "tool_constraints:53",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 4.443999290466309
+    },
+    {
+      "task": "tool_constraints:51",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.501240015029907
+    },
+    {
+      "task": "tool_constraints:56",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 4.368767976760864
+    },
+    {
+      "task": "tool_constraints:57",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.387124061584473
+    },
+    {
+      "task": "tool_constraints:55",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.7454259395599365
+    },
+    {
+      "task": "tool_constraints:59",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.158324956893921
+    },
+    {
+      "task": "tool_constraints:54",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 6.981947183609009
+    },
+    {
+      "task": "tool_constraints:58",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 4.748385906219482
+    },
+    {
+      "task": "tool_constraints:60",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.010669708251953
+    },
+    {
+      "task": "tool_constraints:62",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 4.386319160461426
+    },
+    {
+      "task": "tool_constraints:63",
+      "prompt_tokens_est": 847,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 847,
+      "success": true,
+      "wall_seconds": 4.593335151672363
+    },
+    {
+      "task": "tool_constraints:65",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.602221250534058
+    },
+    {
+      "task": "tool_constraints:61",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 5.23675799369812
+    },
+    {
+      "task": "tool_constraints:68",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.4585120677948
+    },
+    {
+      "task": "tool_constraints:67",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 4.585102081298828
+    },
+    {
+      "task": "tool_constraints:66",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.772768020629883
+    },
+    {
+      "task": "tool_constraints:70",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 4.0610151290893555
+    },
+    {
+      "task": "tool_constraints:71",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 4.053246021270752
+    },
+    {
+      "task": "tool_constraints:69",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.660346269607544
+    },
+    {
+      "task": "tool_constraints:72",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.247590780258179
+    },
+    {
+      "task": "tool_constraints:73",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.462041139602661
+    },
+    {
+      "task": "tool_constraints:75",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.254780054092407
+    },
+    {
+      "task": "tool_constraints:74",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 4.57896089553833
+    },
+    {
+      "task": "tool_constraints:76",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 4.909653902053833
+    },
+    {
+      "task": "tool_constraints:77",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.264981985092163
+    },
+    {
+      "task": "tool_constraints:79",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.350729942321777
+    },
+    {
+      "task": "tool_constraints:78",
+      "prompt_tokens_est": 844,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 844,
+      "success": true,
+      "wall_seconds": 4.478191137313843
+    },
+    {
+      "task": "tool_constraints:64",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 11.130656957626343
+    },
+    {
+      "task": "tool_constraints:80",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.424700975418091
+    },
+    {
+      "task": "tool_constraints:82",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 4.4135212898254395
+    },
+    {
+      "task": "tool_constraints:81",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 5.286932945251465
+    },
+    {
+      "task": "tool_constraints:83",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.764725923538208
+    },
+    {
+      "task": "tool_constraints:84",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 4.033318758010864
+    },
+    {
+      "task": "tool_constraints:85",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.185550212860107
+    },
+    {
+      "task": "tool_constraints:86",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 4.75682806968689
+    },
+    {
+      "task": "tool_constraints:87",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.502054929733276
+    },
+    {
+      "task": "tool_constraints:88",
+      "prompt_tokens_est": 844,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 844,
+      "success": true,
+      "wall_seconds": 4.330570936203003
+    },
+    {
+      "task": "tool_constraints:89",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 4.399077892303467
+    },
+    {
+      "task": "tool_constraints:91",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.136183023452759
+    },
+    {
+      "task": "tool_constraints:90",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 4.8975911140441895
+    },
+    {
+      "task": "tool_constraints:94",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 3.8708839416503906
+    },
+    {
+      "task": "tool_constraints:93",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 5.084295988082886
+    },
+    {
+      "task": "tool_constraints:95",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.4051830768585205
+    },
+    {
+      "task": "tool_constraints:97",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 4.002012014389038
+    },
+    {
+      "task": "tool_constraints:92",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 6.011892080307007
+    },
+    {
+      "task": "tool_constraints:98",
+      "prompt_tokens_est": 855,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 855,
+      "success": true,
+      "wall_seconds": 4.297739028930664
+    },
+    {
+      "task": "tool_constraints:96",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 6.098259210586548
+    },
+    {
+      "task": "tool_constraints:99",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 4.927152872085571
+    },
+    {
+      "task": "tool_constraints:100",
+      "prompt_tokens_est": 847,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 847,
+      "success": true,
+      "wall_seconds": 4.60351300239563
+    },
+    {
+      "task": "tool_constraints:103",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.246018171310425
+    },
+    {
+      "task": "tool_constraints:102",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 4.983780860900879
+    },
+    {
+      "task": "tool_constraints:104",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.330930948257446
+    },
+    {
+      "task": "tool_constraints:105",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 4.5322959423065186
+    },
+    {
+      "task": "tool_constraints:106",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 4.2792580127716064
+    },
+    {
+      "task": "tool_constraints:107",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 4.363818168640137
+    },
+    {
+      "task": "tool_constraints:109",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 3.8584280014038086
+    },
+    {
+      "task": "tool_constraints:108",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 5.460270881652832
+    },
+    {
+      "task": "moved_bottleneck:1",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.0177061557769775
+    },
+    {
+      "task": "moved_bottleneck:2",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 3.9333267211914062
+    },
+    {
+      "task": "moved_bottleneck:3",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 3.9867770671844482
+    },
+    {
+      "task": "moved_bottleneck:0",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 5.18641209602356
+    },
+    {
+      "task": "tool_constraints:101",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 8.991379976272583
+    },
+    {
+      "task": "moved_bottleneck:5",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 3.9196910858154297
+    },
+    {
+      "task": "moved_bottleneck:6",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 3.6394550800323486
+    },
+    {
+      "task": "moved_bottleneck:4",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 4.925824880599976
+    },
+    {
+      "task": "moved_bottleneck:7",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.3643786907196045
+    },
+    {
+      "task": "moved_bottleneck:8",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.104858875274658
+    },
+    {
+      "task": "moved_bottleneck:9",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 4.23353385925293
+    },
+    {
+      "task": "moved_bottleneck:11",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 3.8592960834503174
+    },
+    {
+      "task": "moved_bottleneck:10",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 4.578469753265381
+    },
+    {
+      "task": "moved_bottleneck:15",
+      "prompt_tokens_est": 674,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 674,
+      "success": true,
+      "wall_seconds": 3.840763807296753
+    },
+    {
+      "task": "moved_bottleneck:12",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 4.83489203453064
+    },
+    {
+      "task": "moved_bottleneck:13",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 4.631480932235718
+    },
+    {
+      "task": "moved_bottleneck:14",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.675869941711426
+    },
+    {
+      "task": "moved_bottleneck:17",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 4.535581111907959
+    },
+    {
+      "task": "moved_bottleneck:16",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 5.50399112701416
+    },
+    {
+      "task": "moved_bottleneck:19",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.709504127502441
+    },
+    {
+      "task": "moved_bottleneck:20",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 4.620721817016602
+    },
+    {
+      "task": "moved_bottleneck:18",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 5.248658895492554
+    },
+    {
+      "task": "moved_bottleneck:21",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 4.985738039016724
+    },
+    {
+      "task": "moved_bottleneck:23",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.248296022415161
+    },
+    {
+      "task": "moved_bottleneck:22",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 4.565080165863037
+    },
+    {
+      "task": "moved_bottleneck:24",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 3.9235727787017822
+    },
+    {
+      "task": "moved_bottleneck:25",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.3212361335754395
+    },
+    {
+      "task": "moved_bottleneck:26",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.536623001098633
+    },
+    {
+      "task": "moved_bottleneck:28",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 3.8524649143218994
+    },
+    {
+      "task": "moved_bottleneck:27",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 5.2098000049591064
+    },
+    {
+      "task": "moved_bottleneck:30",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 4.0081071853637695
+    },
+    {
+      "task": "moved_bottleneck:29",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.438070774078369
+    },
+    {
+      "task": "moved_bottleneck:31",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.43824577331543
+    },
+    {
+      "task": "moved_bottleneck:33",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.1147871017456055
+    },
+    {
+      "task": "moved_bottleneck:35",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.1058008670806885
+    },
+    {
+      "task": "moved_bottleneck:34",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.631274938583374
+    },
+    {
+      "task": "moved_bottleneck:36",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 4.581189155578613
+    },
+    {
+      "task": "moved_bottleneck:37",
+      "prompt_tokens_est": 674,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 674,
+      "success": true,
+      "wall_seconds": 4.091902017593384
+    },
+    {
+      "task": "moved_bottleneck:39",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 3.8170249462127686
+    },
+    {
+      "task": "moved_bottleneck:32",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 6.68792200088501
+    },
+    {
+      "task": "moved_bottleneck:40",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 3.8694958686828613
+    },
+    {
+      "task": "moved_bottleneck:42",
+      "prompt_tokens_est": 673,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 673,
+      "success": true,
+      "wall_seconds": 4.069095134735107
+    },
+    {
+      "task": "moved_bottleneck:41",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 4.21971583366394
+    },
+    {
+      "task": "moved_bottleneck:38",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 5.454437971115112
+    },
+    {
+      "task": "moved_bottleneck:43",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 4.0879011154174805
+    },
+    {
+      "task": "moved_bottleneck:44",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 4.417548894882202
+    },
+    {
+      "task": "moved_bottleneck:47",
+      "prompt_tokens_est": 688,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 688,
+      "success": true,
+      "wall_seconds": 3.7450878620147705
+    },
+    {
+      "task": "moved_bottleneck:45",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.423371076583862
+    },
+    {
+      "task": "moved_bottleneck:48",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.163645267486572
+    },
+    {
+      "task": "moved_bottleneck:51",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 3.99837589263916
+    },
+    {
+      "task": "moved_bottleneck:49",
+      "prompt_tokens_est": 686,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 686,
+      "success": true,
+      "wall_seconds": 4.8820178508758545
+    },
+    {
+      "task": "moved_bottleneck:50",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.656619071960449
+    },
+    {
+      "task": "moved_bottleneck:52",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 3.5676331520080566
+    },
+    {
+      "task": "moved_bottleneck:46",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 5.8309760093688965
+    },
+    {
+      "task": "moved_bottleneck:55",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 4.1987810134887695
+    },
+    {
+      "task": "moved_bottleneck:53",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 4.665085077285767
+    },
+    {
+      "task": "moved_bottleneck:54",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 5.273196697235107
+    },
+    {
+      "task": "moved_bottleneck:57",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 3.8726918697357178
+    },
+    {
+      "task": "moved_bottleneck:58",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.218844175338745
+    },
+    {
+      "task": "moved_bottleneck:59",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.862678050994873
+    },
+    {
+      "task": "moved_bottleneck:62",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 4.327150106430054
+    },
+    {
+      "task": "moved_bottleneck:60",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.494949817657471
+    },
+    {
+      "task": "moved_bottleneck:65",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 3.601300001144409
+    },
+    {
+      "task": "moved_bottleneck:61",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 4.775083780288696
+    },
+    {
+      "task": "moved_bottleneck:63",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 5.0141050815582275
+    },
+    {
+      "task": "moved_bottleneck:68",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 3.635113000869751
+    },
+    {
+      "task": "moved_bottleneck:66",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 4.67429518699646
+    },
+    {
+      "task": "moved_bottleneck:67",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.148292064666748
+    },
+    {
+      "task": "moved_bottleneck:69",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 3.6853368282318115
+    },
+    {
+      "task": "moved_bottleneck:56",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 9.26131796836853
+    },
+    {
+      "task": "moved_bottleneck:70",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.28259015083313
+    },
+    {
+      "task": "moved_bottleneck:72",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 3.7866690158843994
+    },
+    {
+      "task": "moved_bottleneck:73",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 4.707957983016968
+    },
+    {
+      "task": "moved_bottleneck:74",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.887125015258789
+    },
+    {
+      "task": "moved_bottleneck:76",
+      "prompt_tokens_est": 688,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 688,
+      "success": true,
+      "wall_seconds": 4.177436351776123
+    },
+    {
+      "task": "moved_bottleneck:71",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 5.689769983291626
+    },
+    {
+      "task": "moved_bottleneck:77",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 4.357753753662109
+    },
+    {
+      "task": "moved_bottleneck:79",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.167507171630859
+    },
+    {
+      "task": "moved_bottleneck:75",
+      "prompt_tokens_est": 687,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 687,
+      "success": true,
+      "wall_seconds": 5.479511022567749
+    },
+    {
+      "task": "moved_bottleneck:78",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 4.656248092651367
+    },
+    {
+      "task": "moved_bottleneck:64",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": false,
+      "wall_seconds": 12.349301099777222
+    },
+    {
+      "task": "moved_bottleneck:83",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 3.284972667694092
+    },
+    {
+      "task": "moved_bottleneck:81",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.906664848327637
+    },
+    {
+      "task": "moved_bottleneck:85",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 3.9710710048675537
+    },
+    {
+      "task": "moved_bottleneck:84",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 4.388157844543457
+    },
+    {
+      "task": "moved_bottleneck:87",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.0031468868255615
+    },
+    {
+      "task": "moved_bottleneck:80",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 7.211368083953857
+    },
+    {
+      "task": "moved_bottleneck:89",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.130299091339111
+    },
+    {
+      "task": "moved_bottleneck:90",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.477608919143677
+    },
+    {
+      "task": "moved_bottleneck:86",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 5.637008905410767
+    },
+    {
+      "task": "moved_bottleneck:91",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 3.9479758739471436
+    },
+    {
+      "task": "moved_bottleneck:92",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 3.7990241050720215
+    },
+    {
+      "task": "moved_bottleneck:93",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 3.8768930435180664
+    },
+    {
+      "task": "moved_bottleneck:82",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 9.289527893066406
+    },
+    {
+      "task": "moved_bottleneck:94",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 4.349438190460205
+    },
+    {
+      "task": "moved_bottleneck:95",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 4.247053146362305
+    },
+    {
+      "task": "moved_bottleneck:96",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 4.3460729122161865
+    },
+    {
+      "task": "moved_bottleneck:99",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.8588197231292725
+    },
+    {
+      "task": "moved_bottleneck:98",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 6.0500359535217285
+    },
+    {
+      "task": "moved_bottleneck:102",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 4.7144060134887695
+    },
+    {
+      "task": "moved_bottleneck:103",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 4.877698183059692
+    },
+    {
+      "task": "moved_bottleneck:101",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 5.626915693283081
+    },
+    {
+      "task": "moved_bottleneck:104",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 4.752724885940552
+    },
+    {
+      "task": "moved_bottleneck:107",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 3.8254709243774414
+    },
+    {
+      "task": "moved_bottleneck:105",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 4.471621036529541
+    },
+    {
+      "task": "moved_bottleneck:97",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 9.394422769546509
+    },
+    {
+      "task": "moved_bottleneck:100",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 8.23808479309082
+    },
+    {
+      "task": "moved_bottleneck:109",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 3.433706045150757
+    },
+    {
+      "task": "moved_bottleneck:108",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 4.292401075363159
+    },
+    {
+      "task": "moved_bottleneck:88",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": false,
+      "wall_seconds": 14.378530740737915
+    },
+    {
+      "task": "moved_bottleneck:106",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": false,
+      "wall_seconds": 13.11343789100647
+    },
+    {
+      "task": "tool_constraints:10",
+      "prompt_tokens_est": 844,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 844,
+      "success": true,
+      "wall_seconds": 50.35494804382324
+    },
+    {
+      "task": "tool_constraints:8",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 50.53562331199646
+    },
+    {
+      "task": "tool_constraints:7",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 50.56425595283508
+    },
+    {
+      "task": "tool_constraints:5",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 50.595651149749756
+    },
+    {
+      "task": "tool_constraints:9",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 50.58109712600708
+    },
+    {
+      "task": "tool_constraints:2",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 50.72086477279663
+    },
+    {
+      "task": "tool_constraints:6",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 50.752875089645386
+    },
+    {
+      "task": "tool_constraints:1",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 51.20289468765259
+    },
+    {
+      "task": "tool_constraints:4",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 54.54928207397461
+    },
+    {
+      "task": "tool_constraints:3",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 55.72023105621338
+    },
+    {
+      "task": "tool_constraints:0",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 55.770386934280396
+    },
+    {
+      "task": "tool_constraints:11",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 55.90221905708313
+    },
+    {
+      "task": "tool_constraints:12",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 10.385398149490356
+    },
+    {
+      "task": "tool_constraints:14",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 10.542237043380737
+    },
+    {
+      "task": "tool_constraints:19",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 9.975047826766968
+    },
+    {
+      "task": "tool_constraints:16",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 10.817025899887085
+    },
+    {
+      "task": "tool_constraints:17",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 10.72694706916809
+    },
+    {
+      "task": "tool_constraints:18",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 10.771034240722656
+    },
+    {
+      "task": "tool_constraints:15",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 11.020994901657104
+    },
+    {
+      "task": "tool_constraints:22",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 8.032041311264038
+    },
+    {
+      "task": "tool_constraints:23",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 7.883959054946899
+    },
+    {
+      "task": "tool_constraints:20",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 9.825624942779541
+    },
+    {
+      "task": "tool_constraints:13",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 14.929972171783447
+    },
+    {
+      "task": "tool_constraints:30",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 6.785598039627075
+    },
+    {
+      "task": "tool_constraints:24",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 7.743062973022461
+    },
+    {
+      "task": "tool_constraints:27",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 7.402036905288696
+    },
+    {
+      "task": "tool_constraints:21",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 13.162437915802002
+    },
+    {
+      "task": "tool_constraints:25",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 7.770299911499023
+    },
+    {
+      "task": "tool_constraints:29",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 7.7572102546691895
+    },
+    {
+      "task": "tool_constraints:28",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 8.426790952682495
+    },
+    {
+      "task": "tool_constraints:26",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 9.225563287734985
+    },
+    {
+      "task": "tool_constraints:31",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 6.663336992263794
+    },
+    {
+      "task": "tool_constraints:33",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 7.110728979110718
+    },
+    {
+      "task": "tool_constraints:32",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 7.877006769180298
+    },
+    {
+      "task": "tool_constraints:34",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 7.553722143173218
+    },
+    {
+      "task": "tool_constraints:35",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 7.526291131973267
+    },
+    {
+      "task": "tool_constraints:36",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 8.333062887191772
+    },
+    {
+      "task": "tool_constraints:38",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 8.01613974571228
+    },
+    {
+      "task": "tool_constraints:39",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 8.429107904434204
+    },
+    {
+      "task": "tool_constraints:37",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 8.607495069503784
+    },
+    {
+      "task": "tool_constraints:40",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 8.326900005340576
+    },
+    {
+      "task": "tool_constraints:43",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 7.779278039932251
+    },
+    {
+      "task": "tool_constraints:41",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 8.499498844146729
+    },
+    {
+      "task": "tool_constraints:42",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 8.558984756469727
+    },
+    {
+      "task": "tool_constraints:44",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 7.755920886993408
+    },
+    {
+      "task": "tool_constraints:45",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 8.124036073684692
+    },
+    {
+      "task": "tool_constraints:46",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 7.3343000411987305
+    },
+    {
+      "task": "tool_constraints:47",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 8.68287992477417
+    },
+    {
+      "task": "tool_constraints:49",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 8.176537990570068
+    },
+    {
+      "task": "tool_constraints:50",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 8.457694053649902
+    },
+    {
+      "task": "tool_constraints:48",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 9.509158849716187
+    },
+    {
+      "task": "tool_constraints:54",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 8.075506925582886
+    },
+    {
+      "task": "tool_constraints:55",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 7.496099948883057
+    },
+    {
+      "task": "tool_constraints:53",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 8.227932929992676
+    },
+    {
+      "task": "tool_constraints:51",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 9.005573272705078
+    },
+    {
+      "task": "tool_constraints:52",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 8.834025859832764
+    },
+    {
+      "task": "tool_constraints:58",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 7.485254287719727
+    },
+    {
+      "task": "tool_constraints:57",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 8.189888000488281
+    },
+    {
+      "task": "tool_constraints:56",
+      "prompt_tokens_est": 843,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 843,
+      "success": true,
+      "wall_seconds": 9.245859146118164
+    },
+    {
+      "task": "tool_constraints:59",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 8.42856216430664
+    },
+    {
+      "task": "tool_constraints:61",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 8.40170407295227
+    },
+    {
+      "task": "tool_constraints:60",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 9.426267862319946
+    },
+    {
+      "task": "tool_constraints:62",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 9.631479024887085
+    },
+    {
+      "task": "tool_constraints:63",
+      "prompt_tokens_est": 847,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 847,
+      "success": true,
+      "wall_seconds": 10.02829384803772
+    },
+    {
+      "task": "tool_constraints:65",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 10.27111291885376
+    },
+    {
+      "task": "tool_constraints:67",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 10.308154106140137
+    },
+    {
+      "task": "tool_constraints:66",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 10.488247156143188
+    },
+    {
+      "task": "tool_constraints:64",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 11.160320043563843
+    },
+    {
+      "task": "tool_constraints:68",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 10.790739059448242
+    },
+    {
+      "task": "tool_constraints:70",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 10.281519889831543
+    },
+    {
+      "task": "tool_constraints:69",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 15.84425687789917
+    },
+    {
+      "task": "tool_constraints:71",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 11.092623949050903
+    },
+    {
+      "task": "tool_constraints:72",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 9.967233180999756
+    },
+    {
+      "task": "tool_constraints:73",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 9.666104793548584
+    },
+    {
+      "task": "tool_constraints:76",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 8.557906150817871
+    },
+    {
+      "task": "tool_constraints:74",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 9.285075902938843
+    },
+    {
+      "task": "tool_constraints:77",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 8.573556184768677
+    },
+    {
+      "task": "tool_constraints:75",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 9.151800870895386
+    },
+    {
+      "task": "tool_constraints:78",
+      "prompt_tokens_est": 844,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 844,
+      "success": true,
+      "wall_seconds": 8.701181888580322
+    },
+    {
+      "task": "tool_constraints:79",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 8.119908094406128
+    },
+    {
+      "task": "tool_constraints:81",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 7.400069236755371
+    },
+    {
+      "task": "tool_constraints:80",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 9.417126893997192
+    },
+    {
+      "task": "tool_constraints:83",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 6.360849857330322
+    },
+    {
+      "task": "tool_constraints:84",
+      "prompt_tokens_est": 845,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 845,
+      "success": true,
+      "wall_seconds": 6.371579170227051
+    },
+    {
+      "task": "tool_constraints:82",
+      "prompt_tokens_est": 852,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 852,
+      "success": true,
+      "wall_seconds": 6.97435188293457
+    },
+    {
+      "task": "tool_constraints:85",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 7.418934106826782
+    },
+    {
+      "task": "tool_constraints:86",
+      "prompt_tokens_est": 848,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 848,
+      "success": true,
+      "wall_seconds": 6.440718173980713
+    },
+    {
+      "task": "tool_constraints:90",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 6.7608911991119385
+    },
+    {
+      "task": "tool_constraints:91",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 6.689786672592163
+    },
+    {
+      "task": "tool_constraints:88",
+      "prompt_tokens_est": 844,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 844,
+      "success": true,
+      "wall_seconds": 7.262351036071777
+    },
+    {
+      "task": "tool_constraints:87",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 7.4616498947143555
+    },
+    {
+      "task": "tool_constraints:92",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 6.700821876525879
+    },
+    {
+      "task": "tool_constraints:89",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 7.26637077331543
+    },
+    {
+      "task": "tool_constraints:93",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 6.097654104232788
+    },
+    {
+      "task": "tool_constraints:97",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 6.789666175842285
+    },
+    {
+      "task": "tool_constraints:95",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 7.995402097702026
+    },
+    {
+      "task": "tool_constraints:96",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 8.34064507484436
+    },
+    {
+      "task": "tool_constraints:94",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 9.028927087783813
+    },
+    {
+      "task": "tool_constraints:98",
+      "prompt_tokens_est": 855,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 855,
+      "success": true,
+      "wall_seconds": 8.014623165130615
+    },
+    {
+      "task": "tool_constraints:101",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 7.34117317199707
+    },
+    {
+      "task": "tool_constraints:100",
+      "prompt_tokens_est": 847,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 847,
+      "success": true,
+      "wall_seconds": 7.858885049819946
+    },
+    {
+      "task": "tool_constraints:104",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 8.59315800666809
+    },
+    {
+      "task": "tool_constraints:102",
+      "prompt_tokens_est": 854,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 854,
+      "success": true,
+      "wall_seconds": 8.752502918243408
+    },
+    {
+      "task": "tool_constraints:99",
+      "prompt_tokens_est": 851,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 851,
+      "success": true,
+      "wall_seconds": 9.489636659622192
+    },
+    {
+      "task": "tool_constraints:103",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 9.50264024734497
+    },
+    {
+      "task": "tool_constraints:105",
+      "prompt_tokens_est": 850,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 850,
+      "success": true,
+      "wall_seconds": 9.804765939712524
+    },
+    {
+      "task": "tool_constraints:106",
+      "prompt_tokens_est": 849,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 849,
+      "success": true,
+      "wall_seconds": 7.866048097610474
+    },
+    {
+      "task": "tool_constraints:107",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 7.790653228759766
+    },
+    {
+      "task": "moved_bottleneck:0",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 6.771477937698364
+    },
+    {
+      "task": "moved_bottleneck:2",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 6.754543781280518
+    },
+    {
+      "task": "moved_bottleneck:1",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 7.137671232223511
+    },
+    {
+      "task": "tool_constraints:108",
+      "prompt_tokens_est": 853,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 853,
+      "success": true,
+      "wall_seconds": 8.051298141479492
+    },
+    {
+      "task": "tool_constraints:109",
+      "prompt_tokens_est": 846,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 846,
+      "success": true,
+      "wall_seconds": 8.04445195198059
+    },
+    {
+      "task": "moved_bottleneck:4",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 7.708983898162842
+    },
+    {
+      "task": "moved_bottleneck:3",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 7.758394002914429
+    },
+    {
+      "task": "moved_bottleneck:5",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 8.71213173866272
+    },
+    {
+      "task": "moved_bottleneck:6",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 9.104822874069214
+    },
+    {
+      "task": "moved_bottleneck:7",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 7.821314096450806
+    },
+    {
+      "task": "moved_bottleneck:14",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 7.27356481552124
+    },
+    {
+      "task": "moved_bottleneck:9",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 8.732964038848877
+    },
+    {
+      "task": "moved_bottleneck:8",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 9.152584791183472
+    },
+    {
+      "task": "moved_bottleneck:11",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 8.410035848617554
+    },
+    {
+      "task": "moved_bottleneck:10",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 8.969372987747192
+    },
+    {
+      "task": "moved_bottleneck:12",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 8.519711017608643
+    },
+    {
+      "task": "moved_bottleneck:13",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 8.462154150009155
+    },
+    {
+      "task": "moved_bottleneck:18",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 4.7999489307403564
+    },
+    {
+      "task": "moved_bottleneck:19",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 5.137637138366699
+    },
+    {
+      "task": "moved_bottleneck:15",
+      "prompt_tokens_est": 674,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 674,
+      "success": true,
+      "wall_seconds": 8.265275239944458
+    },
+    {
+      "task": "moved_bottleneck:16",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 9.549087047576904
+    },
+    {
+      "task": "moved_bottleneck:17",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 8.396328926086426
+    },
+    {
+      "task": "moved_bottleneck:20",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 7.043356895446777
+    },
+    {
+      "task": "moved_bottleneck:21",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 7.523672103881836
+    },
+    {
+      "task": "moved_bottleneck:23",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 7.951535940170288
+    },
+    {
+      "task": "moved_bottleneck:26",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 7.922969818115234
+    },
+    {
+      "task": "moved_bottleneck:24",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 8.334825992584229
+    },
+    {
+      "task": "moved_bottleneck:25",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 8.266141176223755
+    },
+    {
+      "task": "moved_bottleneck:27",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 8.05538296699524
+    },
+    {
+      "task": "moved_bottleneck:22",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 9.126229047775269
+    },
+    {
+      "task": "moved_bottleneck:28",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 7.729435920715332
+    },
+    {
+      "task": "moved_bottleneck:29",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 9.724830865859985
+    },
+    {
+      "task": "moved_bottleneck:31",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 8.977311372756958
+    },
+    {
+      "task": "moved_bottleneck:30",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 9.455640077590942
+    },
+    {
+      "task": "moved_bottleneck:32",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 10.195056676864624
+    },
+    {
+      "task": "moved_bottleneck:34",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 8.957973957061768
+    },
+    {
+      "task": "moved_bottleneck:35",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 8.729235887527466
+    },
+    {
+      "task": "moved_bottleneck:33",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 10.582948923110962
+    },
+    {
+      "task": "moved_bottleneck:38",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 9.544780015945435
+    },
+    {
+      "task": "moved_bottleneck:37",
+      "prompt_tokens_est": 674,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 674,
+      "success": true,
+      "wall_seconds": 11.356582880020142
+    },
+    {
+      "task": "moved_bottleneck:39",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 11.067398071289062
+    },
+    {
+      "task": "moved_bottleneck:40",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 11.060939073562622
+    },
+    {
+      "task": "moved_bottleneck:42",
+      "prompt_tokens_est": 673,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 673,
+      "success": true,
+      "wall_seconds": 9.939903974533081
+    },
+    {
+      "task": "moved_bottleneck:41",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 11.143908023834229
+    },
+    {
+      "task": "moved_bottleneck:43",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 10.406239986419678
+    },
+    {
+      "task": "moved_bottleneck:36",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 17.424531936645508
+    },
+    {
+      "task": "moved_bottleneck:44",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 9.43166708946228
+    },
+    {
+      "task": "moved_bottleneck:45",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 9.37889575958252
+    },
+    {
+      "task": "moved_bottleneck:46",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 10.205485105514526
+    },
+    {
+      "task": "moved_bottleneck:47",
+      "prompt_tokens_est": 688,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 688,
+      "success": true,
+      "wall_seconds": 10.302599906921387
+    },
+    {
+      "task": "moved_bottleneck:48",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 10.541498899459839
+    },
+    {
+      "task": "moved_bottleneck:51",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 9.812333106994629
+    },
+    {
+      "task": "moved_bottleneck:50",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 10.427351951599121
+    },
+    {
+      "task": "moved_bottleneck:49",
+      "prompt_tokens_est": 686,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 686,
+      "success": true,
+      "wall_seconds": 11.51745080947876
+    },
+    {
+      "task": "moved_bottleneck:53",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 10.536912202835083
+    },
+    {
+      "task": "moved_bottleneck:52",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 11.718806982040405
+    },
+    {
+      "task": "moved_bottleneck:54",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 11.017719984054565
+    },
+    {
+      "task": "moved_bottleneck:55",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 10.559152841567993
+    },
+    {
+      "task": "moved_bottleneck:56",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 11.23697018623352
+    },
+    {
+      "task": "moved_bottleneck:57",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 11.106093883514404
+    },
+    {
+      "task": "moved_bottleneck:59",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 9.81760311126709
+    },
+    {
+      "task": "moved_bottleneck:58",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 10.86992883682251
+    },
+    {
+      "task": "moved_bottleneck:60",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 9.982011795043945
+    },
+    {
+      "task": "moved_bottleneck:61",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 9.677754163742065
+    },
+    {
+      "task": "moved_bottleneck:62",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 10.417656898498535
+    },
+    {
+      "task": "moved_bottleneck:65",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 8.950191259384155
+    },
+    {
+      "task": "moved_bottleneck:63",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 12.418221950531006
+    },
+    {
+      "task": "moved_bottleneck:66",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 9.504198789596558
+    },
+    {
+      "task": "moved_bottleneck:67",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 9.154376983642578
+    },
+    {
+      "task": "moved_bottleneck:69",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 8.202579975128174
+    },
+    {
+      "task": "moved_bottleneck:71",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 7.884830951690674
+    },
+    {
+      "task": "moved_bottleneck:72",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 7.081698894500732
+    },
+    {
+      "task": "moved_bottleneck:73",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 6.3721091747283936
+    },
+    {
+      "task": "moved_bottleneck:74",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 5.409968137741089
+    },
+    {
+      "task": "moved_bottleneck:68",
+      "prompt_tokens_est": 677,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 677,
+      "success": true,
+      "wall_seconds": 9.129716157913208
+    },
+    {
+      "task": "moved_bottleneck:70",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 9.702306747436523
+    },
+    {
+      "task": "moved_bottleneck:75",
+      "prompt_tokens_est": 687,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 687,
+      "success": true,
+      "wall_seconds": 7.208813190460205
+    },
+    {
+      "task": "moved_bottleneck:77",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 7.166561126708984
+    },
+    {
+      "task": "moved_bottleneck:76",
+      "prompt_tokens_est": 688,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 688,
+      "success": true,
+      "wall_seconds": 7.619059085845947
+    },
+    {
+      "task": "moved_bottleneck:78",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 7.502897262573242
+    },
+    {
+      "task": "moved_bottleneck:81",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 7.120044231414795
+    },
+    {
+      "task": "moved_bottleneck:79",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 8.433631896972656
+    },
+    {
+      "task": "moved_bottleneck:80",
+      "prompt_tokens_est": 680,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 680,
+      "success": true,
+      "wall_seconds": 8.414937019348145
+    },
+    {
+      "task": "moved_bottleneck:83",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 8.102136850357056
+    },
+    {
+      "task": "moved_bottleneck:84",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 8.31220006942749
+    },
+    {
+      "task": "moved_bottleneck:82",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 9.336517095565796
+    },
+    {
+      "task": "moved_bottleneck:85",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 9.638420820236206
+    },
+    {
+      "task": "moved_bottleneck:86",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 9.786829948425293
+    },
+    {
+      "task": "moved_bottleneck:64",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": false,
+      "wall_seconds": 27.16422200202942
+    },
+    {
+      "task": "moved_bottleneck:87",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 11.074151754379272
+    },
+    {
+      "task": "moved_bottleneck:89",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 9.751060962677002
+    },
+    {
+      "task": "moved_bottleneck:93",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 8.522958755493164
+    },
+    {
+      "task": "moved_bottleneck:92",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 9.235377788543701
+    },
+    {
+      "task": "moved_bottleneck:95",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 8.228145122528076
+    },
+    {
+      "task": "moved_bottleneck:90",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 10.741582155227661
+    },
+    {
+      "task": "moved_bottleneck:94",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 9.965558052062988
+    },
+    {
+      "task": "moved_bottleneck:91",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 11.09420394897461
+    },
+    {
+      "task": "moved_bottleneck:96",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 8.50933289527893
+    },
+    {
+      "task": "moved_bottleneck:97",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 10.206126928329468
+    },
+    {
+      "task": "moved_bottleneck:99",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 9.956851959228516
+    },
+    {
+      "task": "moved_bottleneck:98",
+      "prompt_tokens_est": 678,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 678,
+      "success": true,
+      "wall_seconds": 12.000428199768066
+    },
+    {
+      "task": "moved_bottleneck:103",
+      "prompt_tokens_est": 679,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 679,
+      "success": true,
+      "wall_seconds": 9.723326921463013
+    },
+    {
+      "task": "moved_bottleneck:102",
+      "prompt_tokens_est": 676,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 676,
+      "success": true,
+      "wall_seconds": 10.018882036209106
+    },
+    {
+      "task": "moved_bottleneck:101",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 10.852785110473633
+    },
+    {
+      "task": "moved_bottleneck:104",
+      "prompt_tokens_est": 675,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 675,
+      "success": true,
+      "wall_seconds": 10.707717895507812
+    },
+    {
+      "task": "moved_bottleneck:105",
+      "prompt_tokens_est": 682,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 682,
+      "success": true,
+      "wall_seconds": 11.092267036437988
+    },
+    {
+      "task": "moved_bottleneck:107",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": true,
+      "wall_seconds": 10.905955791473389
+    },
+    {
+      "task": "moved_bottleneck:108",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": true,
+      "wall_seconds": 9.915202140808105
+    },
+    {
+      "task": "moved_bottleneck:100",
+      "prompt_tokens_est": 683,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 683,
+      "success": true,
+      "wall_seconds": 19.110830307006836
+    },
+    {
+      "task": "moved_bottleneck:109",
+      "prompt_tokens_est": 685,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 685,
+      "success": true,
+      "wall_seconds": 10.435558319091797
+    },
+    {
+      "task": "moved_bottleneck:88",
+      "prompt_tokens_est": 684,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 684,
+      "success": false,
+      "wall_seconds": 31.22434711456299
+    },
+    {
+      "task": "moved_bottleneck:106",
+      "prompt_tokens_est": 681,
+      "completion_tokens_est": 0,
+      "total_tokens_est": 681,
+      "success": false,
+      "wall_seconds": 68.34988903999329
+    }
+  ],
+  "raw+schema": [
+    {
+      "task": "tool_constraints:8",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 344,
+      "success": true,
+      "wall_seconds": 8.645713806152344
+    },
+    {
+      "task": "tool_constraints:1",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 8.653596878051758
+    },
+    {
+      "task": "tool_constraints:5",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 114,
+      "total_tokens_est": 344,
+      "success": true,
+      "wall_seconds": 8.810605764389038
+    },
+    {
+      "task": "tool_constraints:11",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 105,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 8.877183198928833
+    },
+    {
+      "task": "tool_constraints:2",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 8.918064832687378
+    },
+    {
+      "task": "tool_constraints:3",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 350,
+      "success": true,
+      "wall_seconds": 8.970566034317017
+    },
+    {
+      "task": "tool_constraints:0",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 350,
+      "success": true,
+      "wall_seconds": 9.045443773269653
+    },
+    {
+      "task": "tool_constraints:9",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 348,
+      "success": true,
+      "wall_seconds": 9.039330005645752
+    },
+    {
+      "task": "tool_constraints:4",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 347,
+      "success": true,
+      "wall_seconds": 9.53701114654541
+    },
+    {
+      "task": "tool_constraints:7",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 110,
+      "total_tokens_est": 337,
+      "success": true,
+      "wall_seconds": 10.458014011383057
+    },
+    {
+      "task": "tool_constraints:6",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 113,
+      "total_tokens_est": 340,
+      "success": true,
+      "wall_seconds": 10.597877979278564
+    },
+    {
+      "task": "tool_constraints:10",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 111,
+      "total_tokens_est": 338,
+      "success": true,
+      "wall_seconds": 11.023451089859009
+    },
+    {
+      "task": "tool_constraints:13",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 118,
+      "total_tokens_est": 349,
+      "success": true,
+      "wall_seconds": 4.397816896438599
+    },
+    {
+      "task": "tool_constraints:12",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 100,
+      "total_tokens_est": 330,
+      "success": true,
+      "wall_seconds": 5.039833068847656
+    },
+    {
+      "task": "tool_constraints:17",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 110,
+      "total_tokens_est": 338,
+      "success": true,
+      "wall_seconds": 4.785970211029053
+    },
+    {
+      "task": "tool_constraints:15",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 102,
+      "total_tokens_est": 331,
+      "success": true,
+      "wall_seconds": 5.088708877563477
+    },
+    {
+      "task": "tool_constraints:18",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 346,
+      "success": true,
+      "wall_seconds": 5.185291051864624
+    },
+    {
+      "task": "tool_constraints:19",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 337,
+      "success": true,
+      "wall_seconds": 5.330708026885986
+    },
+    {
+      "task": "tool_constraints:20",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 336,
+      "success": true,
+      "wall_seconds": 4.852138042449951
+    },
+    {
+      "task": "tool_constraints:16",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 102,
+      "total_tokens_est": 331,
+      "success": true,
+      "wall_seconds": 5.955646276473999
+    },
+    {
+      "task": "tool_constraints:21",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 115,
+      "total_tokens_est": 346,
+      "success": true,
+      "wall_seconds": 4.774495363235474
+    },
+    {
+      "task": "tool_constraints:22",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 5.30991005897522
+    },
+    {
+      "task": "tool_constraints:14",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 118,
+      "total_tokens_est": 349,
+      "success": true,
+      "wall_seconds": 7.106428146362305
+    },
+    {
+      "task": "tool_constraints:23",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 110,
+      "total_tokens_est": 339,
+      "success": true,
+      "wall_seconds": 5.032497882843018
+    },
+    {
+      "task": "tool_constraints:32",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 109,
+      "total_tokens_est": 338,
+      "success": true,
+      "wall_seconds": 37.61087679862976
+    },
+    {
+      "task": "tool_constraints:27",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 121,
+      "total_tokens_est": 350,
+      "success": true,
+      "wall_seconds": 40.728981018066406
+    },
+    {
+      "task": "tool_constraints:35",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 347,
+      "success": true,
+      "wall_seconds": 38.7458918094635
+    },
+    {
+      "task": "tool_constraints:31",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 347,
+      "success": true,
+      "wall_seconds": 39.987338066101074
+    },
+    {
+      "task": "tool_constraints:34",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 336,
+      "success": true,
+      "wall_seconds": 39.001121044158936
+    },
+    {
+      "task": "tool_constraints:30",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 346,
+      "success": true,
+      "wall_seconds": 40.56606888771057
+    },
+    {
+      "task": "tool_constraints:29",
+      "prompt_tokens_est": 226,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 329,
+      "success": true,
+      "wall_seconds": 40.586386919021606
+    },
+    {
+      "task": "tool_constraints:28",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 102,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 40.73497271537781
+    },
+    {
+      "task": "tool_constraints:25",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 348,
+      "success": true,
+      "wall_seconds": 41.7593731880188
+    },
+    {
+      "task": "tool_constraints:24",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 110,
+      "total_tokens_est": 341,
+      "success": true,
+      "wall_seconds": 42.40859293937683
+    },
+    {
+      "task": "tool_constraints:26",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 115,
+      "total_tokens_est": 346,
+      "success": true,
+      "wall_seconds": 41.70680093765259
+    },
+    {
+      "task": "tool_constraints:33",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 39.55964112281799
+    },
+    {
+      "task": "tool_constraints:36",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 6.6492860317230225
+    },
+    {
+      "task": "tool_constraints:37",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 345,
+      "success": true,
+      "wall_seconds": 5.753898859024048
+    },
+    {
+      "task": "tool_constraints:40",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 97,
+      "total_tokens_est": 328,
+      "success": true,
+      "wall_seconds": 6.410428047180176
+    },
+    {
+      "task": "tool_constraints:42",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 109,
+      "total_tokens_est": 338,
+      "success": true,
+      "wall_seconds": 7.164180040359497
+    },
+    {
+      "task": "tool_constraints:39",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 331,
+      "success": true,
+      "wall_seconds": 7.406631946563721
+    },
+    {
+      "task": "tool_constraints:43",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 7.503977060317993
+    },
+    {
+      "task": "tool_constraints:45",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 111,
+      "total_tokens_est": 340,
+      "success": true,
+      "wall_seconds": 7.073853969573975
+    },
+    {
+      "task": "tool_constraints:41",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 7.645989894866943
+    },
+    {
+      "task": "tool_constraints:44",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 101,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 7.31413197517395
+    },
+    {
+      "task": "tool_constraints:46",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 114,
+      "total_tokens_est": 344,
+      "success": true,
+      "wall_seconds": 7.417046070098877
+    },
+    {
+      "task": "tool_constraints:47",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 346,
+      "success": true,
+      "wall_seconds": 7.634422063827515
+    },
+    {
+      "task": "tool_constraints:38",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 8.553699016571045
+    },
+    {
+      "task": "tool_constraints:49",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 100,
+      "total_tokens_est": 328,
+      "success": true,
+      "wall_seconds": 4.519687175750732
+    },
+    {
+      "task": "tool_constraints:48",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 336,
+      "success": true,
+      "wall_seconds": 5.80533504486084
+    },
+    {
+      "task": "tool_constraints:50",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 101,
+      "total_tokens_est": 329,
+      "success": true,
+      "wall_seconds": 4.904584884643555
+    },
+    {
+      "task": "tool_constraints:51",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 350,
+      "success": true,
+      "wall_seconds": 4.909544944763184
+    },
+    {
+      "task": "tool_constraints:54",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 348,
+      "success": true,
+      "wall_seconds": 5.298185110092163
+    },
+    {
+      "task": "tool_constraints:53",
+      "prompt_tokens_est": 226,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 329,
+      "success": true,
+      "wall_seconds": 5.409235000610352
+    },
+    {
+      "task": "tool_constraints:52",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 107,
+      "total_tokens_est": 336,
+      "success": true,
+      "wall_seconds": 5.612936019897461
+    },
+    {
+      "task": "tool_constraints:55",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 108,
+      "total_tokens_est": 337,
+      "success": true,
+      "wall_seconds": 5.4530181884765625
+    },
+    {
+      "task": "tool_constraints:56",
+      "prompt_tokens_est": 226,
+      "completion_tokens_est": 113,
+      "total_tokens_est": 339,
+      "success": true,
+      "wall_seconds": 5.998652935028076
+    },
+    {
+      "task": "tool_constraints:59",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 5.793808698654175
+    },
+    {
+      "task": "tool_constraints:61",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 108,
+      "total_tokens_est": 337,
+      "success": true,
+      "wall_seconds": 4.739767074584961
+    },
+    {
+      "task": "tool_constraints:60",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 105,
+      "total_tokens_est": 336,
+      "success": true,
+      "wall_seconds": 5.501550912857056
+    },
+    {
+      "task": "tool_constraints:58",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 8.013185977935791
+    },
+    {
+      "task": "tool_constraints:62",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 331,
+      "success": true,
+      "wall_seconds": 5.096168041229248
+    },
+    {
+      "task": "tool_constraints:64",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 5.359701156616211
+    },
+    {
+      "task": "tool_constraints:66",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 101,
+      "total_tokens_est": 329,
+      "success": true,
+      "wall_seconds": 5.589174747467041
+    },
+    {
+      "task": "tool_constraints:63",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 115,
+      "total_tokens_est": 344,
+      "success": true,
+      "wall_seconds": 6.5301289558410645
+    },
+    {
+      "task": "tool_constraints:65",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 113,
+      "total_tokens_est": 341,
+      "success": true,
+      "wall_seconds": 5.796318054199219
+    },
+    {
+      "task": "tool_constraints:67",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 114,
+      "total_tokens_est": 341,
+      "success": true,
+      "wall_seconds": 5.707818031311035
+    },
+    {
+      "task": "tool_constraints:68",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 97,
+      "total_tokens_est": 328,
+      "success": true,
+      "wall_seconds": 5.275105953216553
+    },
+    {
+      "task": "tool_constraints:57",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 12.716459035873413
+    },
+    {
+      "task": "tool_constraints:69",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 106,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 6.449079751968384
+    },
+    {
+      "task": "tool_constraints:71",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 107,
+      "total_tokens_est": 338,
+      "success": true,
+      "wall_seconds": 6.05522894859314
+    },
+    {
+      "task": "tool_constraints:70",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 120,
+      "total_tokens_est": 351,
+      "success": true,
+      "wall_seconds": 6.6274802684783936
+    },
+    {
+      "task": "tool_constraints:72",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 109,
+      "total_tokens_est": 340,
+      "success": true,
+      "wall_seconds": 6.505846977233887
+    },
+    {
+      "task": "tool_constraints:73",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 122,
+      "total_tokens_est": 352,
+      "success": true,
+      "wall_seconds": 6.434200048446655
+    },
+    {
+      "task": "tool_constraints:76",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 6.398760795593262
+    },
+    {
+      "task": "tool_constraints:78",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 115,
+      "total_tokens_est": 342,
+      "success": true,
+      "wall_seconds": 6.817975997924805
+    },
+    {
+      "task": "tool_constraints:79",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 96,
+      "total_tokens_est": 324,
+      "success": true,
+      "wall_seconds": 7.198426723480225
+    },
+    {
+      "task": "tool_constraints:74",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 108,
+      "total_tokens_est": 339,
+      "success": true,
+      "wall_seconds": 8.436564922332764
+    },
+    {
+      "task": "tool_constraints:77",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 115,
+      "total_tokens_est": 346,
+      "success": true,
+      "wall_seconds": 8.332568883895874
+    },
+    {
+      "task": "tool_constraints:75",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 101,
+      "total_tokens_est": 330,
+      "success": true,
+      "wall_seconds": 9.667042016983032
+    },
+    {
+      "task": "tool_constraints:80",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 105,
+      "total_tokens_est": 336,
+      "success": true,
+      "wall_seconds": 7.68007493019104
+    },
+    {
+      "task": "tool_constraints:81",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 113,
+      "total_tokens_est": 341,
+      "success": true,
+      "wall_seconds": 7.904271125793457
+    },
+    {
+      "task": "tool_constraints:83",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 100,
+      "total_tokens_est": 330,
+      "success": true,
+      "wall_seconds": 7.432848215103149
+    },
+    {
+      "task": "tool_constraints:82",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 118,
+      "total_tokens_est": 349,
+      "success": true,
+      "wall_seconds": 7.650219917297363
+    },
+    {
+      "task": "tool_constraints:84",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 331,
+      "success": true,
+      "wall_seconds": 6.648281812667847
+    },
+    {
+      "task": "tool_constraints:85",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 347,
+      "success": true,
+      "wall_seconds": 7.682126760482788
+    },
+    {
+      "task": "tool_constraints:86",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 6.149518013000488
+    },
+    {
+      "task": "tool_constraints:87",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 102,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 6.114398002624512
+    },
+    {
+      "task": "tool_constraints:88",
+      "prompt_tokens_est": 227,
+      "completion_tokens_est": 101,
+      "total_tokens_est": 328,
+      "success": true,
+      "wall_seconds": 6.08031702041626
+    },
+    {
+      "task": "tool_constraints:89",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 5.701869010925293
+    },
+    {
+      "task": "tool_constraints:90",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 118,
+      "total_tokens_est": 349,
+      "success": true,
+      "wall_seconds": 6.215559005737305
+    },
+    {
+      "task": "tool_constraints:93",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 120,
+      "total_tokens_est": 351,
+      "success": true,
+      "wall_seconds": 6.7482709884643555
+    },
+    {
+      "task": "tool_constraints:91",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 122,
+      "total_tokens_est": 353,
+      "success": true,
+      "wall_seconds": 7.490808963775635
+    },
+    {
+      "task": "tool_constraints:95",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 333,
+      "success": true,
+      "wall_seconds": 6.584033966064453
+    },
+    {
+      "task": "tool_constraints:94",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 115,
+      "total_tokens_est": 344,
+      "success": true,
+      "wall_seconds": 6.722604036331177
+    },
+    {
+      "task": "tool_constraints:92",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 8.226747274398804
+    },
+    {
+      "task": "tool_constraints:96",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 7.236772060394287
+    },
+    {
+      "task": "tool_constraints:97",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 344,
+      "success": true,
+      "wall_seconds": 7.198430061340332
+    },
+    {
+      "task": "tool_constraints:99",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 334,
+      "success": true,
+      "wall_seconds": 6.0307159423828125
+    },
+    {
+      "task": "tool_constraints:101",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 116,
+      "total_tokens_est": 345,
+      "success": true,
+      "wall_seconds": 5.903558254241943
+    },
+    {
+      "task": "tool_constraints:102",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 112,
+      "total_tokens_est": 343,
+      "success": true,
+      "wall_seconds": 5.535922050476074
+    },
+    {
+      "task": "tool_constraints:98",
+      "prompt_tokens_est": 232,
+      "completion_tokens_est": 119,
+      "total_tokens_est": 351,
+      "success": true,
+      "wall_seconds": 7.660693883895874
+    },
+    {
+      "task": "tool_constraints:100",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 117,
+      "total_tokens_est": 345,
+      "success": true,
+      "wall_seconds": 7.411881923675537
+    },
+    {
+      "task": "tool_constraints:103",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 108,
+      "total_tokens_est": 339,
+      "success": true,
+      "wall_seconds": 4.735625982284546
+    },
+    {
+      "task": "tool_constraints:104",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 103,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 5.380527973175049
+    },
+    {
+      "task": "tool_constraints:106",
+      "prompt_tokens_est": 229,
+      "completion_tokens_est": 108,
+      "total_tokens_est": 337,
+      "success": true,
+      "wall_seconds": 5.228970766067505
+    },
+    {
+      "task": "tool_constraints:107",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 101,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 4.979249000549316
+    },
+    {
+      "task": "tool_constraints:105",
+      "prompt_tokens_est": 230,
+      "completion_tokens_est": 105,
+      "total_tokens_est": 335,
+      "success": true,
+      "wall_seconds": 5.877723932266235
+    },
+    {
+      "task": "moved_bottleneck:0",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 5.13857626914978
+    },
+    {
+      "task": "moved_bottleneck:1",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.68293023109436
+    },
+    {
+      "task": "moved_bottleneck:3",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 5.2419610023498535
+    },
+    {
+      "task": "moved_bottleneck:2",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 5.3741960525512695
+    },
+    {
+      "task": "tool_constraints:109",
+      "prompt_tokens_est": 228,
+      "completion_tokens_est": 104,
+      "total_tokens_est": 332,
+      "success": true,
+      "wall_seconds": 6.621789932250977
+    },
+    {
+      "task": "moved_bottleneck:5",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.876037836074829
+    },
+    {
+      "task": "moved_bottleneck:4",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 5.372910022735596
+    },
+    {
+      "task": "moved_bottleneck:6",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.136504888534546
+    },
+    {
+      "task": "tool_constraints:108",
+      "prompt_tokens_est": 231,
+      "completion_tokens_est": 118,
+      "total_tokens_est": 349,
+      "success": true,
+      "wall_seconds": 10.247601985931396
+    },
+    {
+      "task": "moved_bottleneck:9",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 5.3044538497924805
+    },
+    {
+      "task": "moved_bottleneck:7",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 6.761555910110474
+    },
+    {
+      "task": "moved_bottleneck:8",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.86023211479187
+    },
+    {
+      "task": "moved_bottleneck:11",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.483015060424805
+    },
+    {
+      "task": "moved_bottleneck:10",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 5.9341607093811035
+    },
+    {
+      "task": "moved_bottleneck:14",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 199,
+      "success": true,
+      "wall_seconds": 5.902885913848877
+    },
+    {
+      "task": "moved_bottleneck:12",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 6.188091039657593
+    },
+    {
+      "task": "moved_bottleneck:15",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 5.554961919784546
+    },
+    {
+      "task": "moved_bottleneck:16",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 6.69233512878418
+    },
+    {
+      "task": "moved_bottleneck:18",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 5.7934558391571045
+    },
+    {
+      "task": "moved_bottleneck:17",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 205,
+      "success": true,
+      "wall_seconds": 6.450774908065796
+    },
+    {
+      "task": "moved_bottleneck:19",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 5.882731914520264
+    },
+    {
+      "task": "moved_bottleneck:13",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 9.354180812835693
+    },
+    {
+      "task": "moved_bottleneck:20",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 5.827186107635498
+    },
+    {
+      "task": "moved_bottleneck:22",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 199,
+      "success": true,
+      "wall_seconds": 5.515638113021851
+    },
+    {
+      "task": "moved_bottleneck:24",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 5.048903942108154
+    },
+    {
+      "task": "moved_bottleneck:26",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 5.047510862350464
+    },
+    {
+      "task": "moved_bottleneck:21",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 7.581944227218628
+    },
+    {
+      "task": "moved_bottleneck:27",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.786991119384766
+    },
+    {
+      "task": "moved_bottleneck:25",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.3798747062683105
+    },
+    {
+      "task": "moved_bottleneck:30",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 207,
+      "success": true,
+      "wall_seconds": 4.353595972061157
+    },
+    {
+      "task": "moved_bottleneck:29",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 4.77951717376709
+    },
+    {
+      "task": "moved_bottleneck:23",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 8.619933128356934
+    },
+    {
+      "task": "moved_bottleneck:31",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 4.424049139022827
+    },
+    {
+      "task": "moved_bottleneck:33",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.44685697555542
+    },
+    {
+      "task": "moved_bottleneck:35",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 199,
+      "success": true,
+      "wall_seconds": 4.185400009155273
+    },
+    {
+      "task": "moved_bottleneck:36",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 4.246876239776611
+    },
+    {
+      "task": "moved_bottleneck:34",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 5.708696126937866
+    },
+    {
+      "task": "moved_bottleneck:38",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.484868049621582
+    },
+    {
+      "task": "moved_bottleneck:37",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 199,
+      "success": true,
+      "wall_seconds": 4.699204921722412
+    },
+    {
+      "task": "moved_bottleneck:40",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.098282098770142
+    },
+    {
+      "task": "moved_bottleneck:39",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 4.610412120819092
+    },
+    {
+      "task": "moved_bottleneck:41",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 4.552808046340942
+    },
+    {
+      "task": "moved_bottleneck:28",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 10.033659934997559
+    },
+    {
+      "task": "moved_bottleneck:43",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.442755937576294
+    },
+    {
+      "task": "moved_bottleneck:42",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.149791955947876
+    },
+    {
+      "task": "moved_bottleneck:32",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 9.812976121902466
+    },
+    {
+      "task": "moved_bottleneck:44",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 3.9945809841156006
+    },
+    {
+      "task": "moved_bottleneck:45",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.107778072357178
+    },
+    {
+      "task": "moved_bottleneck:46",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 3.9817538261413574
+    },
+    {
+      "task": "moved_bottleneck:47",
+      "prompt_tokens_est": 156,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 207,
+      "success": true,
+      "wall_seconds": 4.079239845275879
+    },
+    {
+      "task": "moved_bottleneck:49",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 206,
+      "success": true,
+      "wall_seconds": 4.377607345581055
+    },
+    {
+      "task": "moved_bottleneck:48",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.2440009117126465
+    },
+    {
+      "task": "moved_bottleneck:50",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 58,
+      "total_tokens_est": 213,
+      "success": true,
+      "wall_seconds": 5.272347927093506
+    },
+    {
+      "task": "moved_bottleneck:53",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.677325963973999
+    },
+    {
+      "task": "moved_bottleneck:52",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.9199090003967285
+    },
+    {
+      "task": "moved_bottleneck:54",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.836453199386597
+    },
+    {
+      "task": "moved_bottleneck:56",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 4.433454751968384
+    },
+    {
+      "task": "moved_bottleneck:55",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.823570966720581
+    },
+    {
+      "task": "moved_bottleneck:57",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 4.458615064620972
+    },
+    {
+      "task": "moved_bottleneck:51",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 7.6786229610443115
+    },
+    {
+      "task": "moved_bottleneck:59",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.778224945068359
+    },
+    {
+      "task": "moved_bottleneck:58",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.342213869094849
+    },
+    {
+      "task": "moved_bottleneck:60",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.4144487380981445
+    },
+    {
+      "task": "moved_bottleneck:61",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 4.845635890960693
+    },
+    {
+      "task": "moved_bottleneck:62",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 205,
+      "success": true,
+      "wall_seconds": 4.55509090423584
+    },
+    {
+      "task": "moved_bottleneck:63",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 5.274868965148926
+    },
+    {
+      "task": "moved_bottleneck:64",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.96663498878479
+    },
+    {
+      "task": "moved_bottleneck:67",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 206,
+      "success": true,
+      "wall_seconds": 5.204194068908691
+    },
+    {
+      "task": "moved_bottleneck:65",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 205,
+      "success": true,
+      "wall_seconds": 5.67961311340332
+    },
+    {
+      "task": "moved_bottleneck:68",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 5.43217396736145
+    },
+    {
+      "task": "moved_bottleneck:72",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 199,
+      "success": true,
+      "wall_seconds": 5.452762842178345
+    },
+    {
+      "task": "moved_bottleneck:69",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 6.183892011642456
+    },
+    {
+      "task": "moved_bottleneck:70",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.032304048538208
+    },
+    {
+      "task": "moved_bottleneck:71",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 5.717482089996338
+    },
+    {
+      "task": "moved_bottleneck:73",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 5.898295164108276
+    },
+    {
+      "task": "moved_bottleneck:76",
+      "prompt_tokens_est": 156,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 207,
+      "success": true,
+      "wall_seconds": 4.7450110912323
+    },
+    {
+      "task": "moved_bottleneck:74",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 6.702440977096558
+    },
+    {
+      "task": "moved_bottleneck:75",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 205,
+      "success": true,
+      "wall_seconds": 5.6536712646484375
+    },
+    {
+      "task": "moved_bottleneck:78",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.0276360511779785
+    },
+    {
+      "task": "moved_bottleneck:79",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 53,
+      "total_tokens_est": 208,
+      "success": false,
+      "wall_seconds": 5.56001615524292
+    },
+    {
+      "task": "moved_bottleneck:77",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 205,
+      "success": true,
+      "wall_seconds": 6.670286178588867
+    },
+    {
+      "task": "moved_bottleneck:82",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.506362199783325
+    },
+    {
+      "task": "moved_bottleneck:80",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 4.819915056228638
+    },
+    {
+      "task": "moved_bottleneck:83",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 4.657155990600586
+    },
+    {
+      "task": "moved_bottleneck:81",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.829817295074463
+    },
+    {
+      "task": "moved_bottleneck:66",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 13.48448395729065
+    },
+    {
+      "task": "moved_bottleneck:84",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 206,
+      "success": true,
+      "wall_seconds": 5.376680135726929
+    },
+    {
+      "task": "moved_bottleneck:85",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 4.882375955581665
+    },
+    {
+      "task": "moved_bottleneck:86",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 4.906463146209717
+    },
+    {
+      "task": "moved_bottleneck:87",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 4.9335010051727295
+    },
+    {
+      "task": "moved_bottleneck:90",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.237206935882568
+    },
+    {
+      "task": "moved_bottleneck:88",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 4.84921407699585
+    },
+    {
+      "task": "moved_bottleneck:89",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.168036937713623
+    },
+    {
+      "task": "moved_bottleneck:92",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 5.7957611083984375
+    },
+    {
+      "task": "moved_bottleneck:91",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.137938976287842
+    },
+    {
+      "task": "moved_bottleneck:93",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 6.171828985214233
+    },
+    {
+      "task": "moved_bottleneck:94",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 52,
+      "total_tokens_est": 205,
+      "success": true,
+      "wall_seconds": 6.494667053222656
+    },
+    {
+      "task": "moved_bottleneck:95",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 5.859274864196777
+    },
+    {
+      "task": "moved_bottleneck:96",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 202,
+      "success": true,
+      "wall_seconds": 6.347067832946777
+    },
+    {
+      "task": "moved_bottleneck:97",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.297020196914673
+    },
+    {
+      "task": "moved_bottleneck:98",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 50,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 6.5249738693237305
+    },
+    {
+      "task": "moved_bottleneck:99",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 7.062469244003296
+    },
+    {
+      "task": "moved_bottleneck:100",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 46,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 6.545838117599487
+    },
+    {
+      "task": "moved_bottleneck:102",
+      "prompt_tokens_est": 152,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 200,
+      "success": true,
+      "wall_seconds": 6.434312343597412
+    },
+    {
+      "task": "moved_bottleneck:101",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 58,
+      "total_tokens_est": 212,
+      "success": true,
+      "wall_seconds": 7.166810750961304
+    },
+    {
+      "task": "moved_bottleneck:103",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 55,
+      "total_tokens_est": 208,
+      "success": true,
+      "wall_seconds": 7.747195720672607
+    },
+    {
+      "task": "moved_bottleneck:105",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 7.431461811065674
+    },
+    {
+      "task": "moved_bottleneck:106",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 48,
+      "total_tokens_est": 201,
+      "success": true,
+      "wall_seconds": 7.192783832550049
+    },
+    {
+      "task": "moved_bottleneck:104",
+      "prompt_tokens_est": 151,
+      "completion_tokens_est": 63,
+      "total_tokens_est": 214,
+      "success": true,
+      "wall_seconds": 7.759312152862549
+    },
+    {
+      "task": "moved_bottleneck:107",
+      "prompt_tokens_est": 153,
+      "completion_tokens_est": 51,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 7.531877040863037
+    },
+    {
+      "task": "moved_bottleneck:108",
+      "prompt_tokens_est": 154,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 203,
+      "success": true,
+      "wall_seconds": 7.288561820983887
+    },
+    {
+      "task": "moved_bottleneck:109",
+      "prompt_tokens_est": 155,
+      "completion_tokens_est": 49,
+      "total_tokens_est": 204,
+      "success": true,
+      "wall_seconds": 7.161427974700928
+    }
+  ]
+}

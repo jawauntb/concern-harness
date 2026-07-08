@@ -1,0 +1,32 @@
+[
+  {
+    "ablated": "behavior_score",
+    "n": 12,
+    "pearson_r": 0.0,
+    "brier": 0.3802083333333333
+  },
+  {
+    "ablated": "transport_score",
+    "n": 12,
+    "pearson_r": 0.0,
+    "brier": 0.3333333333333333
+  },
+  {
+    "ablated": "proxy_resistance_score",
+    "n": 12,
+    "pearson_r": 0.0,
+    "brier": 0.3802083333333333
+  },
+  {
+    "ablated": "reopenability_score",
+    "n": 12,
+    "pearson_r": 0.0,
+    "brier": 0.3802083333333333
+  },
+  {
+    "ablated": "commitment_validity_score",
+    "n": 12,
+    "pearson_r": 0.0,
+    "brier": 0.3802083333333333
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "component": "load_score",
+    "n": 1404,
+    "pearson_r": 0.30368341244316077
+  },
+  {
+    "component": "behavior_score",
+    "n": 12,
+    "pearson_r": 0.0
+  },
+  {
+    "component": "transport_score",
+    "n": 232,
+    "pearson_r": 0.09285222405560263
+  },
+  {
+    "component": "proxy_resistance_score",
+    "n": 232,
+    "pearson_r": 0.5270949791610414
+  },
+  {
+    "component": "reopenability_score",
+    "n": 232,
+    "pearson_r": -0.015160218417872236
+  },
+  {
+    "component": "commitment_validity_score",
+    "n": 232,
+    "pearson_r": -0.007530726864311336
+  }
+]

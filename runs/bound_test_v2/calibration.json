@@ -1,0 +1,32 @@
+[
+  {
+    "bucket": 0,
+    "n": 46,
+    "mean_score": 0.5514705882352942,
+    "success_rate": 0.9347826086956522
+  },
+  {
+    "bucket": 1,
+    "n": 46,
+    "mean_score": 0.625,
+    "success_rate": 1.0
+  },
+  {
+    "bucket": 2,
+    "n": 46,
+    "mean_score": 0.7880434782608695,
+    "success_rate": 1.0
+  },
+  {
+    "bucket": 3,
+    "n": 46,
+    "mean_score": 1.0,
+    "success_rate": 1.0
+  },
+  {
+    "bucket": 4,
+    "n": 48,
+    "mean_score": 1.0,
+    "success_rate": 1.0
+  }
+]
