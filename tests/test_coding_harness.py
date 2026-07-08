@@ -8,6 +8,7 @@ from click.testing import CliRunner
 
 from lbah.cli import cli
 from lbah.coding import (
+    CandidatePatchTournamentRunner,
     ChildTaskResult,
     CodingAction,
     CodingHarnessRunner,
@@ -459,4 +460,79 @@ def test_recursive_runner_blocks_missing_required_child_evidence(tmp_path: Path)
     assert not result.success
     assert "missing required evidence: risk review" in result.checks[0].reason
     assert parent_agent.states == []
+    assert "return a - b" in (repo / "math_utils.py").read_text()
+
+
+def test_candidate_tournament_applies_best_verified_patch(tmp_path: Path):
+    repo = _toy_repo(tmp_path)
+    task = _task(repo)
+    bad_agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="bad_edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a * b"},
+                rationale="Wrong candidate still tries to change the operator.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="bad_tests", action_type="run_tests"),
+            CodingAction(action_id="bad_finish", action_type="finish"),
+        ],
+        name="bad_candidate",
+    )
+    good_agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="good_edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a + b"},
+                rationale="Addition satisfies the task and keeps the test intact.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="good_tests", action_type="run_tests"),
+            CodingAction(action_id="good_finish", action_type="finish"),
+        ],
+        name="good_candidate",
+    )
+
+    result = CandidatePatchTournamentRunner(
+        [bad_agent, good_agent],
+        CodingWorkspace(repo, task),
+    ).run(task)
+
+    assert result.success
+    assert result.winner_id == "candidate_1"
+    assert result.applied_result is not None and result.applied_result.success
+    assert result.candidates[1].selected
+    assert result.candidates[1].score.score > result.candidates[0].score.score
+    assert "return a + b" in (repo / "math_utils.py").read_text()
+    assert result.modified_files == ["math_utils.py"]
+
+
+def test_candidate_tournament_keeps_unverified_candidates_isolated(tmp_path: Path):
+    repo = _toy_repo(tmp_path)
+    task = _task(repo)
+    bad_agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="bad_edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a * b"},
+                rationale="This candidate does not satisfy the configured tests.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="bad_tests", action_type="run_tests"),
+            CodingAction(action_id="bad_finish", action_type="finish"),
+        ]
+    )
+
+    result = CandidatePatchTournamentRunner(
+        [bad_agent],
+        CodingWorkspace(repo, task),
+    ).run(task)
+
+    assert not result.success
+    assert result.winner_id is None
+    assert result.applied_result is None
+    assert result.modified_files == []
     assert "return a - b" in (repo / "math_utils.py").read_text()
