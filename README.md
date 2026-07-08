@@ -147,6 +147,9 @@ with `--max-workers`; L4 GPUs are useful for Modal patch generation, while the
 upstream official SWE-bench grader is CPU-bound.
 For wide generation, `scripts/modal_lbah_swebench_generate.py` maps instances
 across Modal workers and can request L4s with `LBAH_MODAL_GPU=L4`.
+For self-consistency sweeps, `scripts/modal_lbah_swebench_tournament.py`
+generates multiple candidates per instance across the same Modal pool and
+writes one official replay command per candidate column.
 
 ## Layout
 
