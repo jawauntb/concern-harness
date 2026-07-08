@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 
 from pydantic import BaseModel, Field
 
@@ -37,10 +38,216 @@ class SWEBenchCandidateMatrixManifest(BaseModel):
     failed_generations: list[str] = Field(default_factory=list)
 
 
+class SWEBenchOfficialCandidateReport(BaseModel):
+    """Official SWE-bench grading result for one candidate column."""
+
+    candidate_id: str
+    report_path: str
+    schema_version: int | None = None
+    total_instances: int = 0
+    submitted_instances: int = 0
+    completed_instances: int = 0
+    resolved_instances: int = 0
+    unresolved_instances: int = 0
+    empty_patch_instances: int = 0
+    error_instances: int = 0
+    submitted_ids: list[str] = Field(default_factory=list)
+    completed_ids: list[str] = Field(default_factory=list)
+    resolved_ids: list[str] = Field(default_factory=list)
+    unresolved_ids: list[str] = Field(default_factory=list)
+    empty_patch_ids: list[str] = Field(default_factory=list)
+    error_ids: list[str] = Field(default_factory=list)
+    incomplete_ids: list[str] = Field(default_factory=list)
+
+
+class SWEBenchCandidateInstanceOutcome(BaseModel):
+    """Per-instance post-hoc outcome across official candidate reports."""
+
+    instance_id: str
+    selected_candidate_id: str
+    selected_status: Literal["resolved", "unresolved", "error", "missing"]
+    resolved_candidate_ids: list[str] = Field(default_factory=list)
+    unresolved_candidate_ids: list[str] = Field(default_factory=list)
+    error_candidate_ids: list[str] = Field(default_factory=list)
+    missing_candidate_ids: list[str] = Field(default_factory=list)
+
+
+class SWEBenchCandidateSummary(BaseModel):
+    """Aggregated official results for a SWE-bench candidate matrix."""
+
+    schema_version: int = 1
+    candidate_count: int
+    report_count: int
+    total_instances: int
+    instance_ids: list[str]
+    candidate_reports: list[SWEBenchOfficialCandidateReport]
+    missing_report_candidate_ids: list[str] = Field(default_factory=list)
+    oracle_resolved_instances: int
+    oracle_unresolved_instances: int
+    oracle_resolved_ids: list[str]
+    oracle_unresolved_ids: list[str]
+    instance_outcomes: list[SWEBenchCandidateInstanceOutcome]
+
+
 def swebench_candidate_id(index: int) -> str:
     if index < 0:
         raise ValueError("candidate index must be non-negative")
     return f"candidate_{index:03d}"
+
+
+def load_swebench_candidate_matrix_manifest(path: str | Path) -> SWEBenchCandidateMatrixManifest:
+    """Load a candidate matrix manifest written by `write_swebench_candidate_matrix`."""
+
+    return SWEBenchCandidateMatrixManifest.model_validate_json(Path(path).read_text())
+
+
+def infer_swebench_candidate_id_from_path(path: str | Path) -> str:
+    """Infer `candidate_000` style IDs from report or artifact paths."""
+
+    match = re.search(r"candidate_\d+", str(path))
+    if not match:
+        raise ValueError(f"could not infer SWE-bench candidate id from {path}")
+    return match.group(0)
+
+
+def load_swebench_official_candidate_report(
+    candidate_id: str,
+    report_path: str | Path,
+) -> SWEBenchOfficialCandidateReport:
+    """Load one official SWE-bench report and attach its candidate ID."""
+
+    path = Path(report_path)
+    payload = json.loads(path.read_text())
+    return SWEBenchOfficialCandidateReport(
+        candidate_id=candidate_id,
+        report_path=str(path),
+        schema_version=payload.get("schema_version"),
+        total_instances=int(payload.get("total_instances", 0)),
+        submitted_instances=int(payload.get("submitted_instances", 0)),
+        completed_instances=int(payload.get("completed_instances", 0)),
+        resolved_instances=int(payload.get("resolved_instances", 0)),
+        unresolved_instances=int(payload.get("unresolved_instances", 0)),
+        empty_patch_instances=int(payload.get("empty_patch_instances", 0)),
+        error_instances=int(payload.get("error_instances", 0)),
+        submitted_ids=_string_list(payload.get("submitted_ids")),
+        completed_ids=_string_list(payload.get("completed_ids")),
+        resolved_ids=_string_list(payload.get("resolved_ids")),
+        unresolved_ids=_string_list(payload.get("unresolved_ids")),
+        empty_patch_ids=_string_list(payload.get("empty_patch_ids")),
+        error_ids=_string_list(payload.get("error_ids")),
+        incomplete_ids=_string_list(payload.get("incomplete_ids")),
+    )
+
+
+def summarize_swebench_candidate_reports(
+    manifest: SWEBenchCandidateMatrixManifest,
+    official_reports: Iterable[SWEBenchOfficialCandidateReport],
+) -> SWEBenchCandidateSummary:
+    """Summarize official results across candidate columns.
+
+    The `oracle_*` fields are intentionally post-hoc: they measure whether
+    candidate diversity exists, not whether a deployable ranker has selected the
+    right patch before official grading.
+    """
+
+    report_by_candidate: dict[str, SWEBenchOfficialCandidateReport] = {}
+    for report in official_reports:
+        if report.candidate_id in report_by_candidate:
+            raise ValueError(f"duplicate official report for {report.candidate_id}")
+        report_by_candidate[report.candidate_id] = report
+
+    candidate_ids = [candidate.candidate_id for candidate in manifest.candidates]
+    unknown_reports = sorted(set(report_by_candidate) - set(candidate_ids))
+    if unknown_reports:
+        raise ValueError(f"official report candidates are not in manifest: {', '.join(unknown_reports)}")
+    if not report_by_candidate:
+        raise ValueError("at least one official candidate report is required")
+
+    ordered_reports = [
+        report_by_candidate[candidate_id]
+        for candidate_id in candidate_ids
+        if candidate_id in report_by_candidate
+    ]
+    missing_report_candidate_ids = [
+        candidate_id for candidate_id in candidate_ids if candidate_id not in report_by_candidate
+    ]
+    oracle_resolved_ids: list[str] = []
+    outcomes: list[SWEBenchCandidateInstanceOutcome] = []
+
+    report_sets = {
+        report.candidate_id: _classification_sets(report)
+        for report in ordered_reports
+    }
+    for instance_id in manifest.instance_ids:
+        resolved_ids: list[str] = []
+        unresolved_ids: list[str] = []
+        error_ids: list[str] = []
+        missing_ids: list[str] = []
+        for candidate_id in candidate_ids:
+            sets = report_sets.get(candidate_id)
+            if sets is None:
+                missing_ids.append(candidate_id)
+            elif instance_id in sets["resolved"]:
+                resolved_ids.append(candidate_id)
+            elif instance_id in sets["unresolved"]:
+                unresolved_ids.append(candidate_id)
+            elif instance_id in sets["error"]:
+                error_ids.append(candidate_id)
+            else:
+                missing_ids.append(candidate_id)
+
+        if resolved_ids:
+            selected_candidate_id = resolved_ids[0]
+            selected_status: Literal["resolved", "unresolved", "error", "missing"] = "resolved"
+            oracle_resolved_ids.append(instance_id)
+        elif unresolved_ids:
+            selected_candidate_id = unresolved_ids[0]
+            selected_status = "unresolved"
+        elif error_ids:
+            selected_candidate_id = error_ids[0]
+            selected_status = "error"
+        else:
+            selected_candidate_id = candidate_ids[0] if candidate_ids else ""
+            selected_status = "missing"
+
+        outcomes.append(
+            SWEBenchCandidateInstanceOutcome(
+                instance_id=instance_id,
+                selected_candidate_id=selected_candidate_id,
+                selected_status=selected_status,
+                resolved_candidate_ids=resolved_ids,
+                unresolved_candidate_ids=unresolved_ids,
+                error_candidate_ids=error_ids,
+                missing_candidate_ids=missing_ids,
+            )
+        )
+
+    oracle_resolved_set = set(oracle_resolved_ids)
+    oracle_unresolved_ids = [
+        instance_id for instance_id in manifest.instance_ids if instance_id not in oracle_resolved_set
+    ]
+    return SWEBenchCandidateSummary(
+        candidate_count=manifest.candidate_count,
+        report_count=len(ordered_reports),
+        total_instances=len(manifest.instance_ids),
+        instance_ids=manifest.instance_ids,
+        candidate_reports=ordered_reports,
+        missing_report_candidate_ids=missing_report_candidate_ids,
+        oracle_resolved_instances=len(oracle_resolved_ids),
+        oracle_unresolved_instances=len(oracle_unresolved_ids),
+        oracle_resolved_ids=oracle_resolved_ids,
+        oracle_unresolved_ids=oracle_unresolved_ids,
+        instance_outcomes=outcomes,
+    )
+
+
+def write_swebench_candidate_summary(
+    path: str | Path,
+    summary: SWEBenchCandidateSummary,
+) -> None:
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(summary.model_dump_json(indent=2) + "\n")
 
 
 def write_swebench_candidate_matrix(
@@ -187,3 +394,21 @@ def _missing_prediction_keys(
             if instance_id not in predictions:
                 missing.append(f"{candidate_id}:{instance_id}:missing_prediction")
     return missing
+
+
+def _string_list(raw: Any) -> list[str]:
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise ValueError(f"expected list field in official SWE-bench report, got {type(raw).__name__}")
+    return [str(item) for item in raw]
+
+
+def _classification_sets(
+    report: SWEBenchOfficialCandidateReport,
+) -> dict[str, set[str]]:
+    return {
+        "resolved": set(report.resolved_ids),
+        "unresolved": set(report.unresolved_ids),
+        "error": set(report.error_ids) | set(report.empty_patch_ids) | set(report.incomplete_ids),
+    }
