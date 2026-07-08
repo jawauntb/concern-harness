@@ -1,0 +1,12 @@
+variant                        n   allowed   blocked    revise  final_ok
+--------------------------------------------------------------------------
+attendee_fullname            110      1.00      0.00      0.00      0.00
+date_iso                     110      1.00      0.00      0.00      0.00
+good                         220      0.99      0.00      0.01      0.99
+slot_substring                72      0.00      0.00      1.00      0.00
+slot_whitespace              110      0.97      0.00      0.03      0.00
+status_case                  110      1.00      0.00      0.00      0.00
+
+READ:
+  good      → should be high `allowed` (else overblocking)
+  heldout_* → should be LOW `allowed` (harness catches unannounced proxy)

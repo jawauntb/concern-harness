@@ -8,6 +8,17 @@ Central idea: an agent should not pass because it gives a right-looking answer.
 It should pass when the right structure controlled the answer, tool call, code
 diff, memory write, refusal, or action.
 
+**Why does this exist?** LBAH operationalizes the *load-bearing standard for
+representation claims* (Brown, 2026). The paper argues that most claims of
+the form "the system has X" are supported by evidence of *availability* (X is
+decodable, an activation correlates with it, a rationale mentions it) rather
+than evidence of *use* (X causally controls what the system commits to). It
+proposes a four-obligation contract — concern, transport, gauge, commitment
+— that a claim must meet to count as load-bearing. See
+[`docs/THEORY.md`](docs/THEORY.md) for the full mapping onto the code,
+and [`docs/A Load-Bearing Standard for Representation Claims.pdf`](docs/A%20Load-Bearing%20Standard%20for%20Representation%20Claims.pdf)
+for the paper.
+
 ## Install
 
 ```
