@@ -1,0 +1,4 @@
+name: claude_opus_4_7
+type: claude_code_cli
+model: claude-opus-4-7
+timeout: 90
