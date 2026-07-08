@@ -18,9 +18,9 @@ coding task
   -> CodingRunResult with trace, checks, final diff
 ```
 
-Recursive child harnessing now exists as a bounded Python API layer on top of
-the same parent loop. SWE-bench adapters and candidate patch tournaments are
-still next steps.
+Recursive child harnessing and candidate patch tournaments now exist as bounded
+Python API layers on top of the same parent loop. SWE-bench adapters are still
+next steps.
 
 ## CLI Quickstart
 
@@ -131,6 +131,26 @@ updates, or proposed actions without rationale and concern linkage. This keeps
 recursive planning load-bearing: child work has to carry usable evidence into
 the parent patch loop rather than merely adding more prose.
 
+## Candidate Patch Tournaments
+
+`CandidatePatchTournamentRunner` runs multiple candidate agents in isolated
+copies of the target repository, scores each patch, and only copies the winning
+verified patch back to the real workspace:
+
+```
+coding task
+  -> candidate_0 repo copy -> CodingHarnessRunner -> verifier checks
+  -> candidate_1 repo copy -> CodingHarnessRunner -> verifier checks
+  -> score checks + concern coverage + diff focus
+  -> select best verified candidate
+  -> apply winner files to the target workspace
+```
+
+Candidates are ranked by weighted verifier pass rate, high-concern ledger
+coverage, diff focus, and whether a diff exists. A candidate that fails its own
+verification can still appear in tournament artifacts, but it is never applied
+to the target workspace.
+
 ## Model-Backed Agents
 
 `ModelCodingAgent` wraps any existing `ModelAdapter` that exposes `complete()`.
@@ -172,7 +192,7 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Add candidate patch tournaments scored by tests, diff focus, concern
-   coverage, and reviewer gates.
+1. Add reviewer gates to candidate tournaments so adversarial child output can
+   down-rank patches that only satisfy tests accidentally.
 2. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
    artifacts.

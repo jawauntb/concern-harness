@@ -114,6 +114,11 @@ roles for repo navigation, test planning, patch proposal, and adversarial
 review, then reduce validated child evidence into the same concern ledger
 before the parent edit/test loop begins.
 
+`CandidatePatchTournamentRunner` can also run multiple candidate agents in
+isolated repo copies, score their verified patches by checks, concern coverage,
+and diff focus, then apply only the best verified patch back to the target
+workspace.
+
 ## Layout
 
 - `lbah/core/` schemas, runner, scorer, ledger, certificates

@@ -22,6 +22,14 @@ from .task_tree import (
     TaskTreeNode,
     default_child_tasks,
 )
+from .tournament import (
+    CandidatePatchTournamentRunner,
+    CandidateRun,
+    CandidateScore,
+    TournamentRunResult,
+    score_candidate_result,
+    select_winning_candidate,
+)
 from .workspace import CodingWorkspace
 
 __all__ = [
@@ -43,4 +51,10 @@ __all__ = [
     "ScriptedChildAgent",
     "validate_child_result",
     "apply_child_result",
+    "CandidatePatchTournamentRunner",
+    "CandidateRun",
+    "CandidateScore",
+    "TournamentRunResult",
+    "score_candidate_result",
+    "select_winning_candidate",
 ]
