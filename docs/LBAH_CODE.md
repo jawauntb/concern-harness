@@ -147,9 +147,29 @@ coding task
 ```
 
 Candidates are ranked by weighted verifier pass rate, high-concern ledger
-coverage, diff focus, and whether a diff exists. A candidate that fails its own
-verification can still appear in tournament artifacts, but it is never applied
-to the target workspace.
+coverage, diff focus, reviewer gates, and whether a diff exists. A candidate
+that fails its own verification can still appear in tournament artifacts, but it
+is never applied to the target workspace.
+
+Candidate actions or observations can include `review_signals`:
+
+```json
+{
+  "review_signals": [
+    {
+      "reviewer": "adversarial",
+      "severity": "major",
+      "summary": "Patch may overfit the visible test.",
+      "evidence": ["Only one example was considered."]
+    }
+  ]
+}
+```
+
+Open `blocker`, `major`, and `minor` findings subtract from the candidate score.
+`addressed` and `rejected` findings remain in artifacts but do not penalize the
+candidate. This is the tournament-level hook for recursive adversarial review:
+tests can pass while reviewer concerns still change which patch wins.
 
 ## Model-Backed Agents
 
@@ -192,7 +212,5 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Add reviewer gates to candidate tournaments so adversarial child output can
-   down-rank patches that only satisfy tests accidentally.
-2. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
+1. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
    artifacts.

@@ -6,9 +6,9 @@ import shutil
 import tempfile
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from .actions import CodingTask
 from .ledger import CodingLedger
@@ -21,11 +21,34 @@ class CandidateScore(BaseModel):
     """Score components used to rank candidate patches."""
 
     score: float
+    base_score: float
     check_score: float
     concern_coverage: float
     diff_focus: float
     tests_passed: bool
+    review_penalty: float = 0.0
     reasons: list[str] = Field(default_factory=list)
+
+
+ReviewSeverity = Literal["blocker", "major", "minor", "info"]
+ReviewStatus = Literal["open", "addressed", "rejected"]
+REVIEW_SEVERITY_PENALTIES: dict[ReviewSeverity, float] = {
+    "blocker": 1.0,
+    "major": 0.35,
+    "minor": 0.15,
+    "info": 0.0,
+}
+
+
+class CandidateReviewSignal(BaseModel):
+    """Reviewer or adversarial signal used to down-rank risky candidates."""
+
+    reviewer: str = "reviewer"
+    severity: ReviewSeverity = "major"
+    status: ReviewStatus = "open"
+    summary: str
+    evidence: list[str] = Field(default_factory=list)
+    penalty: float | None = Field(default=None, ge=0.0, le=1.0)
 
 
 class CandidateRun(BaseModel):
@@ -36,6 +59,7 @@ class CandidateRun(BaseModel):
     agent: str
     result: CodingRunResult
     score: CandidateScore
+    review_signals: list[CandidateReviewSignal] = Field(default_factory=list)
     selected: bool = False
 
 
@@ -85,13 +109,15 @@ class CandidatePatchTournamentRunner:
                     timeout_seconds=self.workspace.timeout_seconds,
                 )
                 result = CodingHarnessRunner(agent, candidate_workspace, self.verifier).run(candidate_task)
-                score = score_candidate_result(result)
+                review_signals = extract_candidate_review_signals(result)
+                score = score_candidate_result(result, review_signals)
                 candidate = CandidateRun(
                     candidate_id=candidate_id,
                     ordinal=index,
                     agent=getattr(agent, "name", "coding_agent"),
                     result=result,
                     score=score,
+                    review_signals=review_signals,
                 )
                 candidates.append(candidate)
                 trace.append(
@@ -190,7 +216,10 @@ class CandidatePatchTournamentRunner:
         )
 
 
-def score_candidate_result(result: CodingRunResult) -> CandidateScore:
+def score_candidate_result(
+    result: CodingRunResult,
+    review_signals: list[CandidateReviewSignal] | None = None,
+) -> CandidateScore:
     checks = result.checks
     total_weight = sum(check.weight for check in checks) or 1.0
     passed_weight = sum(check.weight for check in checks if check.passed)
@@ -198,27 +227,33 @@ def score_candidate_result(result: CodingRunResult) -> CandidateScore:
     concern_coverage = _concern_coverage(result)
     diff_focus = _diff_focus(result)
     tests_passed = _tests_passed(checks)
-    score = (
+    base_score = (
         0.55 * check_score
         + 0.25 * concern_coverage
         + 0.15 * diff_focus
         + 0.05 * (1.0 if result.final_diff else 0.0)
     )
+    review_penalty = _review_penalty(review_signals or [])
+    score = max(0.0, base_score - review_penalty)
     reasons = [
         f"checks={check_score:.2f}",
         f"concerns={concern_coverage:.2f}",
         f"focus={diff_focus:.2f}",
     ]
+    if review_penalty:
+        reasons.append(f"review_penalty={review_penalty:.2f}")
     if tests_passed:
         reasons.append("tests passed")
     if result.success:
         reasons.append("verified")
     return CandidateScore(
         score=score,
+        base_score=base_score,
         check_score=check_score,
         concern_coverage=concern_coverage,
         diff_focus=diff_focus,
         tests_passed=tests_passed,
+        review_penalty=review_penalty,
         reasons=reasons,
     )
 
@@ -252,6 +287,49 @@ def _concern_coverage(result: CodingRunResult) -> float:
         if concern.get("status") != "open" or concern.get("evidence")
     ]
     return len(covered) / len(concerns)
+
+
+def extract_candidate_review_signals(result: CodingRunResult) -> list[CandidateReviewSignal]:
+    """Extract review signals embedded in candidate action/observation trace."""
+
+    signals: list[CandidateReviewSignal] = []
+    for entry in result.trace:
+        action = entry.get("action", {})
+        observation = entry.get("observation", {})
+        for raw in _raw_review_signals(action):
+            signals.append(_coerce_review_signal(raw))
+        data = observation.get("data", {}) if isinstance(observation, dict) else {}
+        for raw in _raw_review_signals(data):
+            signals.append(_coerce_review_signal(raw))
+    return signals
+
+
+def _raw_review_signals(container: Any) -> list[Any]:
+    if not isinstance(container, dict):
+        return []
+    raw = container.get("review_signals")
+    return raw if isinstance(raw, list) else []
+
+
+def _coerce_review_signal(raw: Any) -> CandidateReviewSignal:
+    try:
+        return CandidateReviewSignal.model_validate(raw)
+    except ValidationError as exc:
+        return CandidateReviewSignal(
+            reviewer="review_signal_parser",
+            severity="major",
+            summary=f"invalid review signal: {exc.errors()[0]['msg']}",
+            evidence=[repr(raw)[:500]],
+        )
+
+
+def _review_penalty(signals: list[CandidateReviewSignal]) -> float:
+    penalty = 0.0
+    for signal in signals:
+        if signal.status != "open":
+            continue
+        penalty += signal.penalty if signal.penalty is not None else REVIEW_SEVERITY_PENALTIES[signal.severity]
+    return min(1.0, penalty)
 
 
 def _diff_focus(result: CodingRunResult) -> float:

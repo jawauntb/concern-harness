@@ -509,6 +509,98 @@ def test_candidate_tournament_applies_best_verified_patch(tmp_path: Path):
     assert result.modified_files == ["math_utils.py"]
 
 
+def test_candidate_tournament_downranks_open_review_signals(tmp_path: Path):
+    repo = _toy_repo(tmp_path)
+    task = _task(repo)
+    risky_agent = ScriptedCodingAgent(
+        [
+            CodingAction.model_validate(
+                {
+                    "action_id": "risky_edit",
+                    "action_type": "edit_file",
+                    "payload": {
+                        "path": "math_utils.py",
+                        "old": "return a - b",
+                        "new": "return a + b",
+                    },
+                    "rationale": "This patch passes but was flagged by review.",
+                    "concerns_addressed": ["task", "risk_0"],
+                    "review_signals": [
+                        {
+                            "reviewer": "adversarial",
+                            "severity": "major",
+                            "summary": "Patch may overfit the visible test.",
+                            "evidence": ["Only one example was considered."],
+                        }
+                    ],
+                }
+            ),
+            CodingAction(action_id="risky_tests", action_type="run_tests"),
+            CodingAction(action_id="risky_finish", action_type="finish"),
+        ],
+        name="risky_candidate",
+    )
+    safe_agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="safe_edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a + b"},
+                rationale="This patch satisfies the task without reviewer objections.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="safe_tests", action_type="run_tests"),
+            CodingAction(action_id="safe_finish", action_type="finish"),
+        ],
+        name="safe_candidate",
+    )
+
+    result = CandidatePatchTournamentRunner(
+        [risky_agent, safe_agent],
+        CodingWorkspace(repo, task),
+    ).run(task)
+
+    assert result.success
+    assert result.winner_id == "candidate_1"
+    assert result.candidates[0].review_signals[0].reviewer == "adversarial"
+    assert result.candidates[0].score.review_penalty > 0
+    assert result.candidates[1].score.review_penalty == 0
+
+
+def test_candidate_tournament_penalizes_invalid_review_signal(tmp_path: Path):
+    repo = _toy_repo(tmp_path)
+    task = _task(repo)
+    invalid_signal_agent = ScriptedCodingAgent(
+        [
+            CodingAction.model_validate(
+                {
+                    "action_id": "invalid_signal_edit",
+                    "action_type": "edit_file",
+                    "payload": {
+                        "path": "math_utils.py",
+                        "old": "return a - b",
+                        "new": "return a + b",
+                    },
+                    "rationale": "The patch is correct, but the review signal is malformed.",
+                    "concerns_addressed": ["task", "risk_0"],
+                    "review_signals": [{"severity": "major"}],
+                }
+            ),
+            CodingAction(action_id="invalid_signal_tests", action_type="run_tests"),
+            CodingAction(action_id="invalid_signal_finish", action_type="finish"),
+        ]
+    )
+
+    result = CandidatePatchTournamentRunner(
+        [invalid_signal_agent],
+        CodingWorkspace(repo, task),
+    ).run(task)
+
+    assert result.success
+    assert result.candidates[0].review_signals[0].reviewer == "review_signal_parser"
+    assert result.candidates[0].score.review_penalty > 0
+
+
 def test_candidate_tournament_keeps_unverified_candidates_isolated(tmp_path: Path):
     repo = _toy_repo(tmp_path)
     task = _task(repo)
