@@ -135,20 +135,30 @@ patch localization:
 - `line_locus`: is at least one changed line within ±5 of a gold-changed line?
 - `axes_passed >= 2` as the headline.
 
-**First run (10 instances, 180s timeout, 12 workers)** — many timeouts hit,
-partial data only:
+**Final run** (10 instances, 360s timeout, 4 workers; `runs/swebench_lite_mini_v2/`):
 
-| arm | n | file | symbol | locus | axes>=2 |
-|-----|---|------|--------|-------|---------|
-| raw | 8 | 1.00 | 0.25 | 0.62 | 0.62 |
-| harness | 4 | 1.00 | 0.50 | 0.75 | 1.00 |
+| arm | n | file | symbol | locus | axes>=2 | wall_avg |
+|-----|---|------|--------|-------|---------|----------|
+| raw | 8 (2 timeouts) | 1.00 | 0.38 | 0.75 | **0.75** | 60s |
+| harness | 9 (1 timeout) | 1.00 | 0.44 | 1.00 | **1.00** | 186s |
 
-**Rerun (10 instances, 360s timeout, 4 workers) — running now**. Results
-will overwrite this section.
+Harness completed 9/10; raw 8/10. Every completed harness patch hit at
+least 2/3 axes; only 6/8 raw patches did. The main separation is
+line-locus (100% vs 75%). Symbol match is a wash (0.44 vs 0.38). File
+match is 1.00 in both arms — the harness had the target file pinned in
+the ledger, but raw found it too from the problem statement.
 
-**Sample-size warning.** n = 10 is directional, not definitive. Real
-SWE-bench evaluation requires pytest inside per-repo Docker, which we did
-not run here.
+**Two honesty caveats**:
+
+1. The harness prompt's ledger includes `target_files` and
+   `target_symbols` extracted from the gold patch. In a real pipeline
+   that step would come from code-search or expert triage, not from
+   ground truth. So this run is an **upper bound** on the harness's
+   benefit assuming perfect retrieval. It is not measuring the value of
+   the retrieval step itself.
+2. n = 10 is directional, not statistically significant. Real SWE-bench
+   evaluation requires pytest inside per-repo Docker, which we did not
+   run.
 
 ---
 
