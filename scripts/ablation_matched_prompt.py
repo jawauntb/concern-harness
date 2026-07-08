@@ -53,11 +53,16 @@ RAW_SYSTEM = (
 
 
 RAW_SCHEMA_SYSTEM = (
-    "You are a tool-using agent inside a strict schema. Return ONE JSON "
-    "ActionProposal exactly matching the schema in the user message. Include "
-    "every required field with the exact key name shown. Never invent fields. "
-    "Never elaborate values (e.g. do NOT convert a weekday name to an ISO "
-    "date). Never include values listed as forbidden. Return JSON only."
+    "You are a tool-using agent. You will be given a task and a strict wrapper "
+    "schema you must return. The wrapper is: "
+    "{\"action_id\":\"<string>\",\"surface_id\":\"<string>\",\"action_type\":\"<string>\","
+    "\"payload\":{...},\"rationale\":\"<string>\",\"claimed_variables_used\":[]}. "
+    "The PAYLOAD is where you place the actual tool arguments (attendees, date, "
+    "calendar, status, value, etc.). The tool schema tells you what keys go "
+    "INSIDE payload, NOT what the outer wrapper looks like. Include every "
+    "required payload field with its exact key name. Never invent fields. Never "
+    "elaborate values (e.g. do NOT convert a weekday name to an ISO date). Never "
+    "include values listed as forbidden. Return JSON only, no prose, no fences."
 )
 
 
@@ -121,14 +126,16 @@ def _build_schema_prompt(task) -> str:
 
     return (
         f"INSTRUCTION:\n{task.instruction}\n\n"
-        f"SURFACE_ID: {surface_id}\n"
+        f"OUTER surface_id (put in wrapper): {surface_id}\n"
+        f"PAYLOAD schema (keys that go INSIDE the wrapper's payload field):"
         f"{schema_hint}\n"
         f"{required_hint}\n"
         f"{fields_hint}\n"
         f"{forbidden_hint}\n\n"
-        "Return ONE JSON ActionProposal. Use the exact field names in the schema. "
-        "Values that appear in FIELDS_TO_PRESERVE must appear in payload verbatim. "
-        "Do NOT include any forbidden values."
+        "Return ONE JSON object with the WRAPPER shape "
+        "{action_id, surface_id, action_type, payload, rationale, claimed_variables_used}. "
+        "Put the tool arguments INSIDE `payload`. Values in FIELDS_TO_PRESERVE "
+        "must appear in payload verbatim. Do NOT include any FORBIDDEN_VALUES."
     )
 
 
