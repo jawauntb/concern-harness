@@ -80,9 +80,29 @@ lbah diagnose runs/harness_matrix/runs.jsonl \
 See [`docs/SOTA_HARNESS_INTEGRATION.md`](docs/SOTA_HARNESS_INTEGRATION.md)
 for the research grounding, orchestration trace contract, and install path.
 
+## LBAH-Code: verify-and-iterate coding harness
+
+LBAH-Code is the first real-repository coding harness slice. It runs a bounded
+inspect/edit/test/finish loop over a workspace, keeps the concern ledger as
+working state, converts failed verification into retry feedback, and emits a
+trace plus final diff.
+
+```
+lbah code run \
+  --task task.yaml \
+  --repo /path/to/repo \
+  --actions scripted-actions.yaml \
+  --out runs/code_one/
+```
+
+The MVP accepts scripted actions for reproducible tests and demos; model-backed
+coding agents can plug into the same `CodingHarnessRunner` contract. See
+[`docs/LBAH_CODE.md`](docs/LBAH_CODE.md).
+
 ## Layout
 
 - `lbah/core/` schemas, runner, scorer, ledger, certificates
+- `lbah/coding/` real-repository coding harness primitives
 - `lbah/adapters/` model and agent adapters (dummy, HTTP, CLI, provider, local, MoE)
 - `lbah/modules/` concern mapper, transport auditor, proxy adversary,
   reopenability governor, commitment controller, verifier, surface mapper
