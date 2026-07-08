@@ -1,0 +1,10 @@
+suite               first_decision_distribution                                success  wall
+---------------------------------------------------------------------------------------------------------
+moved_bottleneck    allow=107, revise=3                                               0.97
+tool_constraints    allow=110                                                         1.00
+stale_confidence    reopen=110                                                        1.00
+retrieval_faithfulnessallow=110                                                         1.00
+---------------------------------------------------------------------------------------------------------
+OVERALL             allow=327, reopen=110, revise=3
+
+OVERBLOCKING (first-step not-allow on oracle): 113/440 = 0.257
