@@ -384,11 +384,16 @@ doppler run --project cofounder --config dev -- \
 That writes:
 
 - `candidate_generation_results.json` for every `(instance, candidate)` worker
-- `candidate_matrix_manifest.json` with all candidate replay commands
+- `candidate_matrix_manifest.json` with all candidate replay commands and role metadata
 - `candidates/candidate_000/official/run_evaluation_command.json`
 - `candidates/candidate_001/official/run_evaluation_command.json`
 - `candidates/candidate_002/official/run_evaluation_command.json`
 - one `subsets/n*.json` manifest per candidate column
+
+Candidate columns are assigned stable repair policies before Modal dispatch:
+`minimal_patch`, `test_contract`, `root_cause`, `edge_case`, then
+`api_contract` for wider runs. Each policy adds a different problem-statement
+note while preserving a normal SWE-bench prediction contract.
 
 Grade each candidate column with `scripts/run_official_swebench.py`. The next
 ranking layer should compare the official reports by instance:
@@ -402,10 +407,11 @@ python scripts/summarize_swebench_candidates.py \
   --out runs/swebench_lite_n5_candidates/official_candidate_summary.json
 ```
 
-The summary reports per-candidate resolved counts, per-instance candidate
-classifications, and the post-hoc oracle union. Use that oracle union to test
-whether candidate diversity exists and to tune the pre-official scoring policy;
-avoid treating post-hoc official labels as a valid test-set submission strategy.
+The summary reports per-candidate resolved counts, role labels, per-instance
+candidate classifications, and the post-hoc oracle union. Use that oracle union
+to test whether candidate diversity exists and to tune the pre-official scoring
+policy; avoid treating post-hoc official labels as a valid test-set submission
+strategy.
 
 The first Modal proofs are recorded in `docs/results/SWEBENCH_MODAL_PROBE.md`:
 a one-instance SWE-bench Lite run resolved `astropy__astropy-12907`, and an

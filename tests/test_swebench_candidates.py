@@ -7,6 +7,7 @@ import pytest
 
 from lbah.coding import (
     SWEBenchOfficialHarnessSpec,
+    default_swebench_candidate_roles,
     infer_swebench_candidate_id_from_path,
     load_swebench_official_candidate_report,
     summarize_swebench_candidate_reports,
@@ -50,6 +51,20 @@ def test_candidate_id_is_stable_and_orderable():
         swebench_candidate_id(-1)
 
 
+def test_default_candidate_roles_are_stable_and_prompt_bearing():
+    roles = default_swebench_candidate_roles([swebench_candidate_id(index) for index in range(4)])
+
+    assert [role.role_id for role in roles] == [
+        "minimal_patch",
+        "test_contract",
+        "root_cause",
+        "edge_case",
+    ]
+    assert roles[0].candidate_id == "candidate_000"
+    assert roles[1].role_label == "Test-contract repair"
+    assert "test" in roles[1].prompt_note.lower()
+
+
 def test_write_candidate_matrix_creates_official_inputs_per_candidate(tmp_path: Path):
     instance_ids = ["repo__a-1", "repo__b-2"]
     candidate_ids = [swebench_candidate_id(0), swebench_candidate_id(1)]
@@ -75,11 +90,17 @@ def test_write_candidate_matrix_creates_official_inputs_per_candidate(tmp_path: 
     )
 
     assert manifest.candidate_count == 2
+    assert [role.role_id for role in manifest.candidate_roles] == [
+        "minimal_patch",
+        "test_contract",
+    ]
     assert [candidate.run_id for candidate in manifest.candidates] == [
         "lbah-candidates-candidate_000",
         "lbah-candidates-candidate_001",
     ]
     first = manifest.candidates[0]
+    assert first.role_id == "minimal_patch"
+    assert first.role_label == "Minimal patch"
     predictions = Path(first.predictions_path).read_text().splitlines()
     assert [json.loads(line)["instance_id"] for line in predictions] == instance_ids
     assert first.command[first.command.index("--run_id") + 1] == "lbah-candidates-candidate_000"
@@ -175,6 +196,8 @@ def test_candidate_report_summary_tracks_oracle_union(tmp_path: Path):
     )
 
     assert summary.report_count == 2
+    assert summary.candidate_reports[0].role_id == "minimal_patch"
+    assert summary.candidate_reports[1].role_id == "test_contract"
     assert summary.oracle_resolved_instances == 2
     assert summary.oracle_resolved_ids == ["repo__a-1", "repo__b-2"]
     assert summary.oracle_unresolved_ids == ["repo__c-3"]

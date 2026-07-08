@@ -184,3 +184,10 @@ under the current prompt. The next lever is a stronger diversity/ranking policy:
 distinct search roles, explicit child test-plan/reviewer feedback, temperature
 or model variation where supported, and pre-official scoring from verifier,
 ledger, and diff-focus signals.
+
+Follow-up implementation: candidate matrix generation now assigns stable role
+policies to each column before Modal dispatch. The first five roles are
+`minimal_patch`, `test_contract`, `root_cause`, `edge_case`, and `api_contract`;
+the manifest and summary preserve those labels so the next n=5/n=20 run can
+measure whether policy diversity changes the oracle union before any
+submission-time ranker is trusted.
