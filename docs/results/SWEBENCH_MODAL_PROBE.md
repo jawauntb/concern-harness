@@ -107,3 +107,11 @@ The official grader is CPU-bound, so the L4s are used by the patch-generation
 worker. The grading result shows the pipeline can generate, package, and score
 parallel SWE-bench attempts without harness failures; remaining work is patch
 quality on the unresolved instances.
+
+## Next Measurement
+
+The next run should use `scripts/modal_lbah_swebench_tournament.py` with at
+least three candidates per instance. That run is expected to answer a different
+question than the n=5 probe above: whether candidate diversity plus a
+pre-official ranking policy can improve solved count without introducing empty
+patches or harness errors.

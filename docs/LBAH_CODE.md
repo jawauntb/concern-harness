@@ -171,6 +171,13 @@ Open `blocker`, `major`, and `minor` findings subtract from the candidate score.
 candidate. This is the tournament-level hook for recursive adversarial review:
 tests can pass while reviewer concerns still change which patch wins.
 
+At SWE-bench scale, the same idea is operationalized as a candidate matrix:
+generate several independent patches per instance, write one official
+prediction file per candidate column, then grade those columns with the
+official harness. This keeps the benchmark contract honest: each candidate is a
+normal SWE-bench prediction file, and selection/voting can happen outside the
+single-candidate generation loop.
+
 ## SWE-Bench Adapters
 
 `SWEBenchInstance` and `swebench_to_coding_task()` convert SWE-bench-style
@@ -354,6 +361,39 @@ python scripts/run_official_swebench.py \
   --max-workers 20 \
   --run-id lbah-lite-n5-official
 ```
+
+For self-consistency runs, generate a candidate matrix instead of one patch per
+instance:
+
+```bash
+doppler run --project cofounder --config dev -- \
+  env LBAH_MODAL_GPU=L4 LBAH_MODAL_MAX_CONTAINERS=40 \
+  python -m modal run scripts/modal_lbah_swebench_tournament.py \
+    --instances runs/swebench_lite_n5/instances.jsonl \
+    --model-agent configs/provider_big.yaml \
+    --out runs/swebench_lite_n5_candidates \
+    --official-dataset princeton-nlp/SWE-bench_Lite \
+    --run-id lbah-lite-n5-candidates \
+    --candidates-per-instance 3 \
+    --limit 5 \
+    --max-steps 20 \
+    --timeout-seconds 120 \
+    --max-workers 20
+```
+
+That writes:
+
+- `candidate_generation_results.json` for every `(instance, candidate)` worker
+- `candidate_matrix_manifest.json` with all candidate replay commands
+- `candidates/candidate_000/official/run_evaluation_command.json`
+- `candidates/candidate_001/official/run_evaluation_command.json`
+- `candidates/candidate_002/official/run_evaluation_command.json`
+- one `subsets/n*.json` manifest per candidate column
+
+Grade each candidate column with `scripts/run_official_swebench.py`. The next
+ranking layer should compare the official reports by instance and use them to
+tune the pre-official scoring policy; avoid treating post-hoc official labels
+as a valid test-set submission strategy.
 
 The first Modal proofs are recorded in `docs/results/SWEBENCH_MODAL_PROBE.md`:
 a one-instance SWE-bench Lite run resolved `astropy__astropy-12907`, and an

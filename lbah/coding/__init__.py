@@ -34,6 +34,12 @@ from .swebench import (
     swebench_to_coding_task,
     write_swebench_run_artifact,
 )
+from .swebench_candidates import (
+    SWEBenchCandidateMatrixManifest,
+    SWEBenchCandidateOfficialInput,
+    swebench_candidate_id,
+    write_swebench_candidate_matrix,
+)
 from .swebench_eval import (
     SWEBenchBackendKind,
     SWEBenchCacheLevel,
@@ -97,6 +103,10 @@ __all__ = [
     "CodingHarnessRunner",
     "CodingRunResult",
     "SWEBenchInstance",
+    "SWEBenchCandidateMatrixManifest",
+    "SWEBenchCandidateOfficialInput",
+    "swebench_candidate_id",
+    "write_swebench_candidate_matrix",
     "parse_swebench_test_list",
     "infer_swebench_allowed_paths",
     "swebench_test_command",
