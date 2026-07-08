@@ -68,6 +68,17 @@ class ConcernVariable(BaseModel):
     required_surfaces: list[str] = Field(default_factory=list)
     proxy_risks: list[str] = Field(default_factory=list)
     reopen_conditions: list[str] = Field(default_factory=list)
+    # How the transport auditor should match this variable's value in a
+    # commitment surface payload:
+    #   "exact_leaf" — variable value must appear as an exact string leaf
+    #                  anywhere in the payload (case + whitespace sensitive).
+    #                  Default. Catches case, whitespace, fullname, and
+    #                  reformatting proxies.
+    #   "substring"  — variable value can appear as a substring inside a
+    #                  larger leaf (useful for thematic markers embedded in
+    #                  free-form text answers).
+    #   "semantic"   — reserved for LLM-backed transport auditors.
+    match_mode: Literal["exact_leaf", "substring", "semantic"] = "exact_leaf"
 
 
 class CommitmentSurface(BaseModel):

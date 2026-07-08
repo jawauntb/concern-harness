@@ -33,14 +33,29 @@ def _string_of(payload: Any) -> str:
         return str(payload)
 
 
+def _canonical(value: object) -> str:
+    """Canonicalize a leaf value for equality comparison.
+
+    No normalization — case and whitespace matter. Any relaxation should live
+    on the ConcernVariable's `match_mode` field, not here.
+    """
+    return str(value)
+
+
 class TransportAuditor:
     """Deterministic transport check: variable value must appear in proposal payload.
+
+    Uses two-tier matching:
+    - if the concern variable has a concrete `value`, require an EXACT
+      canonicalized leaf equality anywhere in the payload;
+    - otherwise fall back to substring containment.
 
     An LLM-backed subclass could replace this with a semantic check.
     """
 
-    def __init__(self, min_concern: float = 0.0):
+    def __init__(self, min_concern: float = 0.0, strict_leaf_equality: bool = True):
         self.min_concern = min_concern
+        self.strict_leaf_equality = strict_leaf_equality
 
     def check(
         self,
@@ -50,7 +65,9 @@ class TransportAuditor:
     ) -> list[GateResult]:
         results: list[GateResult] = []
         payload_str = _string_of(proposal.payload).lower()
-        payload_leaves = [str(x).lower() for x in _flatten(proposal.payload) if x is not None]
+        payload_leaves_raw = [x for x in _flatten(proposal.payload) if x is not None]
+        payload_leaves = [str(x).lower() for x in payload_leaves_raw]
+        payload_leaves_canonical = [_canonical(x) for x in payload_leaves_raw]
 
         for var in ledger.variables:
             if var.concern < self.min_concern:
@@ -80,10 +97,26 @@ class TransportAuditor:
                 continue
 
             expected_str = str(expected).lower()
+            expected_canonical = _canonical(expected)
+            expected_raw = str(expected)
 
             leaf_hit = expected_str in payload_leaves
+            canonical_leaf_hit = expected_canonical in payload_leaves_canonical
             substr_hit = expected_str in payload_str
-            passed = leaf_hit or substr_hit
+            raw_leaf_hit = any(expected_raw == str(x) for x in payload_leaves_raw)
+            raw_substr_hit = expected_raw in _string_of(proposal.payload)
+
+            mode = getattr(var, "match_mode", "exact_leaf")
+            if mode == "substring":
+                passed = raw_substr_hit or substr_hit
+            elif mode == "exact_leaf" or (mode == "semantic" and self.strict_leaf_equality):
+                # Exact leaf equality (case + whitespace sensitive). This is
+                # the strong default the paper's transport obligation asks
+                # for: the concern variable's value must survive as an
+                # identifiable leaf in the commitment surface.
+                passed = raw_leaf_hit
+            else:
+                passed = leaf_hit or substr_hit
 
             results.append(
                 GateResult(
@@ -94,10 +127,12 @@ class TransportAuditor:
                     reason=(
                         f"variable '{var.id}' present in payload"
                         if passed
-                        else f"variable '{var.id}' expected value '{expected}' missing from payload"
+                        else f"variable '{var.id}' expected canonical value '{expected_canonical}' not an exact leaf in payload"
                     ),
                     evidence={
                         "expected": expected,
+                        "expected_canonical": expected_canonical,
+                        "canonical_leaf_hit": canonical_leaf_hit,
                         "leaf_hit": leaf_hit,
                         "substr_hit": substr_hit,
                         "payload": proposal.payload,

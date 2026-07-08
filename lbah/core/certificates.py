@@ -81,9 +81,12 @@ def decide_from_gates(
         return "reopen"
     if any(not r.passed for r in validators):
         return "revise"
-    if any(not r.passed and r.weight >= 0.8 for r in proxy):
+    if any(not r.passed and r.weight >= 0.7 for r in proxy):
         return "revise"
-    if any(not r.passed and r.weight >= 0.8 for r in transport):
+    # Any failed transport of a variable with concern >= 0.7 is a revise.
+    # The paper's transport obligation says a high-concern distinction MUST
+    # survive to the commitment surface; a partial score is not enough.
+    if any(not r.passed and r.weight >= 0.7 for r in transport):
         return "revise"
     if load < threshold:
         return "block"
