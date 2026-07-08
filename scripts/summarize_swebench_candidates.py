@@ -49,8 +49,9 @@ def main() -> int:
         f"oracle {summary.oracle_resolved_instances}/{summary.total_instances} resolved"
     )
     for report in summary.candidate_reports:
+        role = f" ({report.role_label})" if report.role_label else ""
         print(
-            f"- {report.candidate_id}: "
+            f"- {report.candidate_id}{role}: "
             f"{report.resolved_instances}/{report.submitted_instances} resolved, "
             f"errors={report.error_instances}, empty={report.empty_patch_instances}"
         )

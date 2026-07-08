@@ -20,11 +20,22 @@ class SWEBenchCandidateOfficialInput(BaseModel):
     """Official replay artifacts for one candidate column in a matrix run."""
 
     candidate_id: str
+    role_id: str | None = None
+    role_label: str | None = None
     predictions_path: str
     command_path: str
     command: list[str]
     instance_ids: list[str]
     run_id: str
+
+
+class SWEBenchCandidateRole(BaseModel):
+    """Stable generation policy assigned to one candidate column."""
+
+    candidate_id: str
+    role_id: str
+    role_label: str
+    prompt_note: str
 
 
 class SWEBenchCandidateMatrixManifest(BaseModel):
@@ -33,6 +44,7 @@ class SWEBenchCandidateMatrixManifest(BaseModel):
     candidate_count: int
     instance_ids: list[str]
     candidates: list[SWEBenchCandidateOfficialInput] = Field(default_factory=list)
+    candidate_roles: list[SWEBenchCandidateRole] = Field(default_factory=list)
     strict: bool = True
     missing_predictions: list[str] = Field(default_factory=list)
     failed_generations: list[str] = Field(default_factory=list)
@@ -42,6 +54,8 @@ class SWEBenchOfficialCandidateReport(BaseModel):
     """Official SWE-bench grading result for one candidate column."""
 
     candidate_id: str
+    role_id: str | None = None
+    role_label: str | None = None
     report_path: str
     schema_version: int | None = None
     total_instances: int = 0
@@ -93,6 +107,20 @@ def swebench_candidate_id(index: int) -> str:
     if index < 0:
         raise ValueError("candidate index must be non-negative")
     return f"candidate_{index:03d}"
+
+
+def default_swebench_candidate_roles(candidate_ids: list[str]) -> list[SWEBenchCandidateRole]:
+    """Assign stable, intentionally different repair policies to candidate IDs."""
+
+    return [
+        SWEBenchCandidateRole(
+            candidate_id=candidate_id,
+            role_id=_role_id_for_index(index),
+            role_label=_CANDIDATE_ROLE_TEMPLATES[index % len(_CANDIDATE_ROLE_TEMPLATES)]["role_label"],
+            prompt_note=_CANDIDATE_ROLE_TEMPLATES[index % len(_CANDIDATE_ROLE_TEMPLATES)]["prompt_note"],
+        )
+        for index, candidate_id in enumerate(candidate_ids)
+    ]
 
 
 def load_swebench_candidate_matrix_manifest(path: str | Path) -> SWEBenchCandidateMatrixManifest:
@@ -163,8 +191,9 @@ def summarize_swebench_candidate_reports(
     if not report_by_candidate:
         raise ValueError("at least one official candidate report is required")
 
+    role_by_candidate = {role.candidate_id: role for role in manifest.candidate_roles}
     ordered_reports = [
-        report_by_candidate[candidate_id]
+        _with_candidate_role(report_by_candidate[candidate_id], role_by_candidate.get(candidate_id))
         for candidate_id in candidate_ids
         if candidate_id in report_by_candidate
     ]
@@ -257,6 +286,7 @@ def write_swebench_candidate_matrix(
     spec: SWEBenchOfficialHarnessSpec,
     instance_ids: list[str],
     candidate_ids: list[str],
+    candidate_roles: list[SWEBenchCandidateRole] | None = None,
     subset_sizes: Iterable[int] = (5, 20, 50),
     strict: bool = True,
 ) -> SWEBenchCandidateMatrixManifest:
@@ -270,6 +300,8 @@ def write_swebench_candidate_matrix(
 
     if not candidate_ids:
         raise ValueError("candidate matrix requires at least one candidate")
+    roles = candidate_roles or default_swebench_candidate_roles(candidate_ids)
+    role_by_candidate = _candidate_role_map(candidate_ids, roles)
     destination = Path(out_dir)
     destination.mkdir(parents=True, exist_ok=True)
     results = list(generation_results)
@@ -284,6 +316,7 @@ def write_swebench_candidate_matrix(
 
     candidates: list[SWEBenchCandidateOfficialInput] = []
     for candidate_id in candidate_ids:
+        role = role_by_candidate[candidate_id]
         candidate_dir = destination / "candidates" / candidate_id / "official"
         candidate_dir.mkdir(parents=True, exist_ok=True)
         ordered_ids = [
@@ -315,6 +348,8 @@ def write_swebench_candidate_matrix(
                     "spec": candidate_spec.model_dump(),
                     "source": "SWE-bench candidate matrix official replay contract",
                     "candidate_id": candidate_id,
+                    "role_id": role.role_id,
+                    "role_label": role.role_label,
                 },
                 indent=2,
                 sort_keys=True,
@@ -330,6 +365,8 @@ def write_swebench_candidate_matrix(
         candidates.append(
             SWEBenchCandidateOfficialInput(
                 candidate_id=candidate_id,
+                role_id=role.role_id,
+                role_label=role.role_label,
                 predictions_path=str(predictions_path),
                 command_path=str(command_path),
                 command=command,
@@ -342,6 +379,7 @@ def write_swebench_candidate_matrix(
         candidate_count=len(candidate_ids),
         instance_ids=instance_ids,
         candidates=candidates,
+        candidate_roles=roles,
         strict=strict,
         missing_predictions=missing,
         failed_generations=failed,
@@ -412,3 +450,82 @@ def _classification_sets(
         "unresolved": set(report.unresolved_ids),
         "error": set(report.error_ids) | set(report.empty_patch_ids) | set(report.incomplete_ids),
     }
+
+
+def _candidate_role_map(
+    candidate_ids: list[str],
+    candidate_roles: list[SWEBenchCandidateRole],
+) -> dict[str, SWEBenchCandidateRole]:
+    role_by_candidate = {role.candidate_id: role for role in candidate_roles}
+    missing_roles = [candidate_id for candidate_id in candidate_ids if candidate_id not in role_by_candidate]
+    unknown_roles = sorted(set(role_by_candidate) - set(candidate_ids))
+    if missing_roles:
+        raise ValueError(f"candidate roles missing IDs: {', '.join(missing_roles)}")
+    if unknown_roles:
+        raise ValueError(f"candidate roles contain unknown IDs: {', '.join(unknown_roles)}")
+    return role_by_candidate
+
+
+def _with_candidate_role(
+    report: SWEBenchOfficialCandidateReport,
+    role: SWEBenchCandidateRole | None,
+) -> SWEBenchOfficialCandidateReport:
+    if role is None:
+        return report
+    return report.model_copy(
+        update={
+            "role_id": role.role_id,
+            "role_label": role.role_label,
+        }
+    )
+
+
+def _role_id_for_index(index: int) -> str:
+    template = _CANDIDATE_ROLE_TEMPLATES[index % len(_CANDIDATE_ROLE_TEMPLATES)]
+    role_id = template["role_id"]
+    cycle = index // len(_CANDIDATE_ROLE_TEMPLATES)
+    return role_id if cycle == 0 else f"{role_id}_{cycle + 1}"
+
+
+_CANDIDATE_ROLE_TEMPLATES = [
+    {
+        "role_id": "minimal_patch",
+        "role_label": "Minimal patch",
+        "prompt_note": (
+            "Use the smallest plausible source change that directly addresses "
+            "the failing behavior. Prefer localized edits and avoid broad rewrites."
+        ),
+    },
+    {
+        "role_id": "test_contract",
+        "role_label": "Test-contract repair",
+        "prompt_note": (
+            "Reason from the failing tests and public contract first. Identify the "
+            "specific behavior the tests demand, then implement the narrowest patch."
+        ),
+    },
+    {
+        "role_id": "root_cause",
+        "role_label": "Root-cause repair",
+        "prompt_note": (
+            "Trace the underlying cause before editing. Prefer the fix that repairs "
+            "the shared invariant instead of patching only the visible symptom."
+        ),
+    },
+    {
+        "role_id": "edge_case",
+        "role_label": "Edge-case repair",
+        "prompt_note": (
+            "Look for boundary conditions, empty inputs, compatibility cases, and "
+            "regressions around the reported behavior before choosing the patch."
+        ),
+    },
+    {
+        "role_id": "api_contract",
+        "role_label": "API-contract repair",
+        "prompt_note": (
+            "Prioritize public API compatibility and existing caller expectations. "
+            "Avoid changing exposed behavior beyond the reported defect."
+        ),
+    },
+]

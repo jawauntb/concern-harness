@@ -14,6 +14,7 @@ import modal
 
 from lbah.coding import (
     SWEBenchOfficialHarnessSpec,
+    default_swebench_candidate_roles,
     swebench_candidate_id,
     write_swebench_candidate_matrix,
 )
@@ -90,11 +91,14 @@ def generate_candidate(
     candidate_index = int(job["candidate_index"])
     candidate_count = int(job["candidate_count"])
     candidate_id = swebench_candidate_id(candidate_index)
+    candidate_role = dict(job["candidate_role"])
     instance_id = str(raw_instance["instance_id"])
     raw_instance["problem_statement"] = _candidate_problem_statement(
         str(raw_instance.get("problem_statement", "")),
         candidate_index=candidate_index,
         candidate_count=candidate_count,
+        role_label=str(candidate_role["role_label"]),
+        prompt_note=str(candidate_role["prompt_note"]),
     )
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -145,6 +149,8 @@ def generate_candidate(
             "instance_id": instance_id,
             "candidate_id": candidate_id,
             "candidate_index": candidate_index,
+            "role_id": str(candidate_role["role_id"]),
+            "role_label": str(candidate_role["role_label"]),
             "returncode": proc.returncode,
             "stdout": proc.stdout,
             "stderr": proc.stderr,
@@ -176,11 +182,14 @@ def main(
         if line.strip()
     ][offset : offset + limit]
     candidate_ids = [swebench_candidate_id(index) for index in range(candidates_per_instance)]
+    candidate_roles = default_swebench_candidate_roles(candidate_ids)
+    role_by_candidate = {role.candidate_id: role for role in candidate_roles}
     jobs = [
         {
             "instance": row,
             "candidate_index": index,
             "candidate_count": candidates_per_instance,
+            "candidate_role": role_by_candidate[swebench_candidate_id(index)].model_dump(),
         }
         for row in rows
         for index in range(candidates_per_instance)
@@ -214,6 +223,7 @@ def main(
         spec=spec,
         instance_ids=[str(row["instance_id"]) for row in rows],
         candidate_ids=candidate_ids,
+        candidate_roles=candidate_roles,
         subset_sizes=[len(rows)],
         strict=strict,
     )
@@ -228,11 +238,14 @@ def _candidate_problem_statement(
     *,
     candidate_index: int,
     candidate_count: int,
+    role_label: str,
+    prompt_note: str,
 ) -> str:
     return (
         f"{problem_statement}\n\n"
         "Harness candidate note: this is independent candidate "
-        f"{candidate_index + 1} of {candidate_count}. Produce a minimal patch, "
-        "but explore a distinct plausible repair path instead of copying the "
-        "most obvious first attempt. Do not add comments that mention this note."
+        f"{candidate_index + 1} of {candidate_count} with role `{role_label}`. "
+        f"{prompt_note} Explore a distinct plausible repair path instead of "
+        "copying the most obvious first attempt. Do not add comments that "
+        "mention this note."
     )
