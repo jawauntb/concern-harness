@@ -368,11 +368,14 @@ def swebench_prediction_rows(
     for result in results:
         if not include_empty and not result.final_diff:
             continue
+        model_patch = result.final_diff
+        if model_patch and not model_patch.endswith("\n"):
+            model_patch += "\n"
         rows.append(
             {
                 "instance_id": result.instance_id,
                 "model_name_or_path": model_name_or_path,
-                "model_patch": result.final_diff,
+                "model_patch": model_patch,
             }
         )
     return rows

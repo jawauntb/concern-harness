@@ -9,6 +9,14 @@ verification and retry feedback.
 from .actions import CodingAction, CodingObservation, CodingTask
 from .agents import ModelCodingAgent, ScriptedCodingAgent
 from .ledger import CodingConcern, CodingLedger
+from .official_swebench import (
+    DopplerRunConfig,
+    OfficialSWEBenchRunPlan,
+    OfficialSWEBenchTarget,
+    load_official_swebench_command,
+    plan_official_swebench_run,
+    run_official_swebench_plan,
+)
 from .recursive import (
     RecursiveCodingHarnessRunner,
     ScriptedChildAgent,
@@ -80,6 +88,12 @@ __all__ = [
     "ScriptedCodingAgent",
     "CodingConcern",
     "CodingLedger",
+    "DopplerRunConfig",
+    "OfficialSWEBenchRunPlan",
+    "OfficialSWEBenchTarget",
+    "load_official_swebench_command",
+    "plan_official_swebench_run",
+    "run_official_swebench_plan",
     "CodingHarnessRunner",
     "CodingRunResult",
     "SWEBenchInstance",

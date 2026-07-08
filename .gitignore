@@ -9,5 +9,6 @@ build/
 dist/
 runs/*
 !runs/.gitkeep
+logs/
 .venv/
 .env

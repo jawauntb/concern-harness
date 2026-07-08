@@ -15,6 +15,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+swebench = [
+    "anthropic>=0.40",
+    "datasets>=2.18",
+    "swebench==4.1.0",
+]
 
 [project.scripts]
 lbah = "lbah.cli:main"
@@ -28,3 +33,13 @@ include = ["lbah*"]
 
 [tool.setuptools.package-data]
 lbah = ["prompts/*.txt", "benches/**/*.yaml"]
+
+[tool.pytest.ini_options]
+norecursedirs = [
+    ".git",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "runs",
+]

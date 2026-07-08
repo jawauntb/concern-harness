@@ -140,6 +140,13 @@ lbah code swebench \
 The `--official` flag writes `official/predictions.jsonl`,
 `official/run_evaluation_command.json`, and n=5/n=20/n=50 subset manifests so
 the same patches can be replayed through `swebench.harness.run_evaluation`.
+Use `scripts/run_official_swebench.py` to execute those manifests locally or on
+Modal; Modal runs can be wrapped with Doppler so `MODAL_TOKEN_ID` and
+`MODAL_TOKEN_SECRET` stay out of shell history. Official grading parallelizes
+with `--max-workers`; L4 GPUs are useful for Modal patch generation, while the
+upstream official SWE-bench grader is CPU-bound.
+For wide generation, `scripts/modal_lbah_swebench_generate.py` maps instances
+across Modal workers and can request L4s with `LBAH_MODAL_GPU=L4`.
 
 ## Layout
 
