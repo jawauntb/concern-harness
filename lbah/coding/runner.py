@@ -41,10 +41,31 @@ class CodingHarnessRunner:
         self.verifier = verifier or CodingVerifier()
 
     def run(self, task: CodingTask) -> CodingRunResult:
-        t0 = time.time()
         ledger = CodingLedger.from_task(task)
-        trace: list[dict[str, Any]] = []
-        last_observation: CodingObservation | None = None
+        return self.run_with_ledger(task, ledger)
+
+    def run_with_ledger(
+        self,
+        task: CodingTask,
+        ledger: CodingLedger,
+        *,
+        initial_observation: CodingObservation | None = None,
+        initial_trace: list[dict[str, Any]] | None = None,
+        started_at: float | None = None,
+    ) -> CodingRunResult:
+        """Run the parent loop with precomputed ledger/context.
+
+        Recursive harnesses use this to feed child-task evidence into the same
+        verify-and-iterate loop instead of maintaining a separate executor.
+        """
+
+        t0 = started_at if started_at is not None else time.time()
+        trace: list[dict[str, Any]] = list(initial_trace or [])
+        last_observation = initial_observation
+        if initial_observation is not None:
+            ledger.apply_observation(initial_observation)
+            if hasattr(self.agent, "observe"):
+                self.agent.observe(initial_observation.model_dump())
         checks: list[CodingCheckResult] = []
 
         for step in range(task.max_steps):
