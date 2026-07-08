@@ -1,0 +1,6 @@
+name: local_7b
+type: local_llm
+url: http://localhost:8000
+model: local
+temperature: 0.0
+max_tokens: 2048

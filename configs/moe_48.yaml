@@ -1,0 +1,30 @@
+name: concern_moe
+type: moe_router
+default_expert: general
+experts:
+  - key: general
+    type: dummy
+    policy: first_slot
+    seed: 0
+    competences:
+      tool_call: 0.5
+      final_answer: 0.6
+      code_diff: 0.3
+      memory_write: 0.4
+  - key: tools
+    type: oracle
+    competences:
+      tool_call: 0.95
+      final_answer: 0.4
+      code_diff: 0.2
+      memory_write: 0.5
+  - key: code
+    type: oracle
+    competences:
+      code_diff: 0.95
+      tool_call: 0.4
+  - key: memory
+    type: oracle
+    competences:
+      memory_write: 0.9
+      tool_call: 0.4
