@@ -7,7 +7,7 @@ verification and retry feedback.
 """
 
 from .actions import CodingAction, CodingObservation, CodingTask
-from .agents import ScriptedCodingAgent
+from .agents import ModelCodingAgent, ScriptedCodingAgent
 from .ledger import CodingConcern, CodingLedger
 from .runner import CodingHarnessRunner, CodingRunResult
 from .workspace import CodingWorkspace
@@ -22,4 +22,5 @@ __all__ = [
     "CodingHarnessRunner",
     "CodingRunResult",
     "CodingWorkspace",
+    "ModelCodingAgent",
 ]

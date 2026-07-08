@@ -54,7 +54,30 @@ class CodingHarnessRunner:
                 "workspace": self.workspace.inspect(),
                 "ledger": ledger.to_agent_state(),
             }
-            action = self._coerce_action(self.agent.propose_action(state, ledger.to_agent_state()), step)
+            try:
+                action = self._coerce_action(
+                    self.agent.propose_action(state, ledger.to_agent_state()),
+                    step,
+                )
+            except Exception as exc:
+                observation = self._proposal_error(step, exc)
+                ledger.apply_observation(observation)
+                if hasattr(self.agent, "observe"):
+                    self.agent.observe(observation.model_dump())
+                trace.append(
+                    {
+                        "step": step,
+                        "action": {
+                            "action_id": observation.action_id,
+                            "action_type": "invalid_action",
+                            "payload": {},
+                        },
+                        "observation": observation.model_dump(),
+                        "modified_files": self.workspace.modified_files(),
+                    }
+                )
+                last_observation = observation
+                continue
             ledger.apply_action(action)
             observation = self._execute(action, ledger)
             ledger.apply_observation(observation)
@@ -153,6 +176,15 @@ class CodingHarnessRunner:
             success=True,
             message=message,
             data=data,
+        )
+
+    def _proposal_error(self, step: int, exc: Exception) -> CodingObservation:
+        return CodingObservation(
+            action_id=f"proposal_error_{step}",
+            action_type="inspect",
+            success=False,
+            message=f"proposal_error: {type(exc).__name__}: {exc}",
+            data={"error_type": type(exc).__name__},
         )
 
     def _feedback(self, checks: list[CodingCheckResult]) -> str:

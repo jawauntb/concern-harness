@@ -46,6 +46,7 @@ from .coding import (
     CodingHarnessRunner,
     CodingTask,
     CodingWorkspace,
+    ModelCodingAgent,
     ScriptedCodingAgent,
 )
 from .coding.actions import CodingAction
@@ -413,15 +414,37 @@ def code_group() -> None:
 @code_group.command(name="run")
 @click.option("--task", "task_path", required=True, type=click.Path(exists=True))
 @click.option("--repo", "repo_path", default="", help="Workspace repo path; overrides task.repo_path.")
-@click.option("--actions", "actions_path", required=True, type=click.Path(exists=True))
+@click.option("--actions", "actions_path", default=None, type=click.Path(exists=True))
+@click.option("--model-agent", "model_agent_cfg", default=None, type=click.Path(exists=True), help="Model config to drive a model-backed coding agent.")
 @click.option("--out", "out_dir", required=True, help="Directory to write coding run artifacts.")
-def code_run(task_path: str, repo_path: str, actions_path: str, out_dir: str) -> None:
-    """Run a scripted inspect/edit/test/finish coding loop."""
+def code_run(
+    task_path: str,
+    repo_path: str,
+    actions_path: str | None,
+    model_agent_cfg: str | None,
+    out_dir: str,
+) -> None:
+    """Run an inspect/edit/test/finish coding loop."""
     task: CodingTask = load_coding_task(task_path, repo_path or None)
     if not task.repo_path:
         raise click.ClickException("provide --repo or task.repo_path")
+    if bool(actions_path) == bool(model_agent_cfg):
+        raise click.ClickException("provide exactly one of --actions or --model-agent")
     try:
-        agent = _load_scripted_coding_agent(actions_path)
+        if actions_path is not None:
+            agent = _load_scripted_coding_agent(actions_path)
+        else:
+            assert model_agent_cfg is not None
+            cfg = _load_yaml(model_agent_cfg)
+            model = _build_agent_from_config(cfg)
+            if not callable(getattr(model, "complete", None)):
+                raise ValueError("--model-agent config must build a ModelAdapter with complete()")
+            agent = ModelCodingAgent(
+                model,
+                name=cfg.get("coding_name") or f"{cfg.get('name', cfg.get('type', 'model'))}_coder",
+                temperature=float(cfg.get("coding_temperature", cfg.get("temperature", 0.0))),
+                max_tokens=int(cfg.get("coding_max_tokens", cfg.get("max_tokens", 2048))),
+            )
         workspace = CodingWorkspace(task.repo_path, task)
         result = CodingHarnessRunner(agent, workspace).run(task)
     except Exception as exc:

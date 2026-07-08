@@ -69,6 +69,16 @@ lbah code run \
   --out runs/code_one/
 ```
 
+Or run the same task with a model-backed coding agent:
+
+```bash
+lbah code run \
+  --task task.yaml \
+  --repo /path/to/repo \
+  --model-agent configs/local_coding_agent.yaml \
+  --out runs/code_model/
+```
+
 Outputs:
 
 - `coding_run.json` — trace, ledger, checks, modified files, timing
@@ -88,6 +98,32 @@ observe(observation) -> None
 `finish` action returns structured verifier feedback, and the agent can keep
 working until the step budget is exhausted.
 
+## Model-Backed Agents
+
+`ModelCodingAgent` wraps any existing `ModelAdapter` that exposes `complete()`.
+It sends the workspace summary, recent observations, and live ledger to the
+model, asks for one JSON action, validates it into `CodingAction`, and feeds
+malformed responses back through the runner as retry observations.
+
+The model must return a JSON object such as:
+
+```json
+{
+  "action_type": "edit_file",
+  "payload": {
+    "path": "math_utils.py",
+    "old": "return a - b",
+    "new": "return a + b"
+  },
+  "rationale": "The function subtracts; tests require addition.",
+  "concerns_addressed": ["task", "risk_0"]
+}
+```
+
+If the response is fenced markdown or includes surrounding prose, the parser
+extracts the first JSON object. If no JSON object is present, the runner records
+a `proposal_error` observation and gives the model another step.
+
 ## Verification
 
 The MVP verifier checks:
@@ -103,10 +139,9 @@ not accidentally test stale same-size source files.
 
 ## Next SOTA Steps
 
-1. Add a model-backed coding adapter that emits `CodingAction`.
-2. Add recursive child harnesses for inspection, patch proposal, review, and
+1. Add recursive child harnesses for inspection, patch proposal, review, and
    test planning.
-3. Add candidate patch tournaments scored by tests, diff focus, concern
+2. Add candidate patch tournaments scored by tests, diff focus, concern
    coverage, and reviewer gates.
-4. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
+3. Add SWE-bench Lite/Verified adapters with fixed budgets and comparable
    artifacts.
