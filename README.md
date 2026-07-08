@@ -95,8 +95,18 @@ lbah code run \
   --out runs/code_one/
 ```
 
-The MVP accepts scripted actions for reproducible tests and demos; model-backed
-coding agents can plug into the same `CodingHarnessRunner` contract. See
+The same runner can use a model-backed coding agent:
+
+```
+lbah code run \
+  --task task.yaml \
+  --repo /path/to/repo \
+  --model-agent configs/local_coding_agent.yaml \
+  --out runs/code_model/
+```
+
+Scripted actions remain useful for reproducible tests and demos; model-backed
+coding agents plug into the same `CodingHarnessRunner` contract. See
 [`docs/LBAH_CODE.md`](docs/LBAH_CODE.md).
 
 ## Layout
