@@ -6,6 +6,7 @@ from .local_llm import LocalLLMAdapter
 from .provider_llm import ProviderLLMAdapter
 from .moe_router import ConcernMoERouter
 from .claude_code_llm import ClaudeCodeCLIAdapter
+from .external_harness import OpenAICompatibleHarnessAdapter
 
 __all__ = [
     "ModelAdapter",
@@ -19,4 +20,5 @@ __all__ = [
     "ProviderLLMAdapter",
     "ConcernMoERouter",
     "ClaudeCodeCLIAdapter",
+    "OpenAICompatibleHarnessAdapter",
 ]

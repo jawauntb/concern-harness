@@ -26,6 +26,7 @@ class HarnessModules:
     proxy_adversary: Any
     reopenability_governor: Any
     verifier: Any
+    orchestration_auditor: Any | None = None
     commitment_controller: Any | None = None  # optional; certificates.decide_from_gates is default
 
 
@@ -70,6 +71,10 @@ class LoadBearingHarness:
 
             transport = self.modules.transport_auditor.check(proposal, ledger, state)
             proxy = self.modules.proxy_adversary.check(proposal, ledger, state, self.env)
+            if self.modules.orchestration_auditor is not None:
+                orchestration = self.modules.orchestration_auditor.check(proposal, ledger, state)
+                transport.extend(r for r in orchestration if r.gate_kind == "transport")
+                proxy.extend(r for r in orchestration if r.gate_kind == "proxy")
             reopen = self.modules.reopenability_governor.check(proposal, ledger, state)
             validators = self.modules.verifier.validate(proposal, ledger, state, self.env)
 

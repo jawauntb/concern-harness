@@ -50,7 +50,12 @@ def unit_tests_pass(
             reason="env exposes no run_tests(); assumed pass",
             weight=0.2,
         )
-    outcome = runner(proposal, ledger, state)
+    raw_outcome = runner(proposal, ledger, state)
+    outcome: dict[str, Any] = (
+        raw_outcome
+        if isinstance(raw_outcome, dict)
+        else {"passed": False, "message": f"run_tests returned {type(raw_outcome).__name__}"}
+    )
     passed = bool(outcome.get("passed", False))
     return GateResult(
         gate_name="validator::unit_tests_pass",

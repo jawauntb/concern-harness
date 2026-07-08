@@ -1,0 +1,10 @@
+name: fugu_ultra
+type: fugu
+base_url: https://api.sakana.ai
+model: fugu-ultra
+api_key_env: SAKANA_API_KEY
+endpoint_path: /v1/chat/completions
+temperature: 0.0
+max_tokens: 8192
+timeout: 600
+

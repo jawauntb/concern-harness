@@ -3,9 +3,12 @@
 from lbah.adapters.dummy import DummyAgent, OracleAgent
 from lbah.benches import load_suite
 from lbah.core.runner import HarnessModules, LoadBearingHarness
+from lbah.core.schemas import ActionProposal, TaskSpec
+from lbah.environments.tool_use_env import ToolUseEnv
 from lbah.modules import (
     CommitmentController,
     ConcernMapper,
+    OrchestrationAuditor,
     ProxyAdversary,
     ReopenabilityGovernor,
     SurfaceMapper,
@@ -25,6 +28,20 @@ def _harness(agent, env, mode="guarded"):
         commitment_controller=CommitmentController(),
     )
     return LoadBearingHarness(agent, env, modules, mode=mode)
+
+
+class FixedAgent:
+    name = "fixed"
+    last_tokens = 0
+
+    def __init__(self, proposal: ActionProposal):
+        self.proposal = proposal
+
+    def propose_action(self, state, ledger):
+        return self.proposal
+
+    def observe(self, observation):
+        return None
 
 
 def test_oracle_passes_moved_bottleneck():
@@ -76,3 +93,50 @@ def test_audit_mode_never_blocks():
     result = _harness(agent, env, mode="audit").run(task)
     for cert in result.certificates:
         assert cert.decision == "allow"
+
+
+def test_orchestration_auditor_participates_in_runner_decision():
+    task = TaskSpec(
+        task_id="needs_trace",
+        task_type="tool_use",
+        instruction="Use the target file.",
+        metadata={
+            "requires_orchestration_trace": True,
+            "expected_action_type": "answer",
+            "expected_payload": {"value": "lbah/core/runner.py"},
+            "concern_variables": [
+                {
+                    "id": "target_file",
+                    "name": "target_file",
+                    "value": "lbah/core/runner.py",
+                    "concern": 0.95,
+                    "source": "task",
+                    "required_surfaces": ["tool_call"],
+                }
+            ],
+            "required_surfaces": [
+                {"id": "tool_call", "name": "tool call", "type": "tool_call"}
+            ],
+        },
+    )
+    proposal = ActionProposal(
+        action_id="a",
+        surface_id="tool_call",
+        action_type="answer",
+        payload={"value": "lbah/core/runner.py"},
+    )
+    modules = HarnessModules(
+        concern_mapper=ConcernMapper(),
+        surface_mapper=SurfaceMapper(),
+        transport_auditor=TransportAuditor(),
+        proxy_adversary=ProxyAdversary(),
+        reopenability_governor=ReopenabilityGovernor(),
+        verifier=Verifier(),
+        orchestration_auditor=OrchestrationAuditor(),
+        commitment_controller=CommitmentController(),
+    )
+    result = LoadBearingHarness(FixedAgent(proposal), ToolUseEnv(), modules).run(task)
+    assert not result.final_success
+    assert result.certificates
+    assert result.certificates[0].decision == "revise"
+    assert "orchestration::trace_present" in result.failed_gates

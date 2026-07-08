@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from ..core.schemas import ActionProposal, ConcernLedger, ConcernVariable, GateResult, State
 
@@ -154,7 +154,7 @@ class ProxyAdversary:
         # own proxies (e.g. coding envs) expose `proxy_checks(proposal, ledger, state)`.
         env_checks = getattr(env, "proxy_checks", None) if env is not None else None
         if callable(env_checks):
-            for gr in env_checks(proposal, ledger, state):
+            for gr in cast(list[GateResult], env_checks(proposal, ledger, state)):
                 gr.gate_kind = "proxy"
                 results.append(gr)
 
