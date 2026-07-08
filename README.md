@@ -48,6 +48,38 @@ lbah leaderboard runs/compare/
 lbah replay runs/one/run.json
 ```
 
+## External harnesses and SOTA comparisons
+
+LBAH can wrap black-box agent harnesses that expose an OpenAI-compatible chat
+endpoint. This lets systems such as Fugu-style learned orchestrators,
+OpenHands servers, or internal harness APIs propose actions while LBAH keeps
+the concern ledger, transport checks, proxy adversary, freshness gates,
+validators, and load-bearing certificates.
+
+```
+export SAKANA_API_KEY=...
+lbah run --task moved_bottleneck:0 \
+         --agent configs/fugu_openai_compatible.yaml \
+         --mode audit --out runs/fugu_one/
+```
+
+Run a small model-harness matrix and generate an improvement report:
+
+```
+python scripts/harness_effects_matrix.py \
+  --suite moved_bottleneck \
+  --agents configs/dummy.yaml configs/oracle.yaml configs/fugu_openai_compatible.yaml \
+  --modes guarded,audit \
+  --seeds 16 \
+  --out runs/harness_matrix/
+
+lbah diagnose runs/harness_matrix/runs.jsonl \
+  --out runs/harness_matrix/diagnostic_report.md
+```
+
+See [`docs/SOTA_HARNESS_INTEGRATION.md`](docs/SOTA_HARNESS_INTEGRATION.md)
+for the research grounding, orchestration trace contract, and install path.
+
 ## Layout
 
 - `lbah/core/` schemas, runner, scorer, ledger, certificates

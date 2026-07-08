@@ -28,6 +28,7 @@ from .adapters import (
     DummyAgent,
     HTTPAgentAdapter,
     LocalLLMAdapter,
+    OpenAICompatibleHarnessAdapter,
     OracleAgent,
     ProviderLLMAdapter,
 )
@@ -35,6 +36,12 @@ from .adapters.moe_router import Expert
 from .benches import SUITES, load_suite
 from .core.runner import HarnessModules, LoadBearingHarness
 from .core.schemas import TaskSpec
+from .core.diagnostics import (
+    improvement_proposals,
+    markdown_report,
+    read_jsonl,
+    summarize_runs,
+)
 from .environments.base import Environment
 from .environments.browser_env import BrowserEnv
 from .environments.coding_env import CodingEnv
@@ -44,6 +51,7 @@ from .environments.tool_use_env import ToolUseEnv
 from .modules import (
     CommitmentController,
     ConcernMapper,
+    OrchestrationAuditor,
     ProxyAdversary,
     ReopenabilityGovernor,
     SurfaceMapper,
@@ -105,6 +113,19 @@ def _build_agent_from_config(cfg: dict) -> Any:
             headers=cfg.get("headers") or {},
             timeout=float(cfg.get("timeout", 120)),
         )
+    if kind in {"openai_harness", "fugu", "external_openai_harness"}:
+        return OpenAICompatibleHarnessAdapter(
+            name=cfg.get("name", kind),
+            base_url=cfg["base_url"],
+            model=cfg["model"],
+            api_key=cfg.get("api_key") or os.environ.get(cfg.get("api_key_env", "")),
+            endpoint_path=cfg.get("endpoint_path", "/v1/chat/completions"),
+            headers=cfg.get("headers") or {},
+            timeout=float(cfg.get("timeout", 300)),
+            temperature=float(cfg.get("temperature", 0.0)),
+            max_tokens=int(cfg.get("max_tokens", 4096)),
+            system_prompt=cfg.get("system_prompt"),
+        )
     if kind == "claude_code_cli":
         return ClaudeCodeCLIAdapter(
             name=cfg.get("name", "claude_cli"),
@@ -159,6 +180,7 @@ def _build_harness(agent: Any, env: Environment, mode: str, thresholds: dict) ->
         concern_mapper=ConcernMapper(),
         surface_mapper=SurfaceMapper(),
         transport_auditor=TransportAuditor(),
+        orchestration_auditor=OrchestrationAuditor(),
         proxy_adversary=ProxyAdversary(),
         reopenability_governor=ReopenabilityGovernor(),
         verifier=Verifier(),
@@ -330,6 +352,31 @@ def leaderboard(run_dir: str) -> None:
     click.echo(_summary_table(
         [{"agent": a, "mode": m, "rows": rs} for (a, m), rs in sorted(groups.items())]
     ))
+
+
+@cli.command()
+@click.argument("runs_jsonl", type=click.Path(exists=True))
+@click.option("--out", "out_path", default="", help="Optional path for report output.")
+@click.option("--format", "fmt", type=click.Choice(["markdown", "json"]), default="markdown")
+def diagnose(runs_jsonl: str, out_path: str, fmt: str) -> None:
+    """Explain harness failures and propose next harness-evolution experiments."""
+    rows = read_jsonl(runs_jsonl)
+    if fmt == "json":
+        rendered = json.dumps(
+            {
+                "summary": summarize_runs(rows),
+                "improvement_proposals": improvement_proposals(rows),
+            },
+            indent=2,
+        ) + "\n"
+    else:
+        rendered = markdown_report(rows)
+    if out_path:
+        Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(out_path).write_text(rendered)
+        click.echo(f"wrote {out_path}")
+    else:
+        click.echo(rendered.rstrip())
 
 
 @cli.command()

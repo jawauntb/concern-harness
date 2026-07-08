@@ -198,3 +198,39 @@ the ledger, but raw found it too from the problem statement.
 - Add a *matched-oracle* ablation for §3: an oracle that emits each proxy
   variant deliberately, to confirm the gate blocks the exact wrong action
   it was designed to.
+
+---
+
+## 5. External harness and orchestration evidence path
+
+This branch adds evidence machinery, not new live leaderboard claims.
+
+New measurable surfaces:
+
+- `OpenAICompatibleHarnessAdapter` lets Fugu-style and OpenAI-compatible
+  external harnesses run under the same ledger and certificate loop as local
+  agents.
+- `OrchestrationAuditor` turns multi-agent handoff traces into transport and
+  proxy gates, so learned orchestration can be audited under the same
+  load-bearing certificate.
+- `lbah diagnose` reads `runs.jsonl`, groups failures by gate family, and
+  proposes the next falsifiable harness-improvement experiment.
+- `scripts/harness_effects_matrix.py` runs a small model-harness matrix and
+  writes a diagnostic report.
+
+What this supports now:
+
+- Unit and runner tests prove that missing required orchestration traces can
+  change a certificate decision.
+- Diagnostic tests prove that failed gates are grouped into actionable
+  improvement families.
+- Config examples document how to point LBAH at Fugu/Fugu Ultra once
+  credentials are present.
+
+What remains unclaimed:
+
+- No Fugu, OpenHands, or SWE-agent external run has been executed in this repo
+  yet.
+- No public benchmark win is claimed from the new adapter.
+- No automated harness self-modification is enabled; diagnostics are proposal
+  artifacts only.

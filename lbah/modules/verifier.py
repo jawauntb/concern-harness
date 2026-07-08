@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 from ..core.schemas import ActionProposal, ConcernLedger, GateResult, State
 from ..validators import (
@@ -109,7 +109,7 @@ class Verifier:
         # If the environment supplies extra validators (e.g., hidden tests), append them.
         extra = getattr(env, "extra_validators", None)
         if callable(extra):
-            for gr in extra(proposal, ledger, state):
+            for gr in cast(list[GateResult], extra(proposal, ledger, state)):
                 gr.gate_kind = "validator"
                 results.append(gr)
         return results

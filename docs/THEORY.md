@@ -105,6 +105,39 @@ certificate for whether the reasoning it *reports* is the reasoning that
 The `RunResult` from `core/runner.py` is a full transcript in this form —
 each entry is one such faithfulness measurement.
 
+## Application: multi-agent harnesses and learned orchestration
+
+Fugu-style orchestrators, SWE-agent-style interfaces, and OpenHands-style
+platforms make the harness itself a major source of capability. LBAH's theory
+does not treat that as a separate object from the load-bearing standard. It
+treats orchestration as another transport chain.
+
+For a multi-agent workflow, the chain is no longer just:
+
+```
+task -> context -> model proposal -> action
+```
+
+It can be:
+
+```
+task -> coordinator -> planner handoff -> worker handoff -> verifier handoff -> action
+```
+
+The same four obligations apply:
+
+- **Concern**: the coordinator must know which variables matter.
+- **Transport**: each handoff that can affect the final surface must carry
+  the high-concern variables it needs.
+- **Gauge fixing**: worker isolation and explicit access lists prevent every
+  agent from being steered by the same proxy trajectory.
+- **Commitment effect**: the final tool call, diff, answer, or memory write
+  must still change when the concern variable changes.
+
+This is why `modules/orchestration_auditor.py` emits ordinary `GateResult`
+objects rather than a separate certificate type. Multi-agent traces become
+transport and proxy evidence inside the same `LoadBearingCertificate`.
+
 ## Scope (paper §7, echoed here)
 
 The paper is careful about scope, and so is LBAH:

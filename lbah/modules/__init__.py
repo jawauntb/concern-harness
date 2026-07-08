@@ -5,6 +5,7 @@ from .proxy_adversary import ProxyAdversary
 from .reopenability_governor import ReopenabilityGovernor
 from .commitment_controller import CommitmentController
 from .verifier import Verifier
+from .orchestration_auditor import OrchestrationAuditor
 
 __all__ = [
     "ConcernMapper",
@@ -16,4 +17,5 @@ __all__ = [
     "ReopenabilityGovernor",
     "CommitmentController",
     "Verifier",
+    "OrchestrationAuditor",
 ]

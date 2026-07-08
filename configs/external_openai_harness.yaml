@@ -1,0 +1,9 @@
+name: external_openai_harness
+type: openai_harness
+base_url: http://localhost:8000
+model: agent-harness
+api_key_env: EXTERNAL_HARNESS_API_KEY
+endpoint_path: /v1/chat/completions
+temperature: 0.0
+max_tokens: 4096
+timeout: 300
