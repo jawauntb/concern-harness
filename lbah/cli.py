@@ -42,6 +42,14 @@ from .core.diagnostics import (
     read_jsonl,
     summarize_runs,
 )
+from .coding import (
+    CodingHarnessRunner,
+    CodingTask,
+    CodingWorkspace,
+    ScriptedCodingAgent,
+)
+from .coding.actions import CodingAction
+from .coding.runner import load_coding_task
 from .environments.base import Environment
 from .environments.browser_env import BrowserEnv
 from .environments.coding_env import CodingEnv
@@ -68,6 +76,24 @@ from .modules import (
 def _load_yaml(path: str | os.PathLike) -> dict:
     with open(path) as f:
         return yaml.safe_load(f) or {}
+
+
+def _load_scripted_coding_agent(path: str | os.PathLike) -> ScriptedCodingAgent:
+    with open(path) as f:
+        data: Any = yaml.safe_load(f) or {}
+    if isinstance(data, list):
+        actions_raw = data
+        name = "scripted_coder"
+    elif isinstance(data, dict):
+        actions_raw = data.get("actions", [])
+        name = data.get("name", "scripted_coder")
+    else:
+        actions_raw = []
+        name = "scripted_coder"
+    if not isinstance(actions_raw, list):
+        raise ValueError("scripted coding agent file must contain an actions list")
+    actions = [CodingAction.model_validate(action) for action in actions_raw]
+    return ScriptedCodingAgent(actions=actions, name=name)
 
 
 def _build_agent_from_config(cfg: dict) -> Any:
@@ -377,6 +403,38 @@ def diagnose(runs_jsonl: str, out_path: str, fmt: str) -> None:
         click.echo(f"wrote {out_path}")
     else:
         click.echo(rendered.rstrip())
+
+
+@cli.group(name="code", help="Run real-repository coding harness tasks.")
+def code_group() -> None:
+    pass
+
+
+@code_group.command(name="run")
+@click.option("--task", "task_path", required=True, type=click.Path(exists=True))
+@click.option("--repo", "repo_path", default="", help="Workspace repo path; overrides task.repo_path.")
+@click.option("--actions", "actions_path", required=True, type=click.Path(exists=True))
+@click.option("--out", "out_dir", required=True, help="Directory to write coding run artifacts.")
+def code_run(task_path: str, repo_path: str, actions_path: str, out_dir: str) -> None:
+    """Run a scripted inspect/edit/test/finish coding loop."""
+    task: CodingTask = load_coding_task(task_path, repo_path or None)
+    if not task.repo_path:
+        raise click.ClickException("provide --repo or task.repo_path")
+    try:
+        agent = _load_scripted_coding_agent(actions_path)
+        workspace = CodingWorkspace(task.repo_path, task)
+        result = CodingHarnessRunner(agent, workspace).run(task)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "coding_run.json").write_text(result.model_dump_json(indent=2))
+    (out / "final.diff").write_text(result.final_diff)
+    click.echo(
+        f"[code {task.task_id}] success={result.success} steps={result.steps} "
+        f"modified={','.join(result.modified_files) or '-'}"
+    )
 
 
 @cli.command()
