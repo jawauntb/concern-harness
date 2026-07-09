@@ -23,6 +23,14 @@ from .events import (
     events_from_ledger,
     gauge_fixing_probe,
 )
+from .replay import (
+    CapturingModelAdapter,
+    IOEnvelope,
+    ReplayMismatchError,
+    ReplayModelAdapter,
+    capture_llm_io,
+    envelopes_from_log,
+)
 
 __all__ = [
     "TaskSpec",
@@ -47,4 +55,10 @@ __all__ = [
     "GaugeProbeResult",
     "events_from_ledger",
     "gauge_fixing_probe",
+    "CapturingModelAdapter",
+    "IOEnvelope",
+    "ReplayMismatchError",
+    "ReplayModelAdapter",
+    "capture_llm_io",
+    "envelopes_from_log",
 ]

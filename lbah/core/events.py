@@ -52,6 +52,7 @@ EventType = Literal[
     "perturb_variable",  # counterfactual value swap; used by gauge-fixing forks
     "add_surface",       # a commitment surface is identified
     "note",              # free-form provenance marker, no projection effect
+    "record_llm_io",     # PoE-style envelope of one model .complete() request/response
 ]
 
 
@@ -157,7 +158,7 @@ class ConcernEventLog(BaseModel):
                     surface_order.append(sid)
                 continue
 
-            if event.type == "note":
+            if event.type in {"note", "record_llm_io"}:
                 continue
 
             vid = event.variable_id or event.payload.get("id")

@@ -17,6 +17,13 @@ from .contamination import (
 )
 from .events import CodingEvent, CodingEventLog, events_from_ledger
 from .ledger import CodingConcern, CodingLedger
+from .replay import (
+    ReplayCodingBundle,
+    ReplayToolExecutor,
+    ToolEnvelope,
+    bundle_from_log,
+    tool_envelopes_from_log,
+)
 from .official_swebench import (
     DopplerRunConfig,
     OfficialSWEBenchRunPlan,
@@ -195,4 +202,9 @@ __all__ = [
     "extract_candidate_review_signals",
     "score_candidate_result",
     "select_winning_candidate",
+    "ReplayCodingBundle",
+    "ReplayToolExecutor",
+    "ToolEnvelope",
+    "bundle_from_log",
+    "tool_envelopes_from_log",
 ]
