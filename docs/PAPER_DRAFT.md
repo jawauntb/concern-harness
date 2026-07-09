@@ -278,12 +278,21 @@ SWE-Bench+ labels issue-text leakage, not runtime retrieve; Cursor has
 no public instance dump. Fall back sealed-vs-unsealed n=20 **ran**:
 unsealed 14/20 = sealed 14/20 (Δ = 0) on Lite with Opus 4.8 — resolve-
 neutral under seal; two cells swapped (`docs/results/SWEBENCH_SEALED_UNSEALED_N20.md`).
-Honest negative for "Lite mirrors Cursor's Pro sealed drop." Track C
-two-way gauge and raw/LBAH/gated head-to-head still open.
+Honest negative for "Lite mirrors Cursor's Pro sealed drop."
 
-Design note: this pilot leaves the Modal path scaffolded but not
-launched. That path needs a leak-injected variant of the dataset (an
-open design question) and burns real credits.
+**Head-to-head (raw / LBAH / gated / sealed), Lite n=20, Opus 4.8.**
+Resolve: raw 13/20, LBAH 14/20, sealed 14/20 (Δ LBAH−raw = +0.05;
+sealed−LBAH = 0). Matches `EVIDENCE.md`: LBAH is not a resolve% lift.
+Gated (leak+force-retrieve + synthetic-marker finish gate, v2): gate
+message on 17/20 cells; residual marker in 4/20 submitted patches;
+still 20/20 resolved after revise — induced overblock/revise diagnostic,
+not a natural base rate (`docs/results/SWEBENCH_HEAD_TO_HEAD.md`).
+
+**Track C two-way gauge (interventional subset, n=3).** On A2
+force-retrieve positives, perturbing `LEAK_MARKER:` → `ALT_LEAK:` moved
+the commitment on 3/3 cells (rate 1.00). Fingerprint flags for the full
+matrix stay correlational; this subset is interventional confirmation
+(`docs/results/SWEBENCH_TWO_WAY_GAUGE.md`).
 
 ## 5  Anti-cheat and claim-level ledger
 
@@ -294,7 +303,7 @@ We label every table with a claim level and refuse to inflate:
 | synthetic diagnostic | Deterministic slice, no real model in the loop | Phase 2 detector (4.1), read-set (4.2) |
 | real-LLM diagnostic | Real model in the loop, synthetic task substrate | Concern mapper (4.3) |
 | coding-agent diagnostic (local, small-N) | Real coding harness loop, toy repo, small N | Live pilot (4.4) |
-| coding-agent diagnostic (Modal) | Modal-graded, contamination sidecar | Not yet |
+| coding-agent diagnostic (Modal) | Modal-graded, contamination sidecar | Leak control, sealed/unsealed, head-to-head, Track C subset |
 | human-validated | External human grader signoff | Not yet |
 
 Corresponding anti-cheat rules:
@@ -328,9 +337,13 @@ Corresponding anti-cheat rules:
   (`docs/results/B2_LABEL_HUNT.md`).
 - **Sealed vs unsealed Lite n=20.** Resolve 14/20 both arms (Δ = 0);
   not Cursor's Pro sealed drop (`docs/results/SWEBENCH_SEALED_UNSEALED_N20.md`).
-- **Replay trust.** The gauge probe is only as trustworthy as replay
-  determinism. Track C ships PoE-style envelope capture as
-  infrastructure; the empirical claim is not yet dependent on it.
+- **Head-to-head Lite n=20.** raw 0.65 / LBAH 0.70 / sealed 0.70;
+  gated v2 gate-engage 17/20, residual marker 4/20 — no leaderboard
+  claim (`docs/results/SWEBENCH_HEAD_TO_HEAD.md`).
+- **Track C two-way gauge.** Interventional subset n=3 at rate 1.00;
+  not a full-matrix gauge (`docs/results/SWEBENCH_TWO_WAY_GAUGE.md`).
+- **Replay trust.** PoE envelope capture is opt-in; the Track C
+  subset used a second live run (perturbed carrier), not pure replay.
 
 ## 7  Conclusion
 
@@ -340,9 +353,11 @@ LLMs can drive the concern-mapping half of the certificate without
 collapsing catch rates. On a live coding agent, specificity held without
 prompting and sensitivity held once retrieval was induced
 (`--force-retrieve`). On Modal SWE-bench Lite n=5 under the same
-induction, 4/5 resolved patches carried the gold fingerprint. The next
-credibility steps are a Pro-scale sealed contrast (if accessible) and a
-raw/LBAH/gated head-to-head — still at diagnostic claim level, not SOTA.
+induction, 4/5 resolved patches carried the gold fingerprint. Head-to-head
+on Lite n=20 isolates raw/LBAH/sealed as resolve-near-ties; Track C
+confirms leak intervention moves commitments on a flagged subset. Still
+diagnostic claim level, not SOTA. A Pro-scale sealed contrast remains
+open if accessible.
 
 Nothing above certifies intelligence, solves SWE-bench, or proves
 faithfulness of chain-of-thought. It certifies a bookkeeping identity
