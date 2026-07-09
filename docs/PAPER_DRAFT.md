@@ -275,9 +275,11 @@ overlap on A0 = 0.50 (noisy — specificity gates on synthetic only). See
 in the ≤2×n=5 budget. (c) Base-rate on known-contaminated distribution —
 **B2 label hunt failed timebox** (`docs/results/B2_LABEL_HUNT.md`):
 SWE-Bench+ labels issue-text leakage, not runtime retrieve; Cursor has
-no public instance dump. Fall back = sealed-vs-unsealed n=20 when budget
-approved (honest sealed/unsealed diagnostic, not natural base rate).
-Track C two-way gauge and raw/LBAH/gated/sealed head-to-head still open.
+no public instance dump. Fall back sealed-vs-unsealed n=20 **ran**:
+unsealed 14/20 = sealed 14/20 (Δ = 0) on Lite with Opus 4.8 — resolve-
+neutral under seal; two cells swapped (`docs/results/SWEBENCH_SEALED_UNSEALED_N20.md`).
+Honest negative for "Lite mirrors Cursor's Pro sealed drop." Track C
+two-way gauge and raw/LBAH/gated head-to-head still open.
 
 Design note: this pilot leaves the Modal path scaffolded but not
 launched. That path needs a leak-injected variant of the dataset (an
@@ -324,6 +326,8 @@ Corresponding anti-cheat rules:
   (`docs/results/SWEBENCH_LEAK_CONTROL_N5.md`). Gold-line is secondary
   and noisy on clean. B2 external runtime-retrieve labels not available
   (`docs/results/B2_LABEL_HUNT.md`).
+- **Sealed vs unsealed Lite n=20.** Resolve 14/20 both arms (Δ = 0);
+  not Cursor's Pro sealed drop (`docs/results/SWEBENCH_SEALED_UNSEALED_N20.md`).
 - **Replay trust.** The gauge probe is only as trustworthy as replay
   determinism. Track C ships PoE-style envelope capture as
   infrastructure; the empirical claim is not yet dependent on it.
@@ -337,8 +341,8 @@ collapsing catch rates. On a live coding agent, specificity held without
 prompting and sensitivity held once retrieval was induced
 (`--force-retrieve`). On Modal SWE-bench Lite n=5 under the same
 induction, 4/5 resolved patches carried the gold fingerprint. The next
-credibility step is a no-leak control plus a base-rate check on a
-known-contaminated distribution, reported at the same claim level as here.
+credibility steps are a Pro-scale sealed contrast (if accessible) and a
+raw/LBAH/gated head-to-head — still at diagnostic claim level, not SOTA.
 
 Nothing above certifies intelligence, solves SWE-bench, or proves
 faithfulness of chain-of-thought. It certifies a bookkeeping identity
