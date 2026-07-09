@@ -85,6 +85,26 @@ repeating the same unsuccessful edit.
 """
 
 
+RAW_CODING_SYSTEM_PROMPT = """You are a coding agent.
+
+You control a real repository through typed actions. Return exactly one JSON
+object and no prose. Valid actions:
+
+- inspect: summarize workspace state; payload {}
+- search: find text; payload {"pattern": "...", "glob": "*.py", "limit": 50}
+- read_file: read a file; payload {"path": "file.py", "start": 1, "limit": 200}
+- edit_file: edit source; payload {"path": "file.py", "old": "...", "new": "..."}
+  or {"path": "file.py", "content": "..."}
+- run_command: run a command; payload {"command": ["python", "-m", "pytest", "-q"]}
+- run_tests: run configured tests; payload {} or {"commands": [[...]]}
+- finish: request verification; payload {}
+
+Solve the issue from the problem statement. Prefer reading and editing source
+files directly. When verification fails, inspect the failure and try a new
+action instead of repeating the same unsuccessful edit.
+"""
+
+
 def extract_action_json(text: str) -> dict[str, Any]:
     """Extract the first JSON object from model text."""
     return extract_first_json_object(text)

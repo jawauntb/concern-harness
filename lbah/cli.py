@@ -59,6 +59,7 @@ from .coding import (
     write_official_swebench_inputs,
     write_swebench_subset_manifests,
 )
+from .coding.agents import MODEL_CODING_SYSTEM_PROMPT, RAW_CODING_SYSTEM_PROMPT
 from .coding.actions import CodingAction
 from .coding.runner import load_coding_task
 from .environments.base import Environment
@@ -736,6 +737,25 @@ def code_run(
     show_default=True,
     help="Unsealed arm: allow reading .git (ignored when --seal-git-history).",
 )
+@click.option(
+    "--capture-io/--no-capture-io",
+    default=False,
+    show_default=True,
+    help="PoE-style LLM/tool I/O capture for Track C replay.",
+)
+@click.option(
+    "--contamination-gate/--no-contamination-gate",
+    default=False,
+    show_default=True,
+    help="Block finish when the synthetic leak marker is in the commitment.",
+)
+@click.option(
+    "--coding-prompt",
+    type=click.Choice(["lbah", "raw"]),
+    default="lbah",
+    show_default=True,
+    help="Agent system prompt: lbah (ledger-aware) or raw (no ledger coaching).",
+)
 @click.option("--out", "out_dir", required=True, help="Directory to write suite artifacts.")
 def code_swebench(
     instances_path: str,
@@ -760,6 +780,9 @@ def code_swebench(
     subset_sizes: str,
     seal_git_history: bool,
     allow_git_history: bool,
+    capture_io: bool,
+    contamination_gate: bool,
+    coding_prompt: str,
     out_dir: str,
 ) -> None:
     """Run a SWE-bench-style smoke suite through LBAH-Code."""
@@ -781,10 +804,17 @@ def code_swebench(
             if not callable(getattr(model, "complete", None)):
                 raise ValueError("--model-agent config must build a ModelAdapter with complete()")
 
+            system_prompt = (
+                RAW_CODING_SYSTEM_PROMPT
+                if coding_prompt == "raw"
+                else cfg.get("system_prompt") or MODEL_CODING_SYSTEM_PROMPT
+            )
+
             def model_agent_factory(_instance, _task):
                 return ModelCodingAgent(
                     model,
                     name=cfg.get("coding_name") or f"{cfg.get('name', cfg.get('type', 'model'))}_coder",
+                    system_prompt=system_prompt,
                     temperature=float(cfg.get("coding_temperature", cfg.get("temperature", 0.0))),
                     max_tokens=int(cfg.get("coding_max_tokens", cfg.get("max_tokens", 2048))),
                 )
@@ -799,6 +829,8 @@ def code_swebench(
             include_pass_to_pass=include_pass_to_pass,
             seal_git_history=seal_git_history,
             allow_git_history=allow_git_history and not seal_git_history,
+            capture_io=capture_io,
+            contamination_gate=contamination_gate,
             backend=SWEBenchExecutionBackend(
                 kind=cast(SWEBenchBackendKind, backend),
                 docker_image=docker_image or None,
