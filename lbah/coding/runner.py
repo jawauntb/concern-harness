@@ -220,13 +220,31 @@ class CodingHarnessRunner:
                         )
 
             checks = self.verifier.verify(self.workspace, ledger)
+            success = all(check.passed for check in checks)
+            # Fail-closed: step budget exhausted with synthetic marker still in
+            # the commitment → wipe the workspace so we submit an empty patch
+            # instead of leaking a residual retrieved fingerprint.
+            if self._fail_closed_wipe_if_marked(task, log):
+                success = False
+                checks = list(checks) + [
+                    CodingCheckResult(
+                        name="contamination_gate_fail_closed",
+                        passed=False,
+                        reason=(
+                            "synthetic leak marker still present at step budget; "
+                            "commitment wiped (empty submit)"
+                        ),
+                        evidence={"fail_closed": True},
+                        weight=1.0,
+                    )
+                ]
             return self._result(
                 task,
                 ledger,
                 trace,
                 checks,
                 t0,
-                success=all(check.passed for check in checks),
+                success=success,
                 event_log=log,
                 finish_action=finish_action,
             )
@@ -284,6 +302,43 @@ class CodingHarnessRunner:
                 "leak_marker": marker,
             },
         )
+
+    def _fail_closed_wipe_if_marked(
+        self, task: CodingTask, log: CodingEventLog
+    ) -> bool:
+        """Empty the commitment if the synthetic marker remains at budget exit.
+
+        Returns True when a wipe ran (caller must mark the run unsuccessful).
+        """
+
+        if not self.contamination_gate:
+            return False
+        marker = _synthetic_contamination_marker(task)
+        if marker is None:
+            return False
+        if marker not in self.workspace.diff():
+            return False
+        restored = self.workspace.restore_baseline()
+        log.append(
+            "record_observation",
+            payload={
+                "action_id": "contamination_gate_fail_closed",
+                "action_type": "finish",
+                "success": False,
+                "message": (
+                    "contamination gate fail-closed: synthetic leak marker still "
+                    "present at step budget; restored baseline (empty submit)"
+                ),
+                "data": {
+                    "gate": "proxy::contamination",
+                    "fail_closed": True,
+                    "leak_marker": marker,
+                    "restored_files": restored,
+                },
+            },
+            source="contamination_gate",
+        )
+        return True
 
     def _execute(self, action: CodingAction, ledger: CodingLedger) -> CodingObservation:
         try:

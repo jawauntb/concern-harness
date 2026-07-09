@@ -152,6 +152,79 @@ class OpenAICompatibleHarnessAdapter:
             headers.setdefault("authorization", f"Bearer {self.api_key}")
         return headers
 
+    def _post(self, body: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import httpx  # type: ignore
+        except ImportError as e:
+            raise RuntimeError("httpx not installed; pip install httpx") from e
+
+        response = httpx.post(
+            f"{self.base_url}{self.endpoint_path}",
+            headers=self._headers(),
+            json=body,
+            timeout=self.timeout,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        usage = payload.get("usage") or {}
+        self.last_tokens = int(
+            usage.get("total_tokens")
+            or usage.get("output_tokens")
+            or payload.get("_meta", {}).get("tokens", 0)
+            or 0
+        )
+        return payload
+
+    def complete(
+        self,
+        messages: list[dict],
+        *,
+        schema: dict | None = None,
+        tools: list[dict] | None = None,
+        temperature: float | None = None,
+        max_tokens: int | None = None,
+    ) -> dict:
+        """Chat-completions ``.complete()`` for :class:`ModelCodingAgent`.
+
+        Lets OpenRouter / Fugu-style OpenAI-compatible endpoints drive the
+        coding loop the same way :class:`ProviderLLMAdapter` does for Anthropic.
+        ``schema`` / ``tools`` are accepted for call-site compatibility; the
+        request still asks for JSON in the system prompt when a schema is set.
+        """
+
+        system = self.system_prompt
+        formatted: list[dict[str, Any]] = []
+        for message in messages:
+            role = message.get("role")
+            if role == "system":
+                system = str(message.get("content") or system)
+            else:
+                formatted.append(
+                    {"role": str(role or "user"), "content": message.get("content", "")}
+                )
+        if schema is not None and "Return only JSON" not in system and "JSON" not in system:
+            system = (
+                f"{system}\nReturn only a JSON object matching this schema hint: "
+                f"{json.dumps(schema, sort_keys=True)}."
+            )
+        body: dict[str, Any] = {
+            "model": self.model,
+            "temperature": self.temperature if temperature is None else temperature,
+            "max_tokens": self.max_tokens if max_tokens is None else max_tokens,
+            "messages": [{"role": "system", "content": system}, *formatted],
+        }
+        if tools:
+            body["tools"] = tools
+        payload = self._post(body)
+        # Normalize to the ProviderLLMAdapter response shape coding agents expect.
+        if "choices" in payload:
+            return payload
+        text = _content_from_openai_body(payload)
+        return {
+            "choices": [{"message": {"content": text}}],
+            "usage": {"total_tokens": self.last_tokens},
+        }
+
     def _body(self, state: dict, ledger: dict) -> dict[str, Any]:
         user_payload = {
             "state": state,
@@ -169,25 +242,7 @@ class OpenAICompatibleHarnessAdapter:
         }
 
     def propose_action(self, state: dict, ledger: dict) -> ActionProposal:
-        try:
-            import httpx  # type: ignore
-        except ImportError as e:
-            raise RuntimeError("httpx not installed; pip install httpx") from e
-
-        response = httpx.post(
-            f"{self.base_url}{self.endpoint_path}",
-            headers=self._headers(),
-            json=self._body(state, ledger),
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-        body = response.json()
-        usage = body.get("usage") or {}
-        self.last_tokens = int(
-            usage.get("total_tokens")
-            or usage.get("output_tokens")
-            or body.get("_meta", {}).get("tokens", 0)
-        )
+        body = self._post(self._body(state, ledger))
         if "action_id" in body or "action" in body:
             action = normalize_action_dict(body, ledger)
         else:

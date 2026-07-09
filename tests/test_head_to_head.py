@@ -43,6 +43,20 @@ def test_synthetic_marker_from_metadata(tmp_path: Path) -> None:
     assert _synthetic_contamination_marker(_toy_task(tmp_path, name="clean")) is None
 
 
+class AlwaysPass:
+    def verify(self, workspace, ledger):
+        from lbah.coding.verifier import CodingCheckResult
+
+        return [
+            CodingCheckResult(
+                name="always",
+                passed=True,
+                reason="ok",
+                weight=1.0,
+            )
+        ]
+
+
 def test_contamination_gate_blocks_marker_in_diff(tmp_path: Path) -> None:
     marker = "LEAK_MARKER:toy"
     task = _toy_task(tmp_path, marker=marker)
@@ -70,20 +84,6 @@ def test_contamination_gate_blocks_marker_in_diff(tmp_path: Path) -> None:
             CodingAction(action_id="f2", action_type="finish", payload={}),
         ]
     )
-    # Verifier that always passes so finish succeeds before the gate.
-    class AlwaysPass:
-        def verify(self, workspace, ledger):
-            from lbah.coding.verifier import CodingCheckResult
-
-            return [
-                CodingCheckResult(
-                    name="always",
-                    passed=True,
-                    reason="ok",
-                    weight=1.0,
-                )
-            ]
-
     runner = CodingHarnessRunner(
         agent,
         CodingWorkspace(task.repo_path, task),
@@ -100,6 +100,55 @@ def test_contamination_gate_blocks_marker_in_diff(tmp_path: Path) -> None:
         if step["action"]["action_type"] == "finish"
     ]
     assert any("contamination gate" in m for m in finish_msgs)
+
+
+def test_contamination_gate_fail_closed_empties_diff_at_budget(tmp_path: Path) -> None:
+    """If the marker remains when steps run out, submit an empty patch."""
+
+    marker = "LEAK_MARKER:toy"
+    task = _toy_task(tmp_path, marker=marker, name="fail_closed")
+    task.max_steps = 2
+    agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="e1",
+                action_type="edit_file",
+                payload={
+                    "path": "math_utils.py",
+                    "old": "return a - b",
+                    "new": f"return a + b  # {marker}",
+                },
+            ),
+            CodingAction(action_id="f1", action_type="finish", payload={}),
+            # No revise within budget — old behavior would leak the marker.
+        ]
+    )
+    runner = CodingHarnessRunner(
+        agent,
+        CodingWorkspace(task.repo_path, task),
+        verifier=AlwaysPass(),  # type: ignore[arg-type]
+        contamination_gate=True,
+    )
+    result = runner.run(task)
+    assert result.success is False
+    assert result.final_diff == ""
+    assert marker not in result.final_diff
+    assert (Path(task.repo_path) / "math_utils.py").read_text() == (
+        "def add(a, b):\n    return a - b\n"
+    )
+    assert any(
+        c.name == "contamination_gate_fail_closed" and not c.passed for c in result.checks
+    )
+
+
+def test_restore_baseline_wipes_edits(tmp_path: Path) -> None:
+    task = _toy_task(tmp_path, name="restore")
+    workspace = CodingWorkspace(task.repo_path, task)
+    workspace.edit_file("math_utils.py", old="return a - b", new="return a + b")
+    assert workspace.diff()
+    restored = workspace.restore_baseline()
+    assert "math_utils.py" in restored
+    assert workspace.diff() == ""
 
 
 def test_perturb_replaces_leak_marker() -> None:

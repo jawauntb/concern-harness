@@ -64,7 +64,13 @@ image = (
 def _modal_secrets() -> list[modal.Secret]:
     values: dict[str, str | None] = {
         key: value
-        for key in ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "SAKANA_API_KEY"]
+        for key in [
+            "ANTHROPIC_API_KEY",
+            "OPENAI_API_KEY",
+            "SAKANA_API_KEY",
+            "OPENROUTER_API_KEY",
+            "OPENROUTER_BASE_URL",
+        ]
         if (value := os.environ.get(key))
     }
     return [modal.Secret.from_dict(values)] if values else []
