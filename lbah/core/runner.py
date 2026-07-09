@@ -16,6 +16,7 @@ from .schemas import (
 from .certificates import make_certificate
 from .scorer import Scorer
 from .ledger import make_ledger, merge_variables
+from .events import events_from_ledger
 
 
 @dataclass
@@ -41,6 +42,8 @@ class LoadBearingHarness:
         scorer: Scorer | None = None,
         mode: str = "guarded",
         thresholds: dict[str, float] | None = None,
+        gauge_probe_budget: int = 0,
+        gauge_min_concern: float = 0.5,
     ):
         self.agent = agent
         self.env = env
@@ -48,6 +51,11 @@ class LoadBearingHarness:
         self.scorer = scorer or Scorer()
         self.mode = mode
         self.thresholds = thresholds or {}
+        # Gauge-fixing counterfactuals re-invoke the agent, so they are off by
+        # default. Set gauge_probe_budget > 0 to probe the top-N highest-concern
+        # variables per step (see ProxyAdversary and core.events).
+        self.gauge_probe_budget = gauge_probe_budget
+        self.gauge_min_concern = gauge_min_concern
 
     # ------------------------------------------------------------------
 
@@ -57,6 +65,11 @@ class LoadBearingHarness:
         variables = self.modules.concern_mapper.extract(task, state)
         surfaces = self.modules.surface_mapper.identify(task, variables)
         ledger = make_ledger(task, variables, surfaces)
+        # Append-only mirror of the ledger. The runner keeps `ledger` as the
+        # working object modules read/mutate, and mirrors every mutation into
+        # `log` so log.project() stays equal to `ledger`. The log is what the
+        # gauge-fixing probe forks from.
+        log = events_from_ledger(ledger)
 
         certificates: list[LoadBearingCertificate] = []
         tokens = 0
@@ -70,7 +83,27 @@ class LoadBearingHarness:
             tokens += getattr(self.agent, "last_tokens", 0) or 0
 
             transport = self.modules.transport_auditor.check(proposal, ledger, state)
-            proxy = self.modules.proxy_adversary.check(proposal, ledger, state, self.env)
+            if self.gauge_probe_budget > 0:
+                def commit_fn(projected, _state=state):
+                    # Re-derive the commitment the agent would make from a given
+                    # ledger projection. Only propose_action is called (never
+                    # observe), so agent history is not disturbed by the probe.
+                    return self.agent.propose_action(
+                        _state.model_dump(), projected.model_dump()
+                    ).payload
+
+                proxy = self.modules.proxy_adversary.check(
+                    proposal,
+                    ledger,
+                    state,
+                    self.env,
+                    log=log,
+                    commit_fn=commit_fn,
+                    gauge_budget=self.gauge_probe_budget,
+                    gauge_min_concern=self.gauge_min_concern,
+                )
+            else:
+                proxy = self.modules.proxy_adversary.check(proposal, ledger, state, self.env)
             if self.modules.orchestration_auditor is not None:
                 orchestration = self.modules.orchestration_auditor.check(proposal, ledger, state)
                 transport.extend(r for r in orchestration if r.gate_kind == "transport")
@@ -115,6 +148,12 @@ class LoadBearingHarness:
                         v = ledger.by_id(vid)
                         if v is not None:
                             v.freshness = 1.0
+                            log.append(
+                                "set_freshness",
+                                variable_id=vid,
+                                payload={"freshness": 1.0},
+                                source="reopenability_governor",
+                            )
                 self.agent.observe(state.model_dump())
             elif cert.decision == "ask_user":
                 state = self.env.ask_user_or_simulator(cert, state)
@@ -126,7 +165,28 @@ class LoadBearingHarness:
             # Allow modules to append newly-discovered concern variables.
             new_vars = getattr(self.modules.proxy_adversary, "surfaced_variables", [])
             if new_vars:
+                before = {
+                    v.id: (v.value, v.concern, v.freshness) for v in ledger.variables
+                }
                 ledger.variables = merge_variables(ledger.variables, new_vars)
+                # Mirror the *result* of the merge (which prefers higher concern)
+                # so the log's projection stays equal to the working ledger.
+                for v in ledger.variables:
+                    sig = (v.value, v.concern, v.freshness)
+                    if v.id not in before:
+                        log.append(
+                            "declare_variable",
+                            variable_id=v.id,
+                            payload=v.model_dump(),
+                            source=v.source,
+                        )
+                    elif before[v.id] != sig:
+                        log.append(
+                            "revise_variable",
+                            variable_id=v.id,
+                            payload=v.model_dump(),
+                            source=v.source,
+                        )
                 self.modules.proxy_adversary.surfaced_variables = []  # reset
 
             if self.env.done(state):

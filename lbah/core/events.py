@@ -309,18 +309,25 @@ def gauge_fixing_probe(
     make from it (in real use, the agent proposing an action; in tests, any
     deterministic function). The probe:
 
-    1. forks the log at the point the variable was last set (``at_seq``, or the
-       seq of its most recent lineage event),
-    2. appends a ``perturb_variable`` event swapping in ``proxy_value``,
+    1. forks the log at its head (``at_seq``, default: the latest seq) so the
+       branch carries the full state,
+    2. appends a ``perturb_variable`` event swapping in ``proxy_value`` (which
+       overrides the variable by last-write-wins),
     3. projects both logs and compares ``commit_fn`` on each.
 
     If the commitment is invariant to the swap, the distinction is a gauge
     freedom, not a load-bearing variable.
+
+    By default the fork keeps every event and changes only the target variable,
+    because LBAH re-derives the commitment externally (via ``commit_fn``) rather
+    than through reactive graph behaviors. Pass ``at_seq`` to truncate instead —
+    useful only when downstream events are meant to be recomputed from the fork
+    point.
     """
     lineage = log.lineage(variable_id)
     if not lineage:
         raise KeyError(f"variable {variable_id!r} has no events to fork from")
-    fork_seq = at_seq if at_seq is not None else lineage[-1].seq
+    fork_seq = at_seq if at_seq is not None else max(e.seq for e in log.events)
 
     branch = log.fork_at(fork_seq, label=f"gauge::{variable_id}")
     branch.append(

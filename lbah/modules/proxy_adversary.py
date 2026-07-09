@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
-from typing import Any, cast
+from typing import Any, Callable, cast
 
 from ..core.schemas import ActionProposal, ConcernLedger, ConcernVariable, GateResult, State
+from ..core.events import ConcernEventLog, gauge_fixing_probe
 
 
 def _all_leaf_values(value: Any) -> list[Any]:
@@ -50,6 +51,11 @@ class ProxyAdversary:
         ledger: ConcernLedger,
         state: State,
         env: Any = None,
+        *,
+        log: ConcernEventLog | None = None,
+        commit_fn: Callable[[ConcernLedger], Any] | None = None,
+        gauge_budget: int = 0,
+        gauge_min_concern: float = 0.5,
     ) -> list[GateResult]:
         results: list[GateResult] = []
         payload_leaves = [str(x).lower() for x in _all_leaf_values(proposal.payload) if x is not None]
@@ -175,4 +181,44 @@ class ProxyAdversary:
             )
         history.append(current)
 
+        # 6. Gauge-fixing intervention. Payload inspection (checks 1-5) can only
+        # see whether a value is *present*; it cannot tell whether the value did
+        # any work. When given an event log and a way to re-derive the
+        # commitment, we run a real counterfactual: fork the log where each
+        # high-concern variable was set, swap in a gauge-equivalent value, and
+        # re-project the commitment. If the commitment is invariant to the swap,
+        # the distinction is not load-bearing (decodability-is-not-load).
+        if log is not None and commit_fn is not None and gauge_budget > 0:
+            candidates = sorted(
+                (
+                    v
+                    for v in ledger.variables
+                    if v.value is not None and v.concern >= gauge_min_concern
+                ),
+                key=lambda v: v.concern,
+                reverse=True,
+            )[:gauge_budget]
+            for var in candidates:
+                alt = self._gauge_alt_value(var, ledger)
+                try:
+                    probe = gauge_fixing_probe(log, var.id, alt, commit_fn)
+                except KeyError:
+                    # Variable not represented in the log (should not happen when
+                    # the runner mirrors the ledger); skip rather than crash.
+                    continue
+                results.append(probe.as_gate_result())
+
         return results
+
+    @staticmethod
+    def _gauge_alt_value(var: ConcernVariable, ledger: ConcernLedger) -> Any:
+        """A gauge-equivalent alternative value for ``var``.
+
+        Prefer another high-concern variable's value (a real distractor the
+        agent could plausibly have committed instead); fall back to a sentinel
+        guaranteed to differ from the current value.
+        """
+        for other in sorted(ledger.variables, key=lambda o: o.concern, reverse=True):
+            if other.id != var.id and other.value is not None and other.value != var.value:
+                return other.value
+        return f"__gauge_alt__:{var.id}"
