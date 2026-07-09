@@ -23,6 +23,17 @@ from .read_set import (
     read_set_commit_fn,
     run_read_set_probe,
 )
+from .inject import (
+    InjectedLeak,
+    InjectSliceResult,
+    LEAK_REL_PATH,
+    apply_injected_leak,
+    build_injected_leak,
+    gold_patch_fingerprint,
+    inject_leaks_into_instances,
+    write_leak_carrier,
+    write_leak_carrier_from_instance,
+)
 from .slice import (
     ContaminationInstance,
     generate_slice,
@@ -33,13 +44,18 @@ from .slice import (
 __all__ = [
     "ContaminationInstance",
     "ContaminationProbeResult",
+    "InjectedLeak",
+    "InjectSliceResult",
+    "LEAK_REL_PATH",
     "OPERATORS",
     "ReadCarrier",
     "ReadSetInstance",
     "ReadSetProbeResult",
     "ReadVerdict",
     "agent_for",
+    "apply_injected_leak",
     "apply_operator",
+    "build_injected_leak",
     "calibrate_surface_perturbations",
     "concern_event_log_from_coding",
     "concern_event_log_from_instance",
@@ -47,6 +63,8 @@ __all__ = [
     "derived_agent",
     "generate_read_set_slice",
     "generate_slice",
+    "gold_patch_fingerprint",
+    "inject_leaks_into_instances",
     "leak_tracking_agent",
     "make_instance",
     "make_read_set_instance",
@@ -57,5 +75,7 @@ __all__ = [
     "run_contamination_probe",
     "run_contamination_probe_on_real_diff",
     "run_read_set_probe",
+    "write_leak_carrier",
+    "write_leak_carrier_from_instance",
     "write_toy_repo",
 ]

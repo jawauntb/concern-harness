@@ -263,11 +263,18 @@ SWE-bench Pro) samples from a distribution where those conditions are
 met at scale without prompting.
 
 **Remaining follow-ups.** (b) Modal SWE-bench with an injected-leak
-sidecar per instance, using the Track C replay capture so the probe's
-second run is reproducible. (c) A base-rate check on hosted checkpoints
-for which SWE-bench Pro contamination has already been quantified —
-detector positives on an already-known-contaminated distribution would
-be the strongest external validation.
+sidecar per instance — **dataset + checkout path shipped** in
+`lbah/coding/contamination/inject.py` /
+`scripts/inject_swebench_leaks.py` (carrier =
+`.lbah/leak/git_log.txt` from the gold patch; fingerprint = distinctive
+added gold line; markers sidecar for
+`--enable-contamination-probe`). Live Modal n=5 catch/FP not yet run
+(needs doppler + credits); see
+`docs/results/SWEBENCH_LEAK_INJECT.md`. Use Track C replay capture so
+the probe's second run is reproducible. (c) A base-rate check on hosted
+checkpoints for which SWE-bench Pro contamination has already been
+quantified — detector positives on an already-known-contaminated
+distribution would be the strongest external validation.
 
 Design note: this pilot leaves the Modal path scaffolded but not
 launched. That path needs a leak-injected variant of the dataset (an
@@ -309,9 +316,10 @@ Corresponding anti-cheat rules:
   to real SWE-bench is real.
 - **N is small.** The live-agent pilot (4.4) is small-N by design;
   cost of a two-way real gauge motivates the marker heuristic there.
-- **Modal contamination sidecar is scaffolded, not launched.** Real
-  Modal graded runs would need an injected-leak variant of SWE-bench
-  Lite (dataset design work, not yet done).
+- **Modal contamination sidecar is scaffolded, not launched.** The
+  leak-injected Lite variant (carrier + markers JSONL + checkout plant)
+  is implemented; real Modal graded runs still need doppler + credits
+  (`docs/results/SWEBENCH_LEAK_INJECT.md`).
 - **Replay trust.** The gauge probe is only as trustworthy as replay
   determinism. Track C ships PoE-style envelope capture as
   infrastructure; the empirical claim is not yet dependent on it.
