@@ -87,6 +87,9 @@ def generate_instance(
     run_id: str,
     seal_git_history: bool = False,
     allow_git_history: bool = False,
+    capture_io: bool = False,
+    contamination_gate: bool = False,
+    coding_prompt: str = "lbah",
 ) -> dict[str, Any]:
     instance_id = str(raw_instance["instance_id"])
     with tempfile.TemporaryDirectory() as tmp:
@@ -121,6 +124,8 @@ def generate_instance(
             "--timeout",
             str(timeout_seconds),
             "--skip-pass-to-pass",
+            "--coding-prompt",
+            coding_prompt,
             "--out",
             str(out_dir),
         ]
@@ -128,6 +133,10 @@ def generate_instance(
             cmd.append("--seal-git-history")
         elif allow_git_history:
             cmd.append("--allow-git-history")
+        if capture_io:
+            cmd.append("--capture-io")
+        if contamination_gate:
+            cmd.append("--contamination-gate")
         proc = subprocess.run(
             cmd,
             cwd=REMOTE_ROOT,
@@ -161,6 +170,9 @@ def main(
     timeout_seconds: float = 120.0,
     seal_git_history: bool = False,
     allow_git_history: bool = False,
+    capture_io: bool = False,
+    contamination_gate: bool = False,
+    coding_prompt: str = "lbah",
 ) -> None:
     rows = [
         json.loads(line)
@@ -171,6 +183,8 @@ def main(
     destination = Path(out)
     official_dir = destination / "official"
     official_dir.mkdir(parents=True, exist_ok=True)
+    if coding_prompt not in {"lbah", "raw"}:
+        raise SystemExit("--coding-prompt must be 'lbah' or 'raw'")
 
     results = list(
         generate_instance.map(
@@ -183,6 +197,9 @@ def main(
                 "run_id": run_id,
                 "seal_git_history": seal_git_history,
                 "allow_git_history": allow_git_history and not seal_git_history,
+                "capture_io": capture_io,
+                "contamination_gate": contamination_gate,
+                "coding_prompt": coding_prompt,
             },
             order_outputs=True,
         )

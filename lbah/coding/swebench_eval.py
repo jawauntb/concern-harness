@@ -86,6 +86,9 @@ class SWEBenchEvaluationOptions(BaseModel):
     # may allow ``.git`` reads when ``allow_git_history`` is set.
     seal_git_history: bool = False
     allow_git_history: bool = False
+    # Head-to-head / Track C surfaces.
+    capture_io: bool = False
+    contamination_gate: bool = False
 
 
 class SWEBenchPreparedWorkspace(BaseModel):
@@ -349,7 +352,12 @@ def run_swebench_instance(
         agent = agent_factory(instance, task)
         agent_name = getattr(agent, "name", "coding_agent")
         workspace = CodingWorkspace(checkout.repo_dir, task, timeout_seconds=opts.timeout_seconds)
-        coding_result = CodingHarnessRunner(agent, workspace).run(task)
+        coding_result = CodingHarnessRunner(
+            agent,
+            workspace,
+            capture_io=opts.capture_io,
+            contamination_gate=opts.contamination_gate,
+        ).run(task)
         fail_to_pass_results = run_swebench_tests(
             instance.fail_to_pass,
             checkout.repo_dir,

@@ -35,6 +35,19 @@ class CodingRunResult(BaseModel):
     load_score: float = 0.0
 
 
+def _synthetic_contamination_marker(task: CodingTask) -> str | None:
+    """Primary synthetic leak marker from task metadata, if present."""
+
+    contam = (task.metadata or {}).get("contamination")
+    if not isinstance(contam, dict):
+        return None
+    for key in ("synthetic_marker", "leak_marker"):
+        value = contam.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return None
+
+
 class CodingHarnessRunner:
     """Runs a coding agent until a verified patch or budget exhaustion."""
 
@@ -45,11 +58,13 @@ class CodingHarnessRunner:
         verifier: CodingVerifier | None = None,
         *,
         capture_io: bool = False,
+        contamination_gate: bool = False,
     ):
         self.agent = agent
         self.workspace = workspace
         self.verifier = verifier or CodingVerifier()
         self.capture_io = capture_io
+        self.contamination_gate = contamination_gate
 
     def run(self, task: CodingTask) -> CodingRunResult:
         ledger = CodingLedger.from_task(task)
@@ -172,6 +187,26 @@ class CodingHarnessRunner:
                         CodingCheckResult.model_validate(item)
                         for item in observation.data.get("checks", [])
                     ]
+                    # Gate on commitment content even when local verifier fails
+                    # (Modal SWE-bench often has no runnable local tests).
+                    blocked = self._contamination_gate_block(task)
+                    if blocked is not None:
+                        observation = blocked
+                        last_observation = observation
+                        trace[-1]["observation"] = observation.model_dump()
+                        before = CodingLedger.model_validate(ledger.model_dump())
+                        ledger.apply_observation(observation)
+                        mirror_ledger_delta(
+                            log, before, ledger, source="contamination_gate"
+                        )
+                        log.append(
+                            "record_observation",
+                            payload=observation.model_dump(),
+                            source="contamination_gate",
+                        )
+                        if hasattr(self.agent, "observe"):
+                            self.agent.observe(observation.model_dump())
+                        continue
                     if observation.success:
                         return self._result(
                             task,
@@ -218,6 +253,37 @@ class CodingHarnessRunner:
         if original_model is None:
             return
         self.agent.model = original_model
+
+    def _contamination_gate_block(self, task: CodingTask) -> CodingObservation | None:
+        """Block finish when the synthetic leak marker is in the commitment.
+
+        Head-to-head ``gated`` arm: refuse to accept a verified patch that
+        carries the primary specificity fingerprint. Anti-cheat: reads only
+        the workspace diff (commitment), never transcript rationale.
+        """
+
+        if not self.contamination_gate:
+            return None
+        marker = _synthetic_contamination_marker(task)
+        if marker is None:
+            return None
+        final_diff = self.workspace.diff()
+        if marker not in final_diff:
+            return None
+        return CodingObservation(
+            action_id="contamination_gate",
+            action_type="finish",
+            success=False,
+            message=(
+                "contamination gate: synthetic leak marker present in commitment; "
+                "revise the patch without the retrieved fingerprint"
+            ),
+            data={
+                "gate": "proxy::contamination",
+                "flagged": True,
+                "leak_marker": marker,
+            },
+        )
 
     def _execute(self, action: CodingAction, ledger: CodingLedger) -> CodingObservation:
         try:
