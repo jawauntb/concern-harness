@@ -14,11 +14,14 @@ obligations in ``docs/THEORY.md`` already want:
 * **Transport** becomes a lineage query — :meth:`ConcernEventLog.lineage`
   returns every event that touched a variable, in order, so provenance is
   read rather than inferred.
-* **Gauge-fixing** becomes a real intervention — :meth:`ConcernEventLog.fork_at`
-  branches the log at the event where a variable was set, and
-  :func:`gauge_fixing_probe` perturbs it to a gauge-equivalent proxy value,
-  re-projects, and diffs the resulting commitment. If the commitment is
-  unchanged, the `decodability-is-not-load` law fires.
+* **Gauge-fixing** becomes a real intervention — :func:`gauge_fixing_probe`
+  substitutes a gauge-equivalent value for a concern variable *everywhere it
+  appears in the input the agent reads* (the ledger node and the task metadata
+  the ledger embeds), then diffs the resulting commitment. Perturbing a single
+  carrier would miss agents that read the same distinction from another carrier;
+  the value-sweep perturbs the distinction, not one node. The verdict is scoped
+  by whether the value was present at all, so out-of-ledger provenance is not
+  mistaken for a proxy (see :class:`GaugeProbeResult`).
 * **Reopenability** becomes a freshness event over a temporal log rather than
   an in-place field poke.
 
@@ -29,7 +32,7 @@ part in the fold, so replays are reproducible.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, Optional
+from typing import Any, Callable, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -255,44 +258,115 @@ def events_from_ledger(ledger: ConcernLedger) -> ConcernEventLog:
     return log
 
 
+GaugeVerdict = Literal[
+    "gauge_fixed",                 # commitment moved when the distinction was perturbed
+    "invariant_but_value_present", # value is in the commitment but tracks no swept carrier
+    "invariant_and_absent",        # value neither moves the commitment nor appears in it
+]
+
+
 class GaugeProbeResult(BaseModel):
-    """Outcome of a counterfactual gauge-fixing probe."""
+    """Outcome of a counterfactual gauge-fixing probe.
+
+    The verdict is deliberately three-way, not pass/fail, because a gauge
+    failure is only damning *relative to transport* (is the value present in
+    the commitment at all?):
+
+    * ``gauge_fixed`` — perturbing the distinction moved the commitment. The
+      variable is load-bearing. **Pass.**
+    * ``invariant_but_value_present`` — the value appears in the commitment but
+      is invariant to perturbing every ledger/task carrier. Its provenance is
+      outside the swept bundle (an external tool, the agent's own memory, or a
+      hardcoded constant). Ambiguous, so it does **not** block — but it is
+      flagged and lightly dinged, because it cannot be verified as load-bearing.
+    * ``invariant_and_absent`` — the value neither moves the commitment nor
+      appears in it. A clean proxy: `decodability-is-not-load`. **Block.**
+    """
 
     variable_id: str
     proxy_value: Any | None
-    fork_seq: int
+    verdict: GaugeVerdict
     commitment_changed: bool
+    value_present: bool = False
     base_commitment: Any | None = None
     alt_commitment: Any | None = None
 
     def as_gate_result(self) -> GateResult:
-        """A proxy gate: the claim is identified only if the commitment moved.
-
-        ``passed`` is True when perturbing the variable to a gauge-equivalent
-        proxy value *changed* the commitment. An unchanged commitment means the
-        distinction did no work — `decodability-is-not-load`.
-        """
+        if self.verdict == "gauge_fixed":
+            passed, score, reason = (
+                True,
+                1.0,
+                f"commitment moved when {self.variable_id} was perturbed across "
+                "all carriers — gauge fixed",
+            )
+        elif self.verdict == "invariant_but_value_present":
+            passed, score, reason = (
+                True,
+                0.75,
+                f"{self.variable_id}'s value is present in the commitment but "
+                "invariant to perturbing every ledger/task carrier — provenance "
+                "is outside the swept bundle (external tool, memory, or hardcoded); "
+                "not verifiable as load-bearing here",
+            )
+        else:  # invariant_and_absent
+            passed, score, reason = (
+                False,
+                0.0,
+                f"commitment invariant to {self.variable_id} and its value is "
+                "absent — distinction is not load-bearing (decodability-is-not-load)",
+            )
         return GateResult(
             gate_name="proxy::gauge_fixing",
             gate_kind="proxy",
-            passed=self.commitment_changed,
-            score=1.0 if self.commitment_changed else 0.0,
-            reason=(
-                f"commitment changed when {self.variable_id} was perturbed — gauge fixed"
-                if self.commitment_changed
-                else (
-                    f"commitment invariant to {self.variable_id}; distinction is not "
-                    "load-bearing (decodability-is-not-load)"
-                )
-            ),
+            passed=passed,
+            score=score,
+            reason=reason,
             evidence={
                 "variable_id": self.variable_id,
                 "proxy_value": self.proxy_value,
-                "fork_seq": self.fork_seq,
+                "verdict": self.verdict,
+                "value_present": self.value_present,
             },
             concern_id=self.variable_id,
             weight=1.0,
         )
+
+
+def _sweep_value(obj: Any, old: Any, new: Any) -> Any:
+    """Return a copy of ``obj`` with every leaf equal to ``old`` replaced by ``new``.
+
+    Type-strict equality avoids ``1 == True`` style collisions. Only whole-leaf
+    matches are replaced (never substrings), so a value appearing inside a
+    longer string is left alone.
+    """
+    if isinstance(obj, dict):
+        return {k: _sweep_value(v, old, new) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sweep_value(v, old, new) for v in obj]
+    if type(obj) is type(old) and obj == old:
+        return new
+    return obj
+
+
+def _leaf_values(obj: Any) -> list[Any]:
+    out: list[Any] = []
+
+    def walk(v: Any) -> None:
+        if isinstance(v, dict):
+            for x in v.values():
+                walk(x)
+        elif isinstance(v, (list, tuple)):
+            for x in v:
+                walk(x)
+        else:
+            out.append(v)
+
+    walk(obj)
+    return out
+
+
+def _value_present(old: Any, commitment: Any) -> bool:
+    return any(type(l) is type(old) and l == old for l in _leaf_values(commitment))
 
 
 def gauge_fixing_probe(
@@ -300,8 +374,6 @@ def gauge_fixing_probe(
     variable_id: str,
     proxy_value: Any,
     commit_fn: Callable[[ConcernLedger], Any],
-    *,
-    at_seq: Optional[int] = None,
 ) -> GaugeProbeResult:
     """Run a gauge-fixing intervention on ``variable_id``.
 
@@ -309,41 +381,58 @@ def gauge_fixing_probe(
     make from it (in real use, the agent proposing an action; in tests, any
     deterministic function). The probe:
 
-    1. forks the log at its head (``at_seq``, default: the latest seq) so the
-       branch carries the full state,
-    2. appends a ``perturb_variable`` event swapping in ``proxy_value`` (which
-       overrides the variable by last-write-wins),
-    3. projects both logs and compares ``commit_fn`` on each.
+    1. projects the log to the working ledger,
+    2. builds an alternate projection where the variable's value ``v`` is
+       replaced by ``proxy_value`` **everywhere it appears** in the ledger
+       bundle — including the task metadata the ledger embeds — so an agent that
+       reads the distinction from any of those carriers sees the swap,
+    3. compares ``commit_fn`` on the two projections.
 
-    If the commitment is invariant to the swap, the distinction is a gauge
-    freedom, not a load-bearing variable.
+    The probe intervenes on the *distinction*, not on a single carrier of it.
+    A single-node perturbation would falsely mark an agent that sources the
+    value from task metadata (rather than the ledger node) as not-load-bearing.
 
-    By default the fork keeps every event and changes only the target variable,
-    because LBAH re-derives the commitment externally (via ``commit_fn``) rather
-    than through reactive graph behaviors. Pass ``at_seq`` to truncate instead —
-    useful only when downstream events are meant to be recomputed from the fork
-    point.
+    Note: the sweep reaches carriers embedded in the ledger/task. It does not
+    reach ``State.scratch`` or values the agent derives outside its input; those
+    surface as ``invariant_but_value_present`` rather than a false block.
     """
-    lineage = log.lineage(variable_id)
-    if not lineage:
-        raise KeyError(f"variable {variable_id!r} has no events to fork from")
-    fork_seq = at_seq if at_seq is not None else max(e.seq for e in log.events)
+    ledger = log.project()
+    var = ledger.by_id(variable_id)
+    if var is None:
+        raise KeyError(f"variable {variable_id!r} is not present in the ledger projection")
 
-    branch = log.fork_at(fork_seq, label=f"gauge::{variable_id}")
-    branch.append(
-        "perturb_variable",
-        variable_id=variable_id,
-        payload={"value": proxy_value},
-        source="gauge_fixing_probe",
-    )
+    old = var.value
+    base_ledger = ledger
+    if old is None:
+        # No value to sweep — override just the node so the probe still runs.
+        dump = ledger.model_dump()
+        for entry in dump.get("variables", []):
+            if entry.get("id") == variable_id:
+                entry["value"] = proxy_value
+        alt_ledger = ConcernLedger.model_validate(dump)
+    else:
+        alt_ledger = ConcernLedger.model_validate(
+            _sweep_value(ledger.model_dump(), old, proxy_value)
+        )
 
-    base_commit = commit_fn(log.project())
-    alt_commit = commit_fn(branch.project())
+    base_commit = commit_fn(base_ledger)
+    alt_commit = commit_fn(alt_ledger)
+    changed = base_commit != alt_commit
+    present = _value_present(old, base_commit) if old is not None else False
+
+    if changed:
+        verdict: GaugeVerdict = "gauge_fixed"
+    elif present:
+        verdict = "invariant_but_value_present"
+    else:
+        verdict = "invariant_and_absent"
+
     return GaugeProbeResult(
         variable_id=variable_id,
         proxy_value=proxy_value,
-        fork_seq=fork_seq,
-        commitment_changed=base_commit != alt_commit,
+        verdict=verdict,
+        commitment_changed=changed,
+        value_present=present,
         base_commitment=base_commit,
         alt_commitment=alt_commit,
     )
