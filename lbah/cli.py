@@ -724,6 +724,18 @@ def code_run(
 @click.option("--official-timeout", default=None, type=int)
 @click.option("--official-namespace", default="")
 @click.option("--subset-sizes", default="5,20,50", show_default=True, help="Comma-separated official subset manifest sizes.")
+@click.option(
+    "--seal-git-history/--no-seal-git-history",
+    default=False,
+    show_default=True,
+    help="Cursor-style seal: wipe .git to a single commit and block remote-fetch shells.",
+)
+@click.option(
+    "--allow-git-history/--no-allow-git-history",
+    default=False,
+    show_default=True,
+    help="Unsealed arm: allow reading .git (ignored when --seal-git-history).",
+)
 @click.option("--out", "out_dir", required=True, help="Directory to write suite artifacts.")
 def code_swebench(
     instances_path: str,
@@ -746,6 +758,8 @@ def code_swebench(
     official_timeout: int | None,
     official_namespace: str,
     subset_sizes: str,
+    seal_git_history: bool,
+    allow_git_history: bool,
     out_dir: str,
 ) -> None:
     """Run a SWE-bench-style smoke suite through LBAH-Code."""
@@ -783,6 +797,8 @@ def code_swebench(
             max_steps=max_steps,
             timeout_seconds=timeout_seconds,
             include_pass_to_pass=include_pass_to_pass,
+            seal_git_history=seal_git_history,
+            allow_git_history=allow_git_history and not seal_git_history,
             backend=SWEBenchExecutionBackend(
                 kind=cast(SWEBenchBackendKind, backend),
                 docker_image=docker_image or None,

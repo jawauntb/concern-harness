@@ -139,6 +139,16 @@ class CodingWorkspace:
         cmd = shlex.split(command) if isinstance(command, str) else [str(part) for part in command]
         if not cmd:
             raise ValueError("empty command")
+        if self.task.metadata.get("seal_git_history") and _command_looks_networked(cmd):
+            return CommandResult(
+                command=cmd,
+                returncode=126,
+                stdout="",
+                stderr=(
+                    "sealed harness: network / remote-fetch commands are blocked "
+                    f"({cmd[0]})"
+                ),
+            )
         try:
             result = subprocess.run(
                 cmd,
@@ -204,3 +214,43 @@ class CodingWorkspace:
             for rel in self.modified_files()
             if not any(rel == item or rel.startswith(f"{item}/") for item in allowed)
         ]
+
+
+_NETWORK_BINARIES = {
+    "curl",
+    "wget",
+    "http",
+    "https",
+    "nc",
+    "ncat",
+    "ssh",
+    "scp",
+    "sftp",
+    "ftp",
+    "aria2c",
+}
+
+
+def _command_looks_networked(cmd: list[str]) -> bool:
+    """Best-effort block of remote-fetch / clone shells under a sealed harness.
+
+    Not a full sandbox — Cursor's sealed eval also uses a network proxy. This
+    catches the common agent patterns (curl/wget/git clone/fetch/pull) without
+    blocking local ``git`` status/diff/add used by tooling.
+    """
+
+    if not cmd:
+        return False
+    binary = Path(cmd[0]).name.lower()
+    if binary in _NETWORK_BINARIES:
+        return True
+    if binary == "git" and len(cmd) >= 2:
+        sub = cmd[1].lower()
+        if sub in {"clone", "fetch", "pull", "ls-remote", "remote"}:
+            return True
+    joined = " ".join(cmd).lower()
+    if "https://" in joined or "http://" in joined or "git@" in joined:
+        if binary in {"pytest", "python", "python3", "pip", "uv"}:
+            return False
+        return True
+    return False

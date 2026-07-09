@@ -81,6 +81,11 @@ class SWEBenchEvaluationOptions(BaseModel):
     include_pass_to_pass: bool = True
     clean_work_dir: bool = True
     backend: SWEBenchExecutionBackend = Field(default_factory=SWEBenchExecutionBackend)
+    # Cursor-style sealed harness (2026-06-25): wipe history → single commit;
+    # block network-ish shell commands. Unsealed keeps full clone history and
+    # may allow ``.git`` reads when ``allow_git_history`` is set.
+    seal_git_history: bool = False
+    allow_git_history: bool = False
 
 
 class SWEBenchPreparedWorkspace(BaseModel):
@@ -257,7 +262,58 @@ def prepare_swebench_workspace(
     from .contamination.inject import write_leak_carrier_from_instance
 
     write_leak_carrier_from_instance(repo_dir, instance)
+
+    if options.seal_git_history:
+        seal_result = seal_workspace_git_history(repo_dir, options.timeout_seconds)
+        if not seal_result.passed:
+            raise SWEBenchPreparationError(
+                "failed to seal git history into a single-commit workspace",
+                kind="checkout_failed",
+                checkout=prepared,
+                command_result=seal_result,
+            )
     return prepared
+
+
+def seal_workspace_git_history(repo_dir: Path, timeout_seconds: float) -> CommandResult:
+    """Wipe ``.git`` and reinitialize as a single commit (Cursor sealed harness).
+
+    Removes future-commit / history-mining surface after checkout + test_patch.
+    Network sealing is enforced separately in :meth:`CodingWorkspace.run_command`
+    when ``task.metadata['seal_git_history']`` is true.
+    """
+
+    git_dir = repo_dir / ".git"
+    if git_dir.exists():
+        shutil.rmtree(git_dir)
+    steps = [
+        ["git", "init", "--quiet"],
+        ["git", "config", "user.email", "lbah-seal@local"],
+        ["git", "config", "user.name", "lbah-seal"],
+        ["git", "add", "-A"],
+        ["git", "commit", "--quiet", "--allow-empty", "-m", "sealed base"],
+    ]
+    stdout_parts: list[str] = []
+    stderr_parts: list[str] = []
+    last = CommandResult(command=steps[0], returncode=0)
+    for cmd in steps:
+        last = _run_command(cmd, repo_dir, timeout_seconds)
+        stdout_parts.append(last.stdout)
+        stderr_parts.append(last.stderr)
+        if not last.passed:
+            return CommandResult(
+                command=cmd,
+                returncode=last.returncode,
+                stdout="\n".join(stdout_parts).strip(),
+                stderr="\n".join(stderr_parts).strip(),
+                timed_out=last.timed_out,
+            )
+    return CommandResult(
+        command=["seal_git_history", str(repo_dir)],
+        returncode=0,
+        stdout="\n".join(stdout_parts).strip(),
+        stderr="\n".join(stderr_parts).strip(),
+    )
 
 
 def run_swebench_instance(
@@ -285,6 +341,8 @@ def run_swebench_instance(
             test_command_template=opts.test_command_template,
             allowed_paths=opts.allowed_paths,
             infer_allowed_paths=opts.infer_allowed_paths,
+            seal_git_history=opts.seal_git_history,
+            allow_git_history=opts.allow_git_history,
         )
         if opts.backend.kind == "docker":
             task = _docker_wrapped_task(task, opts.backend, checkout.repo_dir)
