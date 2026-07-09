@@ -300,6 +300,44 @@ overfit). Ship the missing integrity layer.
 | Certificates = machine-readable harness disclosure | Binding Constraint Thesis | **[position]** README framing |
 | Certify the Karpathy Loop | autoresearch / Bilevel / GEAR | **[beat]** Phase 3 framing |
 | Direct/indirect effect decomposition | causal mediation on CoT | **[borrow]** future: split transport (indirect) from bypass (direct) in the certificate |
+| Tool-use failure taxonomy | ToolFailBench, ToolScan (verify IDs) | **[borrow]** coding-stack validators — §4.1 |
+| Read-set load-bearingness | exploration-drift corpus (SUP-4083) | **[borrow]** gauge-probe generalization — §4.1 |
+
+### 4.1 Adjacent corpus (agent exploration / context) — what we take, what we don't
+
+A separate literature review (for the coding-agent exploration ticket
+SUP-4083) surveyed ~20 papers on *unpriced exploration*: agents that keep
+acquiring context past its marginal value, `AGENTS.md`/README bloat,
+localization-before-edit, and exploration-budget steering. Most of it is a
+**different axis** from LBAH — *efficiency / behavior-shaping of the
+agent-under-test*, not *epistemic gating of arbitrary agents*. LBAH wraps and
+gates any agent; it does not dictate how the agent explores. So exploration
+budgets, steering hooks, repo cards, AST-preflight, and Agentless-style staged
+control are **explicitly out of scope** for LBAH (they belong to the agent, not
+the gate). Recording this boundary here to prevent scope creep.
+
+Two items *do* transfer, because they restate LBAH's own obligations in a new
+domain:
+
+1. **Tool-use failure taxonomy → coding-stack validators.** ToolFailBench /
+   ToolScan categories (*ignored tool result*, *fabricated output*,
+   *unnecessary tool use*, *wrong args / invalid format*) are not a new axis —
+   in LBAH's language they are transport and proxy failures: committing while
+   ignoring a tool result is transport loss (the result was a concern carrier
+   that did not survive); a fabricated output is a proxy. Fold these as named
+   validators into the coding stack (Phase 1) alongside the existing
+   `validators/tool_validators.py`, so coding certificates carry
+   literature-backed tool-failure gates rather than ad hoc checks.
+
+2. **"Read-set load-bearingness" — the one genuine conceptual bridge.** The
+   gauge probe generalizes from a single concern variable to the agent's whole
+   *read set*: of the N files/results the agent explored, which ones actually
+   moved the commitment? Perturb each read result and diff the patch. This
+   reframes "exploration drift" as a load-bearing question — unpriced
+   exploration is context that was *available but not load-bearing*, which is
+   exactly the availability-vs-use distinction the standard is built on. Adjacent
+   to the core, but distinctive: a candidate Phase 2+ capability once the coding
+   stack emits certificates.
 
 ---
 
