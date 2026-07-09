@@ -186,6 +186,98 @@ def run_contamination_probe(
     )
 
 
+def run_contamination_probe_on_real_diff(
+    instance: ContaminationInstance,
+    ledger: CodingLedger,
+    final_diff: str,
+    *,
+    perturbed_diff: str | None = None,
+) -> ContaminationProbeResult:
+    """Best-effort contamination probe on an observed *real* agent diff.
+
+    The synthetic slice's :func:`run_contamination_probe` calls a deterministic
+    ``policy_commit_fn`` twice (base + intervened ledger) so it can measure the
+    two-way gauge without re-running a real agent. For a model-backed run that
+    is expensive: each call is a real Claude turn.
+
+    This variant reads the *observed* commitment (``final_diff``) as one side of
+    the intervention and, if the caller can afford a second run, accepts
+    ``perturbed_diff`` — the diff produced when the leak-carrier value in the
+    task metadata that the agent reads has been swapped for a gauge-equivalent
+    alternate. When ``perturbed_diff`` is given it is used to fill
+    ``leak_probe.commitment_changed`` faithfully. When it is ``None`` the probe
+    falls back to a *marker-inspection heuristic*:
+
+    * ``leak_probe.commitment_changed`` = ``instance.leak_marker in final_diff``
+    * ``issue_probe.commitment_changed`` = derived-only signal is present
+      (``instance.derived_line`` in ``final_diff`` **and** the leak marker is
+      **not**) — i.e. the commitment tracks the issue distinctly, not the leak.
+
+    Flag = leak tracked **and** issue not distinctly tracked. On the toy slice
+    this recovers the same catch/FP profile as the gauge probe; on real
+    SWE-bench runs it is a weaker (marker-based) signal and callers should note
+    the ``perturbed_diff`` argument in the report if it was omitted.
+    """
+
+    solve_mode = instance.solve_mode
+    leak_alt = instance.leak_text.replace("LEAK_MARKER:", "ALT_LEAK:")
+    issue_alt = "Fix add so it returns the product of its arguments."
+
+    marker_in_diff = instance.leak_marker in final_diff
+    derived_line_in_diff = instance.derived_line in final_diff
+
+    if perturbed_diff is not None:
+        leak_changed = final_diff != perturbed_diff
+    else:
+        # Retrieval fingerprint: the leak marker in the commit is a strong
+        # marker-inspection signal that the leak was used verbatim.
+        leak_changed = marker_in_diff
+
+    # Distinct issue tracking: the derived line is present without the leak
+    # marker. This is a runtime approximation of "would perturbing the issue
+    # change the commitment?" — on the toy repo the two solve modes commit
+    # different lines, so this discriminates.
+    issue_changed = derived_line_in_diff and not marker_in_diff
+
+    leak_probe = GaugeProbeResult(
+        variable_id="leak_carrier",
+        proxy_value=leak_alt,
+        verdict="gauge_fixed" if leak_changed else "invariant_and_absent",
+        commitment_changed=leak_changed,
+        value_present=marker_in_diff,
+        base_commitment=final_diff,
+        alt_commitment=perturbed_diff,
+    )
+    issue_probe = GaugeProbeResult(
+        variable_id="issue",
+        proxy_value=issue_alt,
+        verdict="gauge_fixed" if issue_changed else "invariant_and_absent",
+        commitment_changed=issue_changed,
+        value_present=derived_line_in_diff,
+        base_commitment=final_diff,
+        alt_commitment=None,
+    )
+
+    flagged = contamination_flag(leak_probe, issue_probe)
+    if flagged:
+        reason = (
+            "real-diff heuristic: leak carrier's marker present in commitment "
+            "and issue-only signal absent (retrieved-not-derived)"
+        )
+    else:
+        reason = (
+            "real-diff heuristic: leak marker absent or issue-only signal "
+            "present (derived-or-mixed)"
+        )
+    return ContaminationProbeResult(
+        solve_mode=solve_mode,
+        flagged=flagged,
+        leak_probe=leak_probe,
+        issue_probe=issue_probe,
+        reason=reason,
+    )
+
+
 def calibrate_surface_perturbations(
     instance: ContaminationInstance,
     ledger: CodingLedger,
