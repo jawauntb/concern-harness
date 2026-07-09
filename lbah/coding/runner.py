@@ -8,6 +8,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from ..core.replay import CapturingModelAdapter
 from ..core.schemas import LoadBearingCertificate
 from .actions import CodingAction, CodingObservation, CodingTask
 from .certificates import make_finish_certificate, mirror_ledger_delta
@@ -42,10 +43,13 @@ class CodingHarnessRunner:
         agent: Any,
         workspace: CodingWorkspace,
         verifier: CodingVerifier | None = None,
+        *,
+        capture_io: bool = False,
     ):
         self.agent = agent
         self.workspace = workspace
         self.verifier = verifier or CodingVerifier()
+        self.capture_io = capture_io
 
     def run(self, task: CodingTask) -> CodingRunResult:
         ledger = CodingLedger.from_task(task)
@@ -69,39 +73,81 @@ class CodingHarnessRunner:
 
         t0 = started_at if started_at is not None else time.time()
         log = event_log or events_from_ledger(ledger)
-        trace: list[dict[str, Any]] = list(initial_trace or [])
-        last_observation = initial_observation
-        if initial_observation is not None:
-            before = CodingLedger.model_validate(ledger.model_dump())
-            ledger.apply_observation(initial_observation)
-            mirror_ledger_delta(log, before, ledger, source="initial_observation")
-            log.append(
-                "record_observation",
-                payload=initial_observation.model_dump(),
-                source="runner",
-            )
-            if hasattr(self.agent, "observe"):
-                self.agent.observe(initial_observation.model_dump())
-        checks: list[CodingCheckResult] = []
-        finish_action: CodingAction | None = None
-
-        for step in range(task.max_steps):
-            state = {
-                "step": step,
-                "last_observation": last_observation.model_dump() if last_observation else None,
-                "workspace": self.workspace.inspect(),
-                "ledger": ledger.to_agent_state(),
-            }
-            try:
-                action = self._coerce_action(
-                    self.agent.propose_action(state, ledger.to_agent_state()),
-                    step,
+        original_model = self._install_capture(log)
+        try:
+            trace: list[dict[str, Any]] = list(initial_trace or [])
+            last_observation = initial_observation
+            if initial_observation is not None:
+                before = CodingLedger.model_validate(ledger.model_dump())
+                ledger.apply_observation(initial_observation)
+                mirror_ledger_delta(log, before, ledger, source="initial_observation")
+                log.append(
+                    "record_observation",
+                    payload=initial_observation.model_dump(),
+                    source="runner",
                 )
-            except Exception as exc:
-                observation = self._proposal_error(step, exc)
+                if hasattr(self.agent, "observe"):
+                    self.agent.observe(initial_observation.model_dump())
+            checks: list[CodingCheckResult] = []
+            finish_action: CodingAction | None = None
+
+            for step in range(task.max_steps):
+                state = {
+                    "step": step,
+                    "last_observation": last_observation.model_dump() if last_observation else None,
+                    "workspace": self.workspace.inspect(),
+                    "ledger": ledger.to_agent_state(),
+                }
+                try:
+                    action = self._coerce_action(
+                        self.agent.propose_action(state, ledger.to_agent_state()),
+                        step,
+                    )
+                except Exception as exc:
+                    observation = self._proposal_error(step, exc)
+                    before = CodingLedger.model_validate(ledger.model_dump())
+                    ledger.apply_observation(observation)
+                    mirror_ledger_delta(log, before, ledger, source="proposal_error")
+                    log.append(
+                        "record_observation",
+                        payload=observation.model_dump(),
+                        source="runner",
+                    )
+                    if hasattr(self.agent, "observe"):
+                        self.agent.observe(observation.model_dump())
+                    trace.append(
+                        {
+                            "step": step,
+                            "action": {
+                                "action_id": observation.action_id,
+                                "action_type": "invalid_action",
+                                "payload": {},
+                            },
+                            "observation": observation.model_dump(),
+                            "modified_files": self.workspace.modified_files(),
+                        }
+                    )
+                    last_observation = observation
+                    continue
+
+                before = CodingLedger.model_validate(ledger.model_dump())
+                ledger.apply_action(action)
+                mirror_ledger_delta(log, before, ledger, source="apply_action")
+                log.append("record_action", payload=action.model_dump(), source="runner")
+
+                observation = self._execute(action, ledger)
+                if self.capture_io:
+                    log.append(
+                        "record_tool_io",
+                        payload={
+                            "action": action.model_dump(),
+                            "observation": observation.model_dump(),
+                        },
+                        source="coding_runner",
+                    )
                 before = CodingLedger.model_validate(ledger.model_dump())
                 ledger.apply_observation(observation)
-                mirror_ledger_delta(log, before, ledger, source="proposal_error")
+                mirror_ledger_delta(log, before, ledger, source="apply_observation")
                 log.append(
                     "record_observation",
                     payload=observation.model_dump(),
@@ -109,77 +155,69 @@ class CodingHarnessRunner:
                 )
                 if hasattr(self.agent, "observe"):
                     self.agent.observe(observation.model_dump())
+
                 trace.append(
                     {
                         "step": step,
-                        "action": {
-                            "action_id": observation.action_id,
-                            "action_type": "invalid_action",
-                            "payload": {},
-                        },
+                        "action": action.model_dump(),
                         "observation": observation.model_dump(),
                         "modified_files": self.workspace.modified_files(),
                     }
                 )
                 last_observation = observation
-                continue
 
-            before = CodingLedger.model_validate(ledger.model_dump())
-            ledger.apply_action(action)
-            mirror_ledger_delta(log, before, ledger, source="apply_action")
-            log.append("record_action", payload=action.model_dump(), source="runner")
+                if action.action_type == "finish":
+                    finish_action = action
+                    checks = [
+                        CodingCheckResult.model_validate(item)
+                        for item in observation.data.get("checks", [])
+                    ]
+                    if observation.success:
+                        return self._result(
+                            task,
+                            ledger,
+                            trace,
+                            checks,
+                            t0,
+                            success=True,
+                            event_log=log,
+                            finish_action=finish_action,
+                        )
 
-            observation = self._execute(action, ledger)
-            before = CodingLedger.model_validate(ledger.model_dump())
-            ledger.apply_observation(observation)
-            mirror_ledger_delta(log, before, ledger, source="apply_observation")
-            log.append(
-                "record_observation",
-                payload=observation.model_dump(),
-                source="runner",
+            checks = self.verifier.verify(self.workspace, ledger)
+            return self._result(
+                task,
+                ledger,
+                trace,
+                checks,
+                t0,
+                success=all(check.passed for check in checks),
+                event_log=log,
+                finish_action=finish_action,
             )
-            if hasattr(self.agent, "observe"):
-                self.agent.observe(observation.model_dump())
+        finally:
+            self._uninstall_capture(original_model)
 
-            trace.append(
-                {
-                    "step": step,
-                    "action": action.model_dump(),
-                    "observation": observation.model_dump(),
-                    "modified_files": self.workspace.modified_files(),
-                }
-            )
-            last_observation = observation
+    def _install_capture(self, log: CodingEventLog) -> Any:
+        """Wrap ``agent.model.complete`` so LLM I/O lands on ``log``.
 
-            if action.action_type == "finish":
-                finish_action = action
-                checks = [
-                    CodingCheckResult.model_validate(item)
-                    for item in observation.data.get("checks", [])
-                ]
-                if observation.success:
-                    return self._result(
-                        task,
-                        ledger,
-                        trace,
-                        checks,
-                        t0,
-                        success=True,
-                        event_log=log,
-                        finish_action=finish_action,
-                    )
+        Returns the pre-wrap model so :meth:`_uninstall_capture` can restore it.
+        No-op when capture is off or the agent has no exposed ``model``.
+        """
+        if not self.capture_io:
+            return None
+        model = getattr(self.agent, "model", None)
+        if model is None or not hasattr(model, "complete"):
+            return None
+        if isinstance(model, CapturingModelAdapter):
+            return None
+        self.agent.model = CapturingModelAdapter(model, log, source="coding_runner")
+        return model
 
-        checks = self.verifier.verify(self.workspace, ledger)
-        return self._result(
-            task,
-            ledger,
-            trace,
-            checks,
-            t0,
-            success=all(check.passed for check in checks),
-            event_log=log,
-            finish_action=finish_action,
-        )
+    def _uninstall_capture(self, original_model: Any) -> None:
+        if original_model is None:
+            return
+        self.agent.model = original_model
 
     def _execute(self, action: CodingAction, ledger: CodingLedger) -> CodingObservation:
         try:

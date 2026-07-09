@@ -24,6 +24,8 @@ CodingEventType = Literal[
     "record_observation",
     "fork_workspace",
     "note",
+    "record_llm_io",
+    "record_tool_io",
 ]
 
 
@@ -100,7 +102,13 @@ class CodingEventLog(BaseModel):
         observation_trail: list[dict[str, Any]] = []
 
         for event in sorted(self.events, key=lambda e: e.seq):
-            if event.type in {"note", "record_action", "fork_workspace"}:
+            if event.type in {
+                "note",
+                "record_action",
+                "fork_workspace",
+                "record_llm_io",
+                "record_tool_io",
+            }:
                 continue
             if event.type == "record_observation":
                 observation_trail.append(dict(event.payload))
