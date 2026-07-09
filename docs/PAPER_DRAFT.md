@@ -27,7 +27,10 @@ but produced no positives — Claude ignored a buried leak carrier and
 solved the task from the issue text. A `--force-retrieve` follow-up
 (same model, n=2 → 4 cells) that instructs leak-mode cells to consult
 the carrier induces marker retrieval and recovers catch = 1.00 at
-FP = 0.00 — sensitivity holds in vitro once positives exist.
+FP = 0.00 — sensitivity holds in vitro once positives exist. The same
+induction on Modal SWE-bench Lite (n=5, force-retrieve, Opus 4.8) yields
+5/5 resolved and 4/5 gold-fingerprint flags — a coding-agent diagnostic
+on real repos, still not a natural-contamination base rate.
 
 We do not claim to beat SWE-bench Verified, to certify intelligence, or
 to have validated any of this against human graders. We claim a
@@ -263,18 +266,15 @@ SWE-bench Pro) samples from a distribution where those conditions are
 met at scale without prompting.
 
 **Remaining follow-ups.** (b) Modal SWE-bench with an injected-leak
-sidecar per instance — **dataset + checkout path shipped** in
-`lbah/coding/contamination/inject.py` /
-`scripts/inject_swebench_leaks.py` (carrier =
-`.lbah/leak/git_log.txt` from the gold patch; fingerprint = distinctive
-added gold line; markers sidecar for
-`--enable-contamination-probe`). Live Modal n=5 catch/FP not yet run
-(needs doppler + credits); see
-`docs/results/SWEBENCH_LEAK_INJECT.md`. Use Track C replay capture so
-the probe's second run is reproducible. (c) A base-rate check on hosted
-checkpoints for which SWE-bench Pro contamination has already been
-quantified — detector positives on an already-known-contaminated
-distribution would be the strongest external validation.
+sidecar — **done at n=5 force-retrieve**: 5/5 resolved, **4/5**
+flagged (gold fingerprint in patch); see
+`docs/results/SWEBENCH_LEAK_INJECT_MODAL_N5.md`. Carrier + checkout
+path in `lbah/coding/contamination/inject.py`. Remaining: no-leak
+control slice for specificity, and Track C replay for a true two-way
+gauge. (c) A base-rate check on hosted checkpoints for which SWE-bench
+Pro contamination has already been quantified — detector positives on
+an already-known-contaminated distribution would be the strongest
+external validation.
 
 Design note: this pilot leaves the Modal path scaffolded but not
 launched. That path needs a leak-injected variant of the dataset (an
@@ -316,10 +316,10 @@ Corresponding anti-cheat rules:
   to real SWE-bench is real.
 - **N is small.** The live-agent pilot (4.4) is small-N by design;
   cost of a two-way real gauge motivates the marker heuristic there.
-- **Modal contamination sidecar is scaffolded, not launched.** The
-  leak-injected Lite variant (carrier + markers JSONL + checkout plant)
-  is implemented; real Modal graded runs still need doppler + credits
-  (`docs/results/SWEBENCH_LEAK_INJECT.md`).
+- **Modal contamination sidecar launched at n=5.** Leak-injected Lite
+  + force-retrieve + official Modal grade:
+  `docs/results/SWEBENCH_LEAK_INJECT_MODAL_N5.md` (5/5 resolved, 4/5
+  flagged). Still small-N; no-leak control and two-way gauge pending.
 - **Replay trust.** The gauge probe is only as trustworthy as replay
   determinism. Track C ships PoE-style envelope capture as
   infrastructure; the empirical claim is not yet dependent on it.
@@ -331,9 +331,10 @@ in polynomial time, and it survives being generalised to N reads. Real
 LLMs can drive the concern-mapping half of the certificate without
 collapsing catch rates. On a live coding agent, specificity held without
 prompting and sensitivity held once retrieval was induced
-(`--force-retrieve`). The next credibility step is a live-agent
-Modal-graded run against a leak-injected SWE-bench variant, gated by
-the Phase-2 detector and reported at the same claim level as here.
+(`--force-retrieve`). On Modal SWE-bench Lite n=5 under the same
+induction, 4/5 resolved patches carried the gold fingerprint. The next
+credibility step is a no-leak control plus a base-rate check on a
+known-contaminated distribution, reported at the same claim level as here.
 
 Nothing above certifies intelligence, solves SWE-bench, or proves
 faithfulness of chain-of-thought. It certifies a bookkeeping identity

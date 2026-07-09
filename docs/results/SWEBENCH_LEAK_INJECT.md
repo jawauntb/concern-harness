@@ -80,7 +80,10 @@ python3.11 scripts/run_official_swebench.py \
 - [x] Pure inject path + fingerprint + force-retrieve (unit tested)
 - [x] Checkout plants carrier from annotated metadata
 - [x] Markers sidecar feeds `run_contamination_probe_on_artifacts`
-- [ ] Live Modal n=5 catch/FP table (needs doppler + credits)
+- [x] Live Modal n=5 force-retrieve: 5/5 resolved, 4/5 flagged
+  (`docs/results/SWEBENCH_LEAK_INJECT_MODAL_N5.md`)
+- [ ] No-leak / no-force-retrieve control slice (specificity)
+- [ ] Two-way gauge via Track C replay capture
 
 ## Artifacts
 
