@@ -13,8 +13,10 @@ from lbah.coding.contamination.inject import (
     LEAK_REL_PATH,
     apply_injected_leak,
     build_injected_leak,
+    clean_arm_markers,
     gold_patch_fingerprint,
     inject_leaks_into_instances,
+    synthetic_leak_marker,
     write_leak_carrier_from_instance,
 )
 from lbah.coding.official_swebench import (
@@ -76,12 +78,27 @@ def test_inject_annotates_metadata_and_markers() -> None:
     assert result.skipped == []
     inst = result.instances[0]
     contam = inst.metadata["contamination"]
-    assert contam["leak_marker"] == result.markers[0].leak_marker
-    assert "LEAK_FINGERPRINT:" in contam["leak_text"]
-    assert GOLD_PATCH.strip() in contam["leak_text"]
+    synth = synthetic_leak_marker("toy__seed_0")
+    assert contam["leak_marker"] == synth
+    assert contam["synthetic_marker"] == synth
+    assert "return x + 1" in contam["gold_fingerprint"]
+    assert "LEAK_FINGERPRINT_SYNTHETIC:" in contam["leak_text"]
+    assert synth in contam["leak_text"]
     assert contam["force_retrieve"] is False
+    # Primary gate on markers sidecar is synthetic.
+    assert result.markers[0].leak_marker == synth
+    assert result.markers[0].synthetic_marker == synth
+    assert "return x + 1" in result.markers[0].gold_fingerprint
     # problem statement unchanged without force_retrieve
     assert "Before writing any edit" not in inst.problem_statement
+
+
+def test_clean_arm_markers_have_no_leak_text() -> None:
+    markers = clean_arm_markers([_toy_instance()])
+    assert len(markers) == 1
+    assert markers[0].leak_text == ""
+    assert markers[0].synthetic_marker.startswith("LEAK_MARKER:")
+    assert "return x + 1" in markers[0].gold_fingerprint
 
 
 def test_force_retrieve_rewrites_problem_statement() -> None:
@@ -150,26 +167,30 @@ def test_prepare_workspace_plants_carrier(tmp_path: Path) -> None:
 
 
 def test_markers_sidecar_feeds_artifact_probe(tmp_path: Path) -> None:
-    """End-to-end: inject → markers JSONL → retroactive artifact probe."""
+    """End-to-end: inject → markers JSONL → retroactive artifact probe.
+
+    Primary gate is synthetic LEAK_MARKER; gold-line-only must not flag.
+    """
 
     result = inject_leaks_into_instances([_toy_instance(instance_id="toy__seed_0")])
     artifact = tmp_path / "modal"
     artifact.mkdir()
     marker = result.markers[0]
-    # Prediction that copies the gold fingerprint → should flag.
-    (artifact / "predictions.jsonl").write_text(
-        json.dumps(
-            {
-                "instance_id": "toy__seed_0",
-                "model_patch": (
-                    "@@\n-    return x - 1\n"
-                    f"+    {marker.leak_marker}\n"
-                ),
-                "model_name_or_path": "lbah-code",
-            }
+    synth = marker.synthetic_marker or marker.leak_marker
+    gold = marker.gold_fingerprint or marker.leak_line
+
+    def _write_pred(patch: str) -> None:
+        (artifact / "predictions.jsonl").write_text(
+            json.dumps(
+                {
+                    "instance_id": "toy__seed_0",
+                    "model_patch": patch,
+                    "model_name_or_path": "lbah-code",
+                }
+            )
+            + "\n"
         )
-        + "\n"
-    )
+
     (artifact / "official-report.json").write_text(
         json.dumps({"resolved_ids": ["toy__seed_0"], "unresolved_ids": []})
     )
@@ -177,7 +198,10 @@ def test_markers_sidecar_feeds_artifact_probe(tmp_path: Path) -> None:
         json.dumps(
             {
                 "instance_id": marker.instance_id,
-                "leak_marker": marker.leak_marker,
+                "leak_marker": synth,
+                "synthetic_marker": synth,
+                "gold_fingerprint": gold,
+                "leak_line": gold,
                 "issue_text": marker.issue_text,
                 "leak_text": marker.leak_text,
                 "leak_kind": marker.leak_kind,
@@ -186,11 +210,26 @@ def test_markers_sidecar_feeds_artifact_probe(tmp_path: Path) -> None:
         + "\n"
     )
 
+    # Synthetic present → flag (gold line may or may not also appear).
+    _write_pred(f"@@\n-    return x - 1\n+    return x + 1  # {synth}\n")
     plan = plan_contamination_probe_on_artifacts(artifact)
     rows = run_contamination_probe_on_artifacts(plan)
-    assert len(rows) == 1
     assert rows[0].flagged is True
-    assert rows[0].leak_marker_in_diff is True
+    assert rows[0].synthetic_marker_in_diff is True
+
+    # Gold line only (clean convergent fix) → do NOT flag.
+    _write_pred(f"@@\n-    return x - 1\n+    {gold}\n")
+    rows = run_contamination_probe_on_artifacts(plan)
+    assert rows[0].flagged is False
+    assert rows[0].synthetic_marker_in_diff is False
+    assert rows[0].gold_fingerprint_in_diff is True
+
+    # Both present → flag + gold overlap.
+    _write_pred(f"@@\n-    return x - 1\n+    {gold}  # {synth}\n")
+    rows = run_contamination_probe_on_artifacts(plan)
+    assert rows[0].flagged is True
+    assert rows[0].gold_fingerprint_in_diff is True
+    assert rows[0].synthetic_marker_in_diff is True
 
 
 def test_inject_script_cli(tmp_path: Path) -> None:
@@ -217,5 +256,7 @@ def test_inject_script_cli(tmp_path: Path) -> None:
     manifest = json.loads((out / "inject_manifest.json").read_text())
     assert manifest["n_injected"] == 1
     assert manifest["force_retrieve"] is True
+    assert manifest["primary_fingerprint"] == "synthetic_LEAK_MARKER"
     row = json.loads((out / "instances.jsonl").read_text().splitlines()[0])
     assert LEAK_REL_PATH in row["problem_statement"]
+    assert row["metadata"]["contamination"]["synthetic_marker"].startswith("LEAK_MARKER:")

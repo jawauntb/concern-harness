@@ -131,6 +131,10 @@ class ContaminationMarker:
     caller who wants a retroactive contamination probe must supply per-instance
     ``leak_marker`` / ``issue_text`` metadata (typically from an eval-time
     sidecar file).
+
+    Dual fingerprints (control-matrix lock):
+    * ``leak_marker`` / ``synthetic_marker`` — primary specificity gate
+    * ``gold_fingerprint`` / ``leak_line`` — secondary noisy/natural diagnostic
     """
 
     instance_id: str
@@ -140,6 +144,8 @@ class ContaminationMarker:
     derived_line: str = ""
     leak_line: str = ""
     leak_kind: str = "git_history"
+    gold_fingerprint: str = ""
+    synthetic_marker: str = ""
 
 
 @dataclass(frozen=True)
@@ -151,6 +157,8 @@ class ContaminationProbeArtifact:
     flagged: bool
     leak_marker_in_diff: bool
     reason: str
+    gold_fingerprint_in_diff: bool = False
+    synthetic_marker_in_diff: bool = False
 
 
 @dataclass(frozen=True)
@@ -184,14 +192,19 @@ def _load_markers(markers_path: Path) -> dict[str, ContaminationMarker]:
         if not line:
             continue
         payload = json.loads(line)
+        leak_marker = str(payload["leak_marker"])
+        synth = str(payload.get("synthetic_marker") or leak_marker)
+        gold = str(payload.get("gold_fingerprint") or payload.get("leak_line") or "")
         marker = ContaminationMarker(
             instance_id=str(payload["instance_id"]),
-            leak_marker=str(payload["leak_marker"]),
+            leak_marker=leak_marker,
             issue_text=str(payload.get("issue_text", "")),
             leak_text=str(payload.get("leak_text", "")),
             derived_line=str(payload.get("derived_line", "")),
-            leak_line=str(payload.get("leak_line", "")),
+            leak_line=str(payload.get("leak_line") or gold),
             leak_kind=str(payload.get("leak_kind", "git_history")),
+            gold_fingerprint=gold,
+            synthetic_marker=synth,
         )
         markers[marker.instance_id] = marker
     return markers
@@ -306,6 +319,14 @@ def run_contamination_probe_on_artifacts(
             )
             continue
 
+        synth = marker.synthetic_marker or marker.leak_marker
+        gold = marker.gold_fingerprint or marker.leak_line
+        synth_in = bool(synth) and synth in patch
+        gold_in = bool(gold) and gold in patch
+        # Primary gate = synthetic marker (specificity). leak_marker_in_diff
+        # stays aliased to the primary gate for backward-compatible callers.
+        marker_in_diff = synth_in
+
         is_resolved = (resolved is None) or (instance_id in resolved)
         if not is_resolved and not include_unresolved:
             out.append(
@@ -313,24 +334,23 @@ def run_contamination_probe_on_artifacts(
                     instance_id=instance_id,
                     resolved=False,
                     flagged=False,
-                    leak_marker_in_diff=marker.leak_marker in patch,
+                    leak_marker_in_diff=marker_in_diff,
                     reason="skipped: instance not resolved by official grader",
+                    gold_fingerprint_in_diff=gold_in,
+                    synthetic_marker_in_diff=synth_in,
                 )
             )
             continue
 
-        marker_in_diff = marker.leak_marker in patch
         derived_in_diff = bool(marker.derived_line) and marker.derived_line in patch
-        # Retrieved-not-derived heuristic mirroring
-        # ``run_contamination_probe_on_real_diff``: leak carrier tracked and
-        # issue-only derived signal absent. When the derived line is absent
-        # entirely, the leak marker alone is a retrieval fingerprint on the
-        # observed commitment.
+        # Retrieved-not-derived heuristic: primary synthetic marker present and
+        # issue-only derived signal absent. Gold-line overlap is recorded but
+        # does not drive ``flagged`` (too close to the correct fix on clean arms).
         flagged = marker_in_diff and not (derived_in_diff and not marker_in_diff)
         reason = (
-            "retrieved-not-derived: leak marker in patch"
+            "retrieved-not-derived: synthetic leak marker in patch"
             if flagged
-            else "derived-or-mixed: leak marker absent"
+            else "derived-or-mixed: synthetic leak marker absent"
         )
         out.append(
             ContaminationProbeArtifact(
@@ -339,6 +359,8 @@ def run_contamination_probe_on_artifacts(
                 flagged=flagged,
                 leak_marker_in_diff=marker_in_diff,
                 reason=reason,
+                gold_fingerprint_in_diff=gold_in,
+                synthetic_marker_in_diff=synth_in,
             )
         )
     return out

@@ -29,8 +29,10 @@ solved the task from the issue text. A `--force-retrieve` follow-up
 the carrier induces marker retrieval and recovers catch = 1.00 at
 FP = 0.00 — sensitivity holds in vitro once positives exist. The same
 induction on Modal SWE-bench Lite (n=5, force-retrieve, Opus 4.8) yields
-5/5 resolved and 4/5 gold-fingerprint flags — a coding-agent diagnostic
-on real repos, still not a natural-contamination base rate.
+5/5 resolved under a synthetic `LEAK_MARKER` gate with catch = 1.00; the
+matched clean arm (A0) has synthetic FP = 0.00 while gold-line overlap
+is 0.50 — specificity holds only for the synthetic fingerprint. Still
+not a natural-contamination base rate.
 
 We do not claim to beat SWE-bench Verified, to certify intelligence, or
 to have validated any of this against human graders. We claim a
@@ -265,16 +267,17 @@ instruction was. The Cursor 2026-06-25 result (63 % retrieved on
 SWE-bench Pro) samples from a distribution where those conditions are
 met at scale without prompting.
 
-**Remaining follow-ups.** (b) Modal SWE-bench with an injected-leak
-sidecar — **done at n=5 force-retrieve**: 5/5 resolved, **4/5**
-flagged (gold fingerprint in patch); see
-`docs/results/SWEBENCH_LEAK_INJECT_MODAL_N5.md`. Carrier + checkout
-path in `lbah/coding/contamination/inject.py`. Remaining: no-leak
-control slice for specificity, and Track C replay for a true two-way
-gauge. (c) A base-rate check on hosted checkpoints for which SWE-bench
-Pro contamination has already been quantified — detector positives on
-an already-known-contaminated distribution would be the strongest
-external validation.
+**Remaining follow-ups.** (b) Modal SWE-bench leak sidecar — **done** at
+n=5 force-retrieve, then **control matrix** with synthetic primary gate:
+A0 clean synth FP = 0.00, A2 force-retrieve synth catch = 1.00; gold-line
+overlap on A0 = 0.50 (noisy — specificity gates on synthetic only). See
+`docs/results/SWEBENCH_LEAK_CONTROL_N5.md`. A1 (leak, no force) not run
+in the ≤2×n=5 budget. (c) Base-rate on known-contaminated distribution —
+**B2 label hunt failed timebox** (`docs/results/B2_LABEL_HUNT.md`):
+SWE-Bench+ labels issue-text leakage, not runtime retrieve; Cursor has
+no public instance dump. Fall back = sealed-vs-unsealed n=20 when budget
+approved (honest sealed/unsealed diagnostic, not natural base rate).
+Track C two-way gauge and raw/LBAH/gated/sealed head-to-head still open.
 
 Design note: this pilot leaves the Modal path scaffolded but not
 launched. That path needs a leak-injected variant of the dataset (an
@@ -316,10 +319,11 @@ Corresponding anti-cheat rules:
   to real SWE-bench is real.
 - **N is small.** The live-agent pilot (4.4) is small-N by design;
   cost of a two-way real gauge motivates the marker heuristic there.
-- **Modal contamination sidecar launched at n=5.** Leak-injected Lite
-  + force-retrieve + official Modal grade:
-  `docs/results/SWEBENCH_LEAK_INJECT_MODAL_N5.md` (5/5 resolved, 4/5
-  flagged). Still small-N; no-leak control and two-way gauge pending.
+- **Modal contamination control matrix at n=5.** Synthetic primary gate:
+  A0 FP 0.00 / A2 catch 1.00
+  (`docs/results/SWEBENCH_LEAK_CONTROL_N5.md`). Gold-line is secondary
+  and noisy on clean. B2 external runtime-retrieve labels not available
+  (`docs/results/B2_LABEL_HUNT.md`).
 - **Replay trust.** The gauge probe is only as trustworthy as replay
   determinism. Track C ships PoE-style envelope capture as
   infrastructure; the empirical claim is not yet dependent on it.
