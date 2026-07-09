@@ -210,4 +210,5 @@ class LoadBearingHarness:
             tokens=tokens,
             wall_time_seconds=wall,
             extra_success=env_success_val,
+            event_log=log.model_dump(),
         )

@@ -20,6 +20,7 @@ class Scorer:
         wall_time_seconds: float = 0.0,
         cost_estimate: float = 0.0,
         extra_success: bool | None = None,
+        event_log: dict | None = None,
     ) -> RunResult:
         if not certificates:
             return RunResult(
@@ -34,6 +35,7 @@ class Scorer:
                 wall_time_seconds=wall_time_seconds,
                 cost_estimate=cost_estimate,
                 notes="no certificates emitted",
+                event_log=event_log,
             )
 
         # Prefer the certificate from the last executed (allowed) step; fall back to last.
@@ -90,4 +92,5 @@ class Scorer:
             wall_time_seconds=wall_time_seconds,
             cost_estimate=cost_estimate,
             failed_gates=sorted(set(failed_gates)),
+            event_log=event_log,
         )

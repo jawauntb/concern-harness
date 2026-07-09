@@ -196,3 +196,7 @@ class RunResult(BaseModel):
     cost_estimate: float = 0.0
     failed_gates: list[str] = Field(default_factory=list)
     notes: str = ""
+    # Serialized ConcernEventLog (model_dump). Stored as a dict to keep schemas
+    # free of a dependency on core.events; reconstruct with
+    # ConcernEventLog.model_validate(run.event_log) to query lineage/diff.
+    event_log: dict[str, Any] | None = None

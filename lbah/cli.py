@@ -592,11 +592,22 @@ def code_swebench(
 
 @cli.command()
 @click.argument("run_path", type=click.Path(exists=True))
-def replay(run_path: str) -> None:
-    """Print certificates from a saved RunResult."""
+@click.option(
+    "--lineage",
+    "lineage_var",
+    default=None,
+    help="Print the provenance (event chain) of a concern variable instead of certificates.",
+)
+def replay(run_path: str, lineage_var: str | None) -> None:
+    """Print certificates from a saved RunResult, or a variable's lineage."""
     data = json.loads(Path(run_path).read_text())
     click.echo(f"Task: {data['task_id']}   Agent: {data['agent']}   Mode: {data['mode']}")
     click.echo(f"final_success={data['final_success']}   load_score={data['load_score']:.2f}")
+
+    if lineage_var is not None:
+        _replay_lineage(data, lineage_var)
+        return
+
     for i, cert in enumerate(data.get("certificates", [])):
         click.echo(f"\n--- step {i} [{cert['decision']}] load={cert['load_score']:.2f} ---")
         click.echo(f"  summary: {cert['summary']}")
@@ -604,6 +615,36 @@ def replay(run_path: str) -> None:
             for r in cert.get(group, []):
                 mark = "OK " if r["passed"] else "FAIL"
                 click.echo(f"    {mark} {r['gate_name']}: {r['reason']}")
+
+
+def _replay_lineage(data: dict, var_id: str) -> None:
+    """Print the append-only event chain that produced a concern variable."""
+    from .core.events import ConcernEventLog
+
+    raw = data.get("event_log")
+    if not raw:
+        click.echo(
+            "\n(no event_log on this run — it predates event-sourcing or was "
+            "produced without it)"
+        )
+        return
+    log = ConcernEventLog.model_validate(raw)
+    events = log.lineage(var_id)
+    if not events:
+        known = sorted({e.variable_id for e in log.events if e.variable_id})
+        click.echo(f"\nno events for variable '{var_id}'. known: {known}")
+        return
+    current = log.project().by_id(var_id)
+    click.echo(f"\nLineage of '{var_id}' ({len(events)} events):")
+    for e in events:
+        fields = ", ".join(f"{k}={v!r}" for k, v in e.payload.items() if k != "id")
+        src = f" <- {e.source}" if e.source else ""
+        click.echo(f"  [{e.seq}] {e.type}{src}: {fields}")
+    if current is not None:
+        click.echo(
+            f"  => projected: value={current.value!r} concern={current.concern} "
+            f"freshness={current.freshness}"
+        )
 
 
 # ---------------------------------------------------------------------------
