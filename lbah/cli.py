@@ -595,9 +595,12 @@ def code_run(
     out.mkdir(parents=True, exist_ok=True)
     (out / "coding_run.json").write_text(result.model_dump_json(indent=2))
     (out / "final.diff").write_text(result.final_diff)
+    cert_n = len(result.certificates)
+    load = result.load_score
     click.echo(
         f"[code {task.task_id}] success={result.success} steps={result.steps} "
-        f"modified={','.join(result.modified_files) or '-'}"
+        f"modified={','.join(result.modified_files) or '-'} "
+        f"certs={cert_n} load={load:.2f}"
     )
 
 
@@ -733,8 +736,15 @@ def code_swebench(
 def replay(run_path: str, lineage_var: str | None) -> None:
     """Print certificates from a saved RunResult, or a variable's lineage."""
     data = json.loads(Path(run_path).read_text())
-    click.echo(f"Task: {data['task_id']}   Agent: {data['agent']}   Mode: {data['mode']}")
-    click.echo(f"final_success={data['final_success']}   load_score={data['load_score']:.2f}")
+    is_coding = "final_diff" in data or "mode" not in data
+    if is_coding:
+        click.echo(
+            f"Task: {data['task_id']}   Agent: {data['agent']}   "
+            f"(coding) success={data.get('success')}   load_score={float(data.get('load_score') or 0):.2f}"
+        )
+    else:
+        click.echo(f"Task: {data['task_id']}   Agent: {data['agent']}   Mode: {data['mode']}")
+        click.echo(f"final_success={data['final_success']}   load_score={data['load_score']:.2f}")
 
     if lineage_var is not None:
         _replay_lineage(data, lineage_var)
@@ -743,7 +753,13 @@ def replay(run_path: str, lineage_var: str | None) -> None:
     for i, cert in enumerate(data.get("certificates", [])):
         click.echo(f"\n--- step {i} [{cert['decision']}] load={cert['load_score']:.2f} ---")
         click.echo(f"  summary: {cert['summary']}")
-        for group in ("transport_results", "proxy_results", "reopenability_results", "validator_results"):
+        for group in (
+            "transport_results",
+            "proxy_results",
+            "gauge_results",
+            "reopenability_results",
+            "validator_results",
+        ):
             for r in cert.get(group, []):
                 mark = "OK " if r["passed"] else "FAIL"
                 click.echo(f"    {mark} {r['gate_name']}: {r['reason']}")
@@ -751,8 +767,6 @@ def replay(run_path: str, lineage_var: str | None) -> None:
 
 def _replay_lineage(data: dict, var_id: str) -> None:
     """Print the append-only event chain that produced a concern variable."""
-    from .core.events import ConcernEventLog
-
     raw = data.get("event_log")
     if not raw:
         click.echo(
@@ -760,6 +774,32 @@ def _replay_lineage(data: dict, var_id: str) -> None:
             "produced without it)"
         )
         return
+
+    # Coding runs use CodingEventLog; core runs use ConcernEventLog.
+    if "task_id" in raw and "task" not in raw:
+        from .coding.events import CodingEventLog
+
+        log = CodingEventLog.model_validate(raw)
+        events = log.lineage(var_id)
+        if not events:
+            known = sorted({e.concern_id for e in log.events if e.concern_id})
+            click.echo(f"\nno events for concern '{var_id}'. known: {known}")
+            return
+        current = log.project().by_id(var_id)
+        click.echo(f"\nLineage of '{var_id}' ({len(events)} events):")
+        for e in events:
+            fields = ", ".join(f"{k}={v!r}" for k, v in e.payload.items() if k != "id")
+            src = f" <- {e.source}" if e.source else ""
+            click.echo(f"  [{e.seq}] {e.type}{src}: {fields}")
+        if current is not None:
+            click.echo(
+                f"  => projected: text={current.text!r} concern={current.concern} "
+                f"status={current.status}"
+            )
+        return
+
+    from .core.events import ConcernEventLog
+
     log = ConcernEventLog.model_validate(raw)
     events = log.lineage(var_id)
     if not events:

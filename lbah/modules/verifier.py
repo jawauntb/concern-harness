@@ -30,6 +30,10 @@ REGISTRY: dict[str, ValidatorFn] = {
     "required_fields_present": tool_validators.required_fields_present,
     "forbidden_fields_absent": tool_validators.forbidden_fields_absent,
     "irreversible_confirmed": tool_validators.irreversible_confirmed,
+    "result_ignore": tool_validators.result_ignore,
+    "output_fabrication": tool_validators.output_fabrication,
+    "tool_skip": tool_validators.tool_skip,
+    "unnecessary_tool_use": tool_validators.unnecessary_tool_use,
     # citation
     "answer_present": citation_validators.answer_present,
     "no_unsupported_claims": citation_validators.no_unsupported_claims,

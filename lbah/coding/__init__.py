@@ -8,6 +8,7 @@ verification and retry feedback.
 
 from .actions import CodingAction, CodingObservation, CodingTask
 from .agents import ModelCodingAgent, ScriptedCodingAgent
+from .events import CodingEvent, CodingEventLog, events_from_ledger
 from .ledger import CodingConcern, CodingLedger
 from .official_swebench import (
     DopplerRunConfig,
@@ -104,6 +105,9 @@ __all__ = [
     "ScriptedCodingAgent",
     "CodingConcern",
     "CodingLedger",
+    "CodingEvent",
+    "CodingEventLog",
+    "events_from_ledger",
     "DopplerRunConfig",
     "OfficialSWEBenchRunPlan",
     "OfficialSWEBenchTarget",
