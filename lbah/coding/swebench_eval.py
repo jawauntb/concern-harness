@@ -250,6 +250,13 @@ def prepare_swebench_workspace(
                 checkout=prepared,
                 command_result=patch_result,
             )
+
+    # Track D / §4.4 (b): plant on-disk leak carrier when the instance JSONL
+    # was produced by ``inject_leaks_into_instances``. Official grading still
+    # applies model_patch to a clean base, so this file never reaches the grader.
+    from .contamination.inject import write_leak_carrier_from_instance
+
+    write_leak_carrier_from_instance(repo_dir, instance)
     return prepared
 
 
