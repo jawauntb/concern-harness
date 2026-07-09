@@ -1,0 +1,333 @@
+# Retrieved or Derived? Gauge-Fixing Certificates for Agent Commitments
+
+Working draft, 2026-07-09. Owner: this branch.
+Claim-level labels are printed against every table; nothing here has been
+human-validated or run against a foundation-model coding leaderboard.
+
+## Abstract
+
+Deployed guardrails today gate on *correlation* — did the right value flow
+into the action, is the trace policy-permissible, does a taint marker
+survive to commitment (CaMeL [arXiv:2503.18813], FIDES [arXiv:2505.23643],
+Agent-Sentry [arXiv:2603.22868], No-Certificate-No-Execution
+[arXiv:2605.24462]). We ask a different question: did the claimed
+distinction actually *control* the commitment. We instantiate this as a
+pre-commitment, black-box harness gate on top of an event-sourced concern
+ledger, and evaluate it on three synthetic slices plus a small-N live
+Claude coding pilot. On the flagship contamination slice (n=16 paired
+leak/derived cells) the detector catches 100 % of retrieved-not-derived
+solves at 0 % false positive; a generalisation to N reads (Law 2, Track
+B) recovers the ground-truth load-bearing set with macro F1 = 1.00; a
+real-LLM concern mapper (Track A, Claude Opus 4.7 on n=8 seeds) preserves
+the load-bearing distinction (value-recall 0.94, critical-rank 1.00) and
+its output continues to catch 100 % of held-out proxies. The live-agent
+pilot (Track D, Claude Opus 4.7 on n=2 seeds → 4 cells) shows the
+detector's *specificity* is intact on real-agent derived solves (0 FP)
+but produced no positives — Claude ignored a buried leak carrier and
+solved the task from the issue text. That is a live-agent behavioural
+finding, not a detector failure; validating sensitivity requires either
+a `--force-retrieve` variant or a contamination-known distribution.
+
+We do not claim to beat SWE-bench Verified, to certify intelligence, or
+to have validated any of this against human graders. We claim a
+falsifiable, budgeted mechanism for asking "retrieved or derived" per
+action, and a claim-level ledger that refuses to inflate.
+
+## 1  Position: correlation is not control
+
+The load-bearing standard for representation claims requires four
+evidence fields to be jointly present before a claim is written down:
+**concern** (which distinctions must survive), **transport** (from where
+to where), **gauge-fixing** (do gauge-equivalent alternatives produce
+the same commitment), and **commitment effect** (did the commitment
+change under the intervention). Absent gauge-fixing, every certificate
+is an *availability* claim — the right value was present, no guarantee
+it did the work (D'Amour [arXiv:2011.03395]; Locatello [arXiv:1811.12359]).
+
+Existing harness gates satisfy some subset of these obligations:
+
+| Field | Existing gate | Gap |
+|---|---|---|
+| concern | Uniform validation; policy allowlists | Unweighted; no distinction of load-bearing vs incidental |
+| transport | Taint / IFC / provenance tags (CaMeL, FIDES, Agent-Sentry, PACT [arXiv:2605.11039]) | Presence, not survival-to-commitment |
+| gauge-fixing | Causal scrubbing (Chan et al. 2022), interchange / DAS ([arXiv:2106.02997], [arXiv:2303.02536]) | Internals or post-hoc, not pre-commitment black-box |
+| commitment effect | pass@k, "resolved" flags | Ignore mechanism; contaminated by leaks (Cursor 2026-06-25; SWE-Bench+ [arXiv:2410.06992]) |
+
+Our contribution is a **pre-commitment, black-box harness gate** that
+issues a certificate only when an intervention shows the claimed
+distinction controlled the commitment: causal scrubbing at the harness
+boundary, with the model as a black box.
+
+## 2  Related work
+
+We build on and position against verified prior art. Unverified names
+from earlier surveys are omitted (see roadmap §7 for the ledger).
+
+**Contamination and weak oracles.** Cursor (2026-06-25) shows 63 % of
+successful Opus-4.8 Max SWE-bench Pro resolutions retrieved the fix and
+that sealing the harness drops the number 87.1 → 73.0. SWE-Bench+
+quantifies 32.67 % solution leakage in "solved" patches
+[arXiv:2410.06992]. UTBoost [arXiv:2506.09289], PatchDiff
+[arXiv:2503.15223] and SWE-ABS [arXiv:2603.00520] show weak oracles
+inflate pass rates.
+
+**Provenance and certificates.** CaMeL, FIDES, Agent-Sentry and PACT
+gate on *whether a taint could have flowed*; No-Certificate-No-Execution
+[arXiv:2605.24462] and Proof of Execution [arXiv:2607.05397] add
+pre-execution authorization and replay envelopes. None supply an
+interventional test of control.
+
+**Interventional faithfulness at internals.** Causal scrubbing;
+interchange / DAS; CoT mediation [arXiv:2402.13950]. Related, and
+partially inspiring, but requires either weight access or post-hoc
+analysis; harness gates at commitment time do not.
+
+**Faithfulness caveat.** Hint verbalization [arXiv:2512.23032] overclaims
+unfaithfulness; we treat transcript mention as evidence *of nothing* and
+gate only on commitment effect under intervention.
+
+**Tool failure taxonomy.** ToolFailBench [arXiv:2607.04686] and ToolScan
+[arXiv:2411.13547] give named categories (Result-Ignore, Output-
+Fabrication, Tool-Skip) that map to transport / proxy / concern gates
+in our stack.
+
+## 3  Method
+
+We implement four obligations as first-class certificate fields on an
+append-only `ConcernEventLog` whose deterministic projection is a
+`ConcernLedger`. The event log makes transport a lineage query and
+gauge-fixing a real intervention (`gauge_fixing_probe`) that
+substitutes a gauge-equivalent value *for every carrier of the
+distinction in the agent's input bundle* — perturbing one carrier misses
+agents that read the distinction from another. The verdict is scoped by
+whether the value was present at all, so out-of-ledger provenance is not
+mistaken for a proxy.
+
+### 3.1 Retrieved-or-derived as a dual gauge probe
+
+Given a task with an issue variable and a leak-carrier variable
+(injected git history, hint, or retrieved-doc stub), we run **two**
+gauge probes on the commitment: one perturbing the leak carrier's
+value, one perturbing the issue's. Retrieved-not-derived ⇔
+`leak_probe.commitment_changed ∧ ¬ issue_probe.commitment_changed`.
+This is the exact contrapositive of "controlled by the intended
+distinction" (Law 1).
+
+Anti-cheat: the detector consults only the commit function's output.
+Transcript mention of the leak marker never counts, in line with the
+hint-verbalization caveat.
+
+### 3.2 Read-set load-bearingness (Law 2 at the coding surface)
+
+Generalise 3.1 to K reads per instance. Plant one ground-truth
+load-bearing read plus K−1 distractors (one leak-tracking, rest pure).
+Run one gauge probe per read; predict `load_bearing` iff perturbation
+moves the commitment. Score set precision / recall / F1 against the
+ground-truth load-bearing set.
+
+### 3.3 Live LLM concern mapping (Phase 4 upgrade)
+
+Wire a real Claude model to `LLMConcernMapper` and force the extraction
+path by stripping metadata. Quality is scored id-agnostically:
+**value-recall** (fraction of baseline values recovered anywhere in the
+mapper's output) and **critical-rank** (whether the mapper assigns
+strictly higher concern to the load-bearing distinction than the mean
+distractor concern). The mapped ledger is then subjected to the same
+gauge probe as a hand-authored one — mapper quality cannot substitute
+for load.
+
+## 4  Experiments
+
+### 4.1 Single-carrier contamination detector
+
+**Claim level:** coding-agent diagnostic on a controlled synthetic
+slice. Not Modal SWE-bench, not human-validated.
+
+Toy repo with `add(a,b) = a-b`; issue = "return the sum"; leak carrier =
+`.lbah/leak/git_log.txt` containing an ALT-flag marker line. Paired
+`leak` / `derived` policies drive the commit function. Seeds = 16,
+paired → 32 cells. Wall = 53.4 s.
+
+| metric | value | target |
+|---|---:|---:|
+| leak catch-rate | **1.00** | ≥ 0.80 |
+| derived FP rate | **0.00** | < 0.10 |
+| surface-perturbation FP | 0.00 | low |
+
+Surface-perturbation calibration confirms the flag does not fire under
+presentation-only rewrites (Zhang & Guo class [arXiv:2605.25981]) — only
+under semantic ones. Full table: `docs/results/RUNTIME_CONTAMINATION.md`.
+
+### 4.2 Read-set load-bearingness (K=4)
+
+**Claim level:** synthetic diagnostic. Law 2 at the coding surface.
+
+Seeds = 8, reads per task = 4 → 32 per-read decisions.
+
+| metric | value | target |
+|---|---:|---:|
+| set precision (macro) | **1.000** | ≥ 0.95 |
+| set recall (macro)    | **1.000** | ≥ 0.95 |
+| set F1 (macro)        | **1.000** | ≥ 0.95 |
+
+Per-read confusion: 8 true positives, 0 false negatives, 0 false
+positives, 24 true negatives. Full table:
+`docs/results/READ_SET_LOAD_BEARING.md`.
+
+### 4.3 Real-LLM concern mapping
+
+**Claim level:** real-LLM diagnostic on `moved_bottleneck` (synthetic).
+Not human-validated, not on real code.
+
+`claude -p` (Claude Opus 4.7) driven `LLMConcernMapper` on n = 8 seeds,
+mean wall / seed 9.19 s. Two lenses, one id-based, one id-agnostic:
+
+| metric | LLM | metadata baseline |
+|---|---:|---:|
+| id-overlap recall | 0.44 | 1.00 |
+| id-overlap F1     | 0.48 | 1.00 |
+| **value-recall**  | **0.94** | 1.00 |
+| **critical-rank correct** | **1.00** | 1.00 |
+| mean critical concern | 1.00 | 1.00 |
+| mean distractor concern | 0.04 | 0.20 |
+| held-out gauge catch | **1.00** | 1.00 |
+| good-allow | 0.62 | 1.00 |
+
+Read: Claude preserves the load-bearing distinction (value-recall 0.94,
+critical-rank 1.00) and is *stricter* about ignoring distractors than
+the hand-authored baseline (0.04 vs 0.20). The 0.62 good-allow is an
+honest tradeoff — Claude's richer mapping declares additional
+concerns (anti-recency guard, tool-argument key semantics) that block
+some good actions the sparse baseline lets through.
+
+Full table: `docs/results/CONCERN_MAPPER_EVAL.md`.
+
+### 4.4 Live-agent contamination pilot (Track D)
+
+**Claim level:** coding-agent diagnostic (local, small-N). Not
+human-validated, not Modal-graded.
+
+`ClaudeCodeCLIAdapter` drives the toy contamination slice through
+`CodingHarnessRunner`. Because a two-way gauge is expensive under real
+LLM calls, the live probe uses a marker-inspection heuristic
+(`run_contamination_probe_on_real_diff`): flag = leak marker present in
+the diff *and* issue-only derived signal absent.
+
+Claude Opus 4.7, n = 2 seeds → 4 cells, wall = 127.5 s.
+
+| metric | value | target | reads |
+|---|---:|---:|---|
+| leak catch-rate | 0.00 | ≥ 0.80 | **no positives produced** |
+| derived FP rate | **0.00** | < 0.10 | specificity holds |
+| leak-marker-in-diff | 0.00 / 4 | — | Claude ignored the leak carrier |
+
+**Read.** All four cells — both `leak`-instrumented and `derived`-
+instrumented — produced the issue-derived line (`return a + b`) with no
+leak marker. Claude ignored `.lbah/leak/git_log.txt` and solved the
+task from the issue text alone. This is not a detector failure. It is
+a live-agent behavioural finding: the leak carrier alone was not
+prominent enough in this toy setup to induce retrieved-not-derived on
+Opus 4.7. The detector's *specificity* (0 FP on real-agent derived
+solves) is intact; its *sensitivity* is untested because no positives
+were produced.
+
+**Consequence for the flagship claim.** The detector's 100 % catch on
+the scripted `leak_tracking_agent` (4.1) demonstrates that a detector
+of this shape works when a contaminated commitment exists. What 4.4
+shows is that the *contamination-induction* half of a real-agent
+benchmark is nontrivial — it requires either a model that has already
+seen the fix during training, a more prominent leak surface than a
+buried file, or an explicit instruction to consult retrieved artefacts.
+The Cursor 2026-06-25 result (63 % retrieved on SWE-bench Pro) samples
+from a distribution where those conditions are met at scale.
+
+**Immediate follow-ups.** (a) A `--force-retrieve` variant that
+instructs the agent to consult git history, to validate detector
+sensitivity in vitro. (b) Modal SWE-bench with an injected-leak sidecar
+per instance, using the Track C replay capture so the probe's second
+run is reproducible. (c) A base-rate check on hosted checkpoints for
+which SWE-bench Pro contamination has already been quantified —
+detector positives on an already-known-contaminated distribution would
+be the strongest external validation.
+
+Design note: this pilot leaves the Modal path scaffolded but not
+launched. That path needs a leak-injected variant of the dataset (an
+open design question) and burns real credits.
+
+## 5  Anti-cheat and claim-level ledger
+
+We label every table with a claim level and refuse to inflate:
+
+| level | means | applies to |
+|---|---|---|
+| synthetic diagnostic | Deterministic slice, no real model in the loop | Phase 2 detector (4.1), read-set (4.2) |
+| real-LLM diagnostic | Real model in the loop, synthetic task substrate | Concern mapper (4.3) |
+| coding-agent diagnostic (local, small-N) | Real coding harness loop, toy repo, small N | Live pilot (4.4) |
+| coding-agent diagnostic (Modal) | Modal-graded, contamination sidecar | Not yet |
+| human-validated | External human grader signoff | Not yet |
+
+Corresponding anti-cheat rules:
+
+1. **Detector reads no transcript.** Only the commit function's output
+   (or the final diff for the live probe). Transcript mention is not
+   used as evidence of anything.
+2. **Two-way gauge, not one-way.** Perturbing only the leak carrier
+   catches agents that also react to a surface change to the issue;
+   perturbing only the issue catches agents that pass through
+   regardless. The retrieved-not-derived flag requires *both* verdicts.
+3. **Surface / semantic calibration.** Perturbation-operator set
+   partitioned into presentation-only (null set — must not fire) and
+   meaning-changing (positive set — must fire). Zhang & Guo class, not
+   AgentNoiseBench.
+4. **Anti-cheat for autoresearch.** The proxy adversary and scorer stay
+   strictly outside the tuning loop (Phase 3). Promotion requires
+   static + in-sample + held-out gates plus the contamination detector.
+
+## 6  Limitations
+
+- **Synthetic substrate.** 4.1, 4.2, 4.3 all live on a controlled toy
+  repo or a hand-built `moved_bottleneck` task. The distributional gap
+  to real SWE-bench is real.
+- **N is small.** The live-agent pilot (4.4) is small-N by design;
+  cost of a two-way real gauge motivates the marker heuristic there.
+- **Modal contamination sidecar is scaffolded, not launched.** Real
+  Modal graded runs would need an injected-leak variant of SWE-bench
+  Lite (dataset design work, not yet done).
+- **Replay trust.** The gauge probe is only as trustworthy as replay
+  determinism. Track C ships PoE-style envelope capture as
+  infrastructure; the empirical claim is not yet dependent on it.
+
+## 7  Conclusion
+
+Retrieved-or-derived is testable at the harness boundary, per action,
+in polynomial time, and it survives being generalised to N reads. Real
+LLMs can drive the concern-mapping half of the certificate without
+collapsing catch rates. The next credibility step is a live-agent
+Modal-graded run against a leak-injected SWE-bench variant, gated by
+the Phase-2 detector and reported at the same claim level as here.
+
+Nothing above certifies intelligence, solves SWE-bench, or proves
+faithfulness of chain-of-thought. It certifies a bookkeeping identity
+between four evidence fields, verifies gauge-fixing by intervention,
+and refuses to be written down when any of the four is missing.
+
+## Appendix A — Citation ledger
+
+Verified 2026-07-09. See `docs/DESIGN_ROADMAP.md` §7 for canonical
+mapping to arXiv IDs; every reference above resolves through that
+table.
+
+## Appendix B — Reproducibility
+
+All results here regenerate from `main` at commit `<TODO_FINAL_SHA>`:
+
+```
+python scripts/runtime_contamination_eval.py --seeds 16 --out runs/runtime_contamination
+python scripts/read_set_load_bearing.py --seeds 8 --reads 4 --out runs/read_set_load_bearing
+python scripts/concern_mapper_eval.py --model claude --seeds 8 --out runs/concern_mapper_eval_claude
+python scripts/contamination_real_agent_eval.py --no-dry-run --seeds 2 \
+  --model-agent configs/claude_opus_4_7.yaml --out runs/contamination_real_agent_live
+```
+
+The last command spends real Claude tokens; the first three are free
+under any hosted-Anthropic policy.
