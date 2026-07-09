@@ -69,6 +69,7 @@ class Scorer:
             for r in (
                 c.transport_results
                 + c.proxy_results
+                + c.gauge_results
                 + c.reopenability_results
                 + c.validator_results
             ):

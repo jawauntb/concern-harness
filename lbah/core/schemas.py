@@ -126,6 +126,9 @@ class LoadBearingCertificate(BaseModel):
     behavior_passed: bool
     transport_results: list[GateResult] = Field(default_factory=list)
     proxy_results: list[GateResult] = Field(default_factory=list)
+    # First-class gauge-fixing verdicts (also present in proxy_results for
+    # backward compatibility). Populated when gauge_probe_budget > 0.
+    gauge_results: list[GateResult] = Field(default_factory=list)
     reopenability_results: list[GateResult] = Field(default_factory=list)
     validator_results: list[GateResult] = Field(default_factory=list)
     load_score: float

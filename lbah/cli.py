@@ -211,7 +211,28 @@ def _load_task(task_arg: str) -> TaskSpec:
     return TaskSpec.model_validate(data)
 
 
-def _build_harness(agent: Any, env: Environment, mode: str, thresholds: dict) -> LoadBearingHarness:
+def _mode_defaults(mode: str) -> dict[str, Any]:
+    """Load optional gauge defaults from configs/{mode}_mode.yaml if present."""
+    path = Path(__file__).resolve().parents[1] / "configs" / f"{mode}_mode.yaml"
+    if not path.exists():
+        return {}
+    data = _load_yaml(path)
+    return {
+        k: data[k]
+        for k in ("gauge_probe_budget", "gauge_min_concern", "thresholds")
+        if k in data
+    }
+
+
+def _build_harness(
+    agent: Any,
+    env: Environment,
+    mode: str,
+    thresholds: dict,
+    *,
+    gauge_probe_budget: int = 0,
+    gauge_min_concern: float = 0.5,
+) -> LoadBearingHarness:
     modules = HarnessModules(
         concern_mapper=ConcernMapper(),
         surface_mapper=SurfaceMapper(),
@@ -222,7 +243,72 @@ def _build_harness(agent: Any, env: Environment, mode: str, thresholds: dict) ->
         verifier=Verifier(),
         commitment_controller=CommitmentController(thresholds=thresholds),
     )
-    return LoadBearingHarness(agent, env, modules, mode=mode, thresholds=thresholds)
+    return LoadBearingHarness(
+        agent,
+        env,
+        modules,
+        mode=mode,
+        thresholds=thresholds,
+        gauge_probe_budget=gauge_probe_budget,
+        gauge_min_concern=gauge_min_concern,
+    )
+
+
+def _resolve_gauge(
+    mode: str,
+    gauge_budget: int | None,
+    gauge_min_concern: float | None,
+    agent_thresholds: dict | None = None,
+) -> tuple[dict, int, float]:
+    """Merge mode-YAML defaults with CLI overrides (CLI wins when set)."""
+    defaults = _mode_defaults(mode)
+    thresholds = {
+        **(defaults.get("thresholds") or {}),
+        **(agent_thresholds or {}),
+    }
+    budget = (
+        gauge_budget
+        if gauge_budget is not None
+        else int(defaults.get("gauge_probe_budget", 0))
+    )
+    min_concern = (
+        gauge_min_concern
+        if gauge_min_concern is not None
+        else float(defaults.get("gauge_min_concern", 0.5))
+    )
+    return thresholds, budget, min_concern
+
+
+def _run_result_row(
+    *,
+    run_id: str,
+    task_id: str,
+    agent: str,
+    mode: str,
+    result: Any,
+) -> dict[str, Any]:
+    """Serialize a RunResult with 100% per-component score coverage."""
+    return {
+        "run_id": run_id,
+        "task_id": task_id,
+        "agent": agent,
+        "mode": mode,
+        "final_success": result.final_success,
+        "load_score": result.load_score,
+        "behavior_score": result.behavior_score,
+        "transport_score": result.transport_score,
+        "proxy_resistance_score": result.proxy_resistance_score,
+        "reopenability_score": result.reopenability_score,
+        "commitment_validity_score": result.commitment_validity_score,
+        "tokens": result.tokens,
+        "wall_time_seconds": result.wall_time_seconds,
+        "failed_gates": result.failed_gates,
+        "gauge_gate_count": sum(
+            1
+            for c in result.certificates
+            for _ in c.gauge_results
+        ),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -240,13 +326,42 @@ def cli() -> None:
 @click.option("--agent", "agent_cfg", required=True, help="Path to agent YAML config.")
 @click.option("--mode", default="guarded", type=click.Choice(["guarded", "audit"]))
 @click.option("--out", "out_dir", required=True, help="Directory to write run artifacts.")
-def run(task_arg: str, agent_cfg: str, mode: str, out_dir: str) -> None:
+@click.option(
+    "--gauge-budget",
+    default=None,
+    type=int,
+    help="Top-N concern vars to gauge-probe per step (default: mode YAML, else 0).",
+)
+@click.option(
+    "--gauge-min-concern",
+    default=None,
+    type=float,
+    help="Minimum concern weight for gauge probing (default: mode YAML, else 0.5).",
+)
+def run(
+    task_arg: str,
+    agent_cfg: str,
+    mode: str,
+    out_dir: str,
+    gauge_budget: int | None,
+    gauge_min_concern: float | None,
+) -> None:
     """Run a single task through the harness."""
     task = _load_task(task_arg)
     cfg = _load_yaml(agent_cfg)
     agent = _build_agent_from_config(cfg)
     env = _env_for_task(task)
-    harness = _build_harness(agent, env, mode, cfg.get("thresholds") or {})
+    thresholds, budget, min_concern = _resolve_gauge(
+        mode, gauge_budget, gauge_min_concern, cfg.get("thresholds") or {}
+    )
+    harness = _build_harness(
+        agent,
+        env,
+        mode,
+        thresholds,
+        gauge_probe_budget=budget,
+        gauge_min_concern=min_concern,
+    )
 
     result = harness.run(task)
     Path(out_dir).mkdir(parents=True, exist_ok=True)
@@ -255,7 +370,8 @@ def run(task_arg: str, agent_cfg: str, mode: str, out_dir: str) -> None:
     click.echo(
         f"[{agent.name} on {task.task_id}] final_success={result.final_success} "
         f"load={result.load_score:.2f} transport={result.transport_score:.2f} "
-        f"proxy={result.proxy_resistance_score:.2f} reopen={result.reopenability_score:.2f}"
+        f"proxy={result.proxy_resistance_score:.2f} reopen={result.reopenability_score:.2f} "
+        f"gauge_budget={budget}"
     )
 
 
@@ -265,11 +381,24 @@ def run(task_arg: str, agent_cfg: str, mode: str, out_dir: str) -> None:
 @click.option("--mode", default="guarded", type=click.Choice(["guarded", "audit"]))
 @click.option("--seeds", default=16, type=int)
 @click.option("--out", "out_dir", required=True)
-def bench(suite: str, agent_cfg: str, mode: str, seeds: int, out_dir: str) -> None:
+@click.option("--gauge-budget", default=None, type=int)
+@click.option("--gauge-min-concern", default=None, type=float)
+def bench(
+    suite: str,
+    agent_cfg: str,
+    mode: str,
+    seeds: int,
+    out_dir: str,
+    gauge_budget: int | None,
+    gauge_min_concern: float | None,
+) -> None:
     """Run a whole benchmark suite over N seeds."""
     suite_mod = load_suite(suite)
     cfg = _load_yaml(agent_cfg)
     agent = _build_agent_from_config(cfg)
+    thresholds, budget, min_concern = _resolve_gauge(
+        mode, gauge_budget, gauge_min_concern, cfg.get("thresholds") or {}
+    )
 
     Path(out_dir).mkdir(parents=True, exist_ok=True)
     jsonl_path = Path(out_dir) / "runs.jsonl"
@@ -278,24 +407,22 @@ def bench(suite: str, agent_cfg: str, mode: str, seeds: int, out_dir: str) -> No
         for seed in range(seeds):
             task = suite_mod.generate(seed)
             env = suite_mod.make_env()
-            harness = _build_harness(agent, env, mode, cfg.get("thresholds") or {})
+            harness = _build_harness(
+                agent,
+                env,
+                mode,
+                thresholds,
+                gauge_probe_budget=budget,
+                gauge_min_concern=min_concern,
+            )
             result = harness.run(task)
-            row = {
-                "run_id": f"{suite}_{cfg.get('name','agent')}_{seed}",
-                "task_id": task.task_id,
-                "agent": agent.name,
-                "mode": mode,
-                "final_success": result.final_success,
-                "load_score": result.load_score,
-                "behavior_score": result.behavior_score,
-                "transport_score": result.transport_score,
-                "proxy_resistance_score": result.proxy_resistance_score,
-                "reopenability_score": result.reopenability_score,
-                "commitment_validity_score": result.commitment_validity_score,
-                "tokens": result.tokens,
-                "wall_time_seconds": result.wall_time_seconds,
-                "failed_gates": result.failed_gates,
-            }
+            row = _run_result_row(
+                run_id=f"{suite}_{cfg.get('name','agent')}_{seed}",
+                task_id=task.task_id,
+                agent=agent.name,
+                mode=mode,
+                result=result,
+            )
             stats.append(row)
             fh.write(json.dumps(row) + "\n")
 
@@ -309,6 +436,8 @@ def bench(suite: str, agent_cfg: str, mode: str, seeds: int, out_dir: str) -> No
 @click.option("--mode", default="guarded")
 @click.option("--seeds", default=16, type=int)
 @click.option("--out", "out_dir", required=True)
+@click.option("--gauge-budget", default=None, type=int)
+@click.option("--gauge-min-concern", default=None, type=float)
 @click.argument("agent_positional", nargs=-1, type=click.UNPROCESSED)
 def compare(
     suite: str,
@@ -316,6 +445,8 @@ def compare(
     mode: str,
     seeds: int,
     out_dir: str,
+    gauge_budget: int | None,
+    gauge_min_concern: float | None,
     agent_positional: tuple[str, ...],
 ) -> None:
     """Compare multiple agents on the same suite/seeds."""
@@ -334,29 +465,30 @@ def compare(
         cfg = _load_yaml(agent_cfg)
         agent = _build_agent_from_config(cfg)
         for m in modes:
+            thresholds, budget, min_concern = _resolve_gauge(
+                m, gauge_budget, gauge_min_concern, cfg.get("thresholds") or {}
+            )
             suite_mod = load_suite(suite)
             rows: list[dict] = []
             for seed in range(seeds):
                 task = suite_mod.generate(seed)
                 env = suite_mod.make_env()
-                harness = _build_harness(agent, env, m, cfg.get("thresholds") or {})
+                harness = _build_harness(
+                    agent,
+                    env,
+                    m,
+                    thresholds,
+                    gauge_probe_budget=budget,
+                    gauge_min_concern=min_concern,
+                )
                 result = harness.run(task)
-                row = {
-                    "run_id": f"{suite}_{agent.name}_{m}_{seed}",
-                    "agent": agent.name,
-                    "mode": m,
-                    "task_id": task.task_id,
-                    "final_success": result.final_success,
-                    "load_score": result.load_score,
-                    "transport_score": result.transport_score,
-                    "proxy_resistance_score": result.proxy_resistance_score,
-                    "reopenability_score": result.reopenability_score,
-                    "commitment_validity_score": result.commitment_validity_score,
-                    "behavior_score": result.behavior_score,
-                    "tokens": result.tokens,
-                    "wall_time_seconds": result.wall_time_seconds,
-                    "failed_gates": result.failed_gates,
-                }
+                row = _run_result_row(
+                    run_id=f"{suite}_{agent.name}_{m}_{seed}",
+                    task_id=task.task_id,
+                    agent=agent.name,
+                    mode=m,
+                    result=result,
+                )
                 rows.append(row)
                 all_rows.append(row)
             combined.append({"agent": agent.name, "mode": m, "rows": rows})
