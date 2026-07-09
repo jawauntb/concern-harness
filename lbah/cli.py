@@ -153,14 +153,27 @@ def _build_agent_from_config(cfg: dict) -> Any:
             headers=cfg.get("headers") or {},
             timeout=float(cfg.get("timeout", 120)),
         )
-    if kind in {"openai_harness", "fugu", "external_openai_harness"}:
+    if kind in {"openai_harness", "fugu", "external_openai_harness", "openrouter"}:
+        base_url_env = str(cfg.get("base_url_env") or "")
+        base_url = (
+            (os.environ.get(base_url_env) if base_url_env else None)
+            or cfg.get("base_url")
+            or ""
+        )
+        if not base_url:
+            raise ValueError(f"{kind} config requires base_url or base_url_env")
+        headers = dict(cfg.get("headers") or {})
+        if kind == "openrouter":
+            # OpenRouter asks for these attribution headers on app traffic.
+            headers.setdefault("HTTP-Referer", "https://github.com/jawauntb/concern-harness")
+            headers.setdefault("X-Title", "concern-harness")
         return OpenAICompatibleHarnessAdapter(
             name=cfg.get("name", kind),
-            base_url=cfg["base_url"],
+            base_url=base_url,
             model=cfg["model"],
             api_key=cfg.get("api_key") or os.environ.get(cfg.get("api_key_env", "")),
             endpoint_path=cfg.get("endpoint_path", "/v1/chat/completions"),
-            headers=cfg.get("headers") or {},
+            headers=headers,
             timeout=float(cfg.get("timeout", 300)),
             temperature=float(cfg.get("temperature", 0.0)),
             max_tokens=int(cfg.get("max_tokens", 4096)),
