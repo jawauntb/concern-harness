@@ -1,4 +1,6 @@
 mode: audit
+gauge_probe_budget: 2
+gauge_min_concern: 0.5
 thresholds:
   low_risk: 0.65
   normal: 0.45

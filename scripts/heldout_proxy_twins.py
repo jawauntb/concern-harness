@@ -48,8 +48,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from lbah.benches import load_suite  # noqa: E402
 from lbah.core.certificates import make_certificate  # noqa: E402
+from lbah.core.events import events_from_ledger  # noqa: E402
 from lbah.core.ledger import make_ledger  # noqa: E402
-from lbah.core.schemas import ActionProposal, TaskSpec  # noqa: E402
+from lbah.core.schemas import ActionProposal, ConcernLedger, TaskSpec  # noqa: E402
 from lbah.modules import (  # noqa: E402
     ConcernMapper, ProxyAdversary, ReopenabilityGovernor,
     SurfaceMapper, TransportAuditor, Verifier,
@@ -124,14 +125,61 @@ VARIANT_BUILDERS = {
 # ---------------------------------------------------------------------------
 
 
-def _score(task: TaskSpec, env, proposal: ActionProposal) -> dict:
+def _tracking_commit_fn(proposal: ActionProposal, ledger: ConcernLedger):
+    """Commitment that rewrites payload leaves matching original ledger values.
+
+    When the gauge probe perturbs a variable, any payload leaf equal to that
+    variable's original value is rewritten to the perturbed value. Proposals
+    that actually used the ledger value are gauge-sensitive; proxy-shaped
+    payloads that never matched a ledger value stay invariant.
+    """
+    orig_values = {v.id: v.value for v in ledger.variables}
+
+    def commit_fn(projected: ConcernLedger):
+        def rewrite(obj):
+            if isinstance(obj, dict):
+                return {k: rewrite(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [rewrite(x) for x in obj]
+            for vid, oval in orig_values.items():
+                pvar = projected.by_id(vid)
+                if pvar is not None and obj == oval:
+                    return pvar.value
+            return obj
+
+        return rewrite(copy.deepcopy(proposal.payload))
+
+    return commit_fn
+
+
+def _score(
+    task: TaskSpec,
+    env,
+    proposal: ActionProposal,
+    *,
+    gauge_budget: int = 0,
+    gauge_min_concern: float = 0.5,
+) -> dict:
     state = env.reset(task)
     variables = ConcernMapper().extract(task, state)
     surfaces = SurfaceMapper().identify(task, variables)
     ledger = make_ledger(task, variables, surfaces)
 
     transport = TransportAuditor().check(proposal, ledger, state)
-    proxy = ProxyAdversary().check(proposal, ledger, state, env)
+    if gauge_budget > 0:
+        log = events_from_ledger(ledger)
+        proxy = ProxyAdversary().check(
+            proposal,
+            ledger,
+            state,
+            env,
+            log=log,
+            commit_fn=_tracking_commit_fn(proposal, ledger),
+            gauge_budget=gauge_budget,
+            gauge_min_concern=gauge_min_concern,
+        )
+    else:
+        proxy = ProxyAdversary().check(proposal, ledger, state, env)
     reopen = ReopenabilityGovernor().check(proposal, ledger, state)
     validators = Verifier().validate(proposal, ledger, state, env)
     cert = make_certificate(
@@ -145,13 +193,25 @@ def _score(task: TaskSpec, env, proposal: ActionProposal) -> dict:
         s_fn = getattr(env, "success", None)
         env_success = bool(s_fn(state)) if callable(s_fn) else state.done
 
+    gauge_failed = [r for r in cert.gauge_results if not r.passed]
+    transport_failed = [r for r in transport if not r.passed]
     return {
         "decision": cert.decision,
         "load_score": cert.load_score,
+        "behavior_score": cert.behavior_score,
+        "transport_score": cert.transport_score,
+        "proxy_resistance_score": cert.proxy_resistance_score,
+        "reopenability_score": cert.reopenability_score,
+        "commitment_validity_score": cert.commitment_validity_score,
         "final_success_if_allowed": env_success,
         "failed_gates": [
             r.gate_name for r in (transport + proxy + reopen + validators) if not r.passed
         ],
+        "gauge_gate_count": len(cert.gauge_results),
+        "gauge_failed_count": len(gauge_failed),
+        "transport_failed_count": len(transport_failed),
+        "caught_by_transport": bool(transport_failed),
+        "caught_by_gauge": bool(gauge_failed),
     }
 
 
@@ -165,6 +225,8 @@ def main() -> None:
     ap.add_argument("--suites", nargs="+", required=True)
     ap.add_argument("--seeds", type=int, default=110)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--gauge-budget", type=int, default=0)
+    ap.add_argument("--gauge-min-concern", type=float, default=0.5)
     args = ap.parse_args()
 
     out = Path(args.out)
@@ -194,7 +256,13 @@ def main() -> None:
                 rationale="oracle payload",
                 claimed_variables_used=(task.metadata or {}).get("critical_variable_ids", []),
             )
-            good_result = _score(task, env, good)
+            good_result = _score(
+                task,
+                env,
+                good,
+                gauge_budget=args.gauge_budget,
+                gauge_min_concern=args.gauge_min_concern,
+            )
             rows.append({
                 "suite": suite_name, "seed": seed, "variant": "good",
                 **good_result,
@@ -204,7 +272,13 @@ def main() -> None:
             # For each held-out variant, score and record.
             for label, bad in builder(good, task):
                 env_bad = suite.make_env()
-                bad_result = _score(task, env_bad, bad)
+                bad_result = _score(
+                    task,
+                    env_bad,
+                    bad,
+                    gauge_budget=args.gauge_budget,
+                    gauge_min_concern=args.gauge_min_concern,
+                )
                 rows.append({
                     "suite": suite_name, "seed": seed, "variant": label,
                     **bad_result,
@@ -213,13 +287,15 @@ def main() -> None:
     stream.close()
 
     # Aggregate: for each variant, how often did harness catch it?
-    from collections import Counter
     by_variant: dict[str, list[dict]] = {}
     for r in rows:
         by_variant.setdefault(r["variant"], []).append(r)
 
-    lines = [f"{'variant':<28}{'n':>4}{'allowed':>10}{'blocked':>10}{'revise':>10}{'final_ok':>10}"]
-    lines.append("-" * 74)
+    lines = [
+        f"{'variant':<28}{'n':>4}{'allowed':>10}{'blocked':>10}{'revise':>10}"
+        f"{'final_ok':>10}{'by_tport':>10}{'by_gauge':>10}"
+    ]
+    lines.append("-" * 94)
     for variant in sorted(by_variant.keys()):
         rs = by_variant[variant]
         n = len(rs)
@@ -227,14 +303,21 @@ def main() -> None:
         block = sum(1 for r in rs if r["decision"] == "block") / n
         rev = sum(1 for r in rs if r["decision"] == "revise") / n
         fin = sum(1 for r in rs if r["final_success_if_allowed"]) / n
-        lines.append(f"{variant:<28}{n:>4}{allow:>10.2f}{block:>10.2f}{rev:>10.2f}{fin:>10.2f}")
+        by_t = sum(1 for r in rs if r.get("caught_by_transport")) / n
+        by_g = sum(1 for r in rs if r.get("caught_by_gauge")) / n
+        lines.append(
+            f"{variant:<28}{n:>4}{allow:>10.2f}{block:>10.2f}{rev:>10.2f}"
+            f"{fin:>10.2f}{by_t:>10.2f}{by_g:>10.2f}"
+        )
 
     # Held-out proxy catch rate: for non-'good' variants, we want low `allow`
     # AND low `final_success_if_allowed`.
     lines.append("")
+    lines.append(f"gauge_budget={args.gauge_budget} gauge_min_concern={args.gauge_min_concern}")
     lines.append("READ:")
     lines.append("  good      → should be high `allowed` (else overblocking)")
     lines.append("  heldout_* → should be LOW `allowed` (harness catches unannounced proxy)")
+    lines.append("  by_tport / by_gauge → which mechanism fired (may both fire)")
 
     lb = "\n".join(lines)
     print(f"n_scored={len(rows)}, wall={time.time()-t0:.1f}s")

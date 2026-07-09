@@ -55,11 +55,13 @@ def summarize_runs(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "n": n,
                 "final_success_rate": _rate(group, "final_success"),
                 "load_score_mean": _mean(group, "load_score"),
+                "behavior_score_mean": _mean(group, "behavior_score"),
                 "transport_score_mean": _mean(group, "transport_score"),
                 "proxy_resistance_mean": _mean(group, "proxy_resistance_score"),
                 "reopenability_mean": _mean(group, "reopenability_score"),
                 "commitment_validity_mean": _mean(group, "commitment_validity_score"),
                 "tokens_mean": _mean(group, "tokens"),
+                "component_score_coverage": _component_coverage(group),
             }
         )
     return {
@@ -181,6 +183,27 @@ def _proposal(family: str, count: int, title: str, next_experiment: str) -> dict
         "title": title,
         "next_experiment": next_experiment,
     }
+
+
+COMPONENT_SCORE_KEYS = (
+    "behavior_score",
+    "transport_score",
+    "proxy_resistance_score",
+    "reopenability_score",
+    "commitment_validity_score",
+)
+
+
+def _component_coverage(rows: list[dict[str, Any]]) -> float:
+    """Fraction of rows that persist all five per-component scores."""
+    if not rows:
+        return 0.0
+    complete = sum(
+        1
+        for row in rows
+        if all(row.get(k) is not None for k in COMPONENT_SCORE_KEYS)
+    )
+    return complete / len(rows)
 
 
 def _mean(rows: list[dict[str, Any]], key: str) -> float:

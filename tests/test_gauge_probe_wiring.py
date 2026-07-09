@@ -107,8 +107,9 @@ def _gauge_gates(result):
     return [
         g
         for cert in result.certificates
-        for g in cert.proxy_results
-        if g.gate_name == "proxy::gauge_fixing"
+        for g in (cert.gauge_results or [
+            r for r in cert.proxy_results if r.gate_name == "proxy::gauge_fixing"
+        ])
     ]
 
 
@@ -162,6 +163,8 @@ def test_runner_gauge_gate_passes_for_ledger_reading_agent():
     assert gates, "expected gauge gates when budget > 0"
     # The top-concern variable actually controls this agent's commitment.
     assert gates["crit"].passed is True
+    # First-class certificate field must be populated.
+    assert any(c.gauge_results for c in result.certificates)
 
 
 def test_runner_gauge_gate_fails_for_constant_agent():
@@ -174,6 +177,7 @@ def test_runner_gauge_gate_fails_for_constant_agent():
     gates = _gauge_gates(result)
     assert gates
     assert all(not g.passed for g in gates)
+    assert any(c.gauge_results for c in result.certificates)
 
 
 def test_runner_no_gauge_gates_by_default():

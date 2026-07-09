@@ -127,6 +127,7 @@ def make_certificate(
         thresholds=thresholds,
     )
 
+    gauge = [r for r in proxy if r.gate_name == "proxy::gauge_fixing"]
     failed = [
         r.gate_name
         for r in (transport + proxy + reopen + validators)
@@ -137,6 +138,8 @@ def make_certificate(
         f"behavior={behavior_score:.2f} transport={transport_score:.2f} "
         f"proxy={proxy_score:.2f} reopen={reopen_score:.2f}"
     )
+    if gauge:
+        summary += f" gauge={len(gauge)}"
     if failed:
         summary += f" failed={failed}"
 
@@ -148,6 +151,7 @@ def make_certificate(
         else all(r.passed for r in validators),
         transport_results=transport,
         proxy_results=proxy,
+        gauge_results=gauge,
         reopenability_results=reopen,
         validator_results=validators,
         load_score=load,
