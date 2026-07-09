@@ -283,6 +283,11 @@ class CandidatePatchTournamentRunner:
 def score_candidate_result(
     result: CodingRunResult,
     review_signals: list[CandidateReviewSignal] | None = None,
+    *,
+    check_weight: float = 0.55,
+    concern_weight: float = 0.25,
+    focus_weight: float = 0.15,
+    diff_weight: float = 0.05,
 ) -> CandidateScore:
     checks = result.checks
     total_weight = sum(check.weight for check in checks) or 1.0
@@ -292,10 +297,10 @@ def score_candidate_result(
     diff_focus = _diff_focus(result)
     tests_passed = _tests_passed(checks)
     base_score = (
-        0.55 * check_score
-        + 0.25 * concern_coverage
-        + 0.15 * diff_focus
-        + 0.05 * (1.0 if result.final_diff else 0.0)
+        check_weight * check_score
+        + concern_weight * concern_coverage
+        + focus_weight * diff_focus
+        + diff_weight * (1.0 if result.final_diff else 0.0)
     )
     review_penalty = _review_penalty(review_signals or [])
     score = max(0.0, base_score - review_penalty)
