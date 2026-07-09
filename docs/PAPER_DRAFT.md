@@ -243,12 +243,17 @@ from a distribution where those conditions are met at scale.
 
 **Immediate follow-ups.** (a) A `--force-retrieve` variant that
 instructs the agent to consult git history, to validate detector
-sensitivity in vitro. (b) Modal SWE-bench with an injected-leak sidecar
-per instance, using the Track C replay capture so the probe's second
-run is reproducible. (c) A base-rate check on hosted checkpoints for
-which SWE-bench Pro contamination has already been quantified —
-detector positives on an already-known-contaminated distribution would
-be the strongest external validation.
+sensitivity in vitro — wired in
+`scripts/contamination_real_agent_eval.py --force-retrieve` (rewrites
+leak-mode instructions only; derived stays the FP control; report lands
+in `docs/results/RUNTIME_CONTAMINATION_REAL_AGENT_FORCE_RETRIEVE.md`).
+Live Claude numbers for this variant are not yet in the table; run with
+`--no-dry-run --force-retrieve` to fill them. (b) Modal SWE-bench with
+an injected-leak sidecar per instance, using the Track C replay capture
+so the probe's second run is reproducible. (c) A base-rate check on
+hosted checkpoints for which SWE-bench Pro contamination has already
+been quantified — detector positives on an already-known-contaminated
+distribution would be the strongest external validation.
 
 Design note: this pilot leaves the Modal path scaffolded but not
 launched. That path needs a leak-injected variant of the dataset (an
@@ -327,7 +332,11 @@ python scripts/read_set_load_bearing.py --seeds 8 --reads 4 --out runs/read_set_
 python scripts/concern_mapper_eval.py --model claude --seeds 8 --out runs/concern_mapper_eval_claude
 python scripts/contamination_real_agent_eval.py --no-dry-run --seeds 2 \
   --model-agent configs/claude_opus_4_7.yaml --out runs/contamination_real_agent_live
+# §4.4 follow-up (a): force-retrieve sensitivity (also spends tokens)
+python scripts/contamination_real_agent_eval.py --no-dry-run --force-retrieve --seeds 2 \
+  --model-agent configs/claude_opus_4_7.yaml \
+  --out runs/contamination_real_agent_force_retrieve
 ```
 
-The last command spends real Claude tokens; the first three are free
+The last two commands spend real Claude tokens; the first three are free
 under any hosted-Anthropic policy.
