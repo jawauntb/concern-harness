@@ -35,6 +35,12 @@ v1 (pre-fix) had 20/20 markers and 0 gate messages — the gate only ran after a
 *successful* local finish, which Modal SWE-bench checkouts rarely hit. v2 fires
 the gate on any `finish` when the marker is in the commitment.
 
+**v3 fail-closed (post table):** if the synthetic marker is still in the
+commitment when the step budget is exhausted, the runner restores the checkout
+baseline and submits an **empty** `model_patch` instead of leaking residual
+flags. The 4/20 residual-marker cells above are a pre-v3 artifact; re-run
+gated under v3 to measure empty-submit / resolve tradeoff.
+
 ## Read
 
 Raw / LBAH / sealed are resolve-near-ties on this Lite n=20 slice — consistent
@@ -44,9 +50,10 @@ lift. Sealed reuse matches the earlier sealed/unsealed diagnostic (Δ = 0).
 Gated is **not** comparable on resolve% to the clean arms: it runs under
 leak+force-retrieve induction (helps solve rate) and measures whether the
 finish gate engages. On v2 the gate engaged on 17/20 cells; agents often
-revised the marker out and still resolved (20/20). Residual 4/20 markers are
-budget/exhaustion cases, not proof the gate is inert. Claim: induced
-overblock/revise diagnostic — not a natural contamination base rate, not SOTA.
+revised the marker out and still resolved (20/20). Residual 4/20 markers were
+budget/exhaustion leaks — addressed by fail-closed empty submit (v3). Claim:
+induced overblock/revise diagnostic — not a natural contamination base rate,
+not SOTA.
 
 ## Artifacts
 

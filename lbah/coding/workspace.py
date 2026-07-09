@@ -205,6 +205,35 @@ class CodingWorkspace:
             if self._baseline.get(rel, "") != current.get(rel, "")
         ]
 
+    def restore_baseline(self) -> list[str]:
+        """Revert tracked text files to the post-checkout snapshot.
+
+        Used by fail-closed contamination gating: if the synthetic leak marker
+        is still in the commitment when the step budget is exhausted, wipe the
+        working tree back so the submitted ``model_patch`` is empty rather than
+        leaking a residual retrieved fingerprint.
+        """
+
+        current = self._snapshot_files()
+        restored: list[str] = []
+        for rel in sorted(set(self._baseline) | set(current)):
+            before = self._baseline.get(rel)
+            after = current.get(rel)
+            if before == after:
+                continue
+            path = self.root / rel
+            if before is None:
+                if path.exists():
+                    path.unlink()
+                    restored.append(rel)
+                continue
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(before)
+            restored.append(rel)
+        for cache_dir in self.root.rglob("__pycache__"):
+            shutil.rmtree(cache_dir, ignore_errors=True)
+        return restored
+
     def outside_allowed_paths(self) -> list[str]:
         if not self.task.allowed_paths:
             return []

@@ -285,8 +285,10 @@ Resolve: raw 13/20, LBAH 14/20, sealed 14/20 (Δ LBAH−raw = +0.05;
 sealed−LBAH = 0). Matches `EVIDENCE.md`: LBAH is not a resolve% lift.
 Gated (leak+force-retrieve + synthetic-marker finish gate, v2): gate
 message on 17/20 cells; residual marker in 4/20 submitted patches;
-still 20/20 resolved after revise — induced overblock/revise diagnostic,
-not a natural base rate (`docs/results/SWEBENCH_HEAD_TO_HEAD.md`).
+still 20/20 resolved after revise. **v3 fail-closed:** budget exhaustion
+with marker still present restores the baseline and submits an empty
+patch instead of leaking residual flags
+(`docs/results/SWEBENCH_HEAD_TO_HEAD.md`).
 
 **Track C two-way gauge (interventional subset, n=3).** On A2
 force-retrieve positives, perturbing `LEAK_MARKER:` → `ALT_LEAK:` moved
@@ -338,8 +340,9 @@ Corresponding anti-cheat rules:
 - **Sealed vs unsealed Lite n=20.** Resolve 14/20 both arms (Δ = 0);
   not Cursor's Pro sealed drop (`docs/results/SWEBENCH_SEALED_UNSEALED_N20.md`).
 - **Head-to-head Lite n=20.** raw 0.65 / LBAH 0.70 / sealed 0.70;
-  gated v2 gate-engage 17/20, residual marker 4/20 — no leaderboard
-  claim (`docs/results/SWEBENCH_HEAD_TO_HEAD.md`).
+  gated v2 gate-engage 17/20, residual marker 4/20 (pre fail-closed);
+  v3 empties the commit on budget+marker — no leaderboard claim
+  (`docs/results/SWEBENCH_HEAD_TO_HEAD.md`).
 - **Track C two-way gauge.** Interventional subset n=3 at rate 1.00;
   not a full-matrix gauge (`docs/results/SWEBENCH_TWO_WAY_GAUGE.md`).
 - **Replay trust.** PoE envelope capture is opt-in; the Track C
