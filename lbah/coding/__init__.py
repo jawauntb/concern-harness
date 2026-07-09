@@ -8,6 +8,13 @@ verification and retry feedback.
 
 from .actions import CodingAction, CodingObservation, CodingTask
 from .agents import ModelCodingAgent, ScriptedCodingAgent
+from .contamination import (
+    ContaminationInstance,
+    ContaminationProbeResult,
+    agent_for,
+    generate_slice,
+    run_contamination_probe,
+)
 from .events import CodingEvent, CodingEventLog, events_from_ledger
 from .ledger import CodingConcern, CodingLedger
 from .official_swebench import (
@@ -108,6 +115,11 @@ __all__ = [
     "CodingEvent",
     "CodingEventLog",
     "events_from_ledger",
+    "ContaminationInstance",
+    "ContaminationProbeResult",
+    "agent_for",
+    "generate_slice",
+    "run_contamination_probe",
     "DopplerRunConfig",
     "OfficialSWEBenchRunPlan",
     "OfficialSWEBenchTarget",
