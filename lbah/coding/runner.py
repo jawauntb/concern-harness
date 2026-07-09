@@ -8,7 +8,10 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from ..core.schemas import LoadBearingCertificate
 from .actions import CodingAction, CodingObservation, CodingTask
+from .certificates import make_finish_certificate, mirror_ledger_delta
+from .events import CodingEventLog, events_from_ledger
 from .ledger import CodingLedger
 from .verifier import CodingCheckResult, CodingVerifier
 from .workspace import CodingWorkspace
@@ -25,6 +28,10 @@ class CodingRunResult(BaseModel):
     trace: list[dict[str, Any]] = Field(default_factory=list)
     checks: list[CodingCheckResult] = Field(default_factory=list)
     wall_time_seconds: float = 0.0
+    # Phase 1: certificates + event-sourced log (additive; Modal smoke unchanged).
+    certificates: list[LoadBearingCertificate] = Field(default_factory=list)
+    event_log: dict[str, Any] | None = None
+    load_score: float = 0.0
 
 
 class CodingHarnessRunner:
@@ -52,6 +59,7 @@ class CodingHarnessRunner:
         initial_observation: CodingObservation | None = None,
         initial_trace: list[dict[str, Any]] | None = None,
         started_at: float | None = None,
+        event_log: CodingEventLog | None = None,
     ) -> CodingRunResult:
         """Run the parent loop with precomputed ledger/context.
 
@@ -60,13 +68,22 @@ class CodingHarnessRunner:
         """
 
         t0 = started_at if started_at is not None else time.time()
+        log = event_log or events_from_ledger(ledger)
         trace: list[dict[str, Any]] = list(initial_trace or [])
         last_observation = initial_observation
         if initial_observation is not None:
+            before = CodingLedger.model_validate(ledger.model_dump())
             ledger.apply_observation(initial_observation)
+            mirror_ledger_delta(log, before, ledger, source="initial_observation")
+            log.append(
+                "record_observation",
+                payload=initial_observation.model_dump(),
+                source="runner",
+            )
             if hasattr(self.agent, "observe"):
                 self.agent.observe(initial_observation.model_dump())
         checks: list[CodingCheckResult] = []
+        finish_action: CodingAction | None = None
 
         for step in range(task.max_steps):
             state = {
@@ -82,7 +99,14 @@ class CodingHarnessRunner:
                 )
             except Exception as exc:
                 observation = self._proposal_error(step, exc)
+                before = CodingLedger.model_validate(ledger.model_dump())
                 ledger.apply_observation(observation)
+                mirror_ledger_delta(log, before, ledger, source="proposal_error")
+                log.append(
+                    "record_observation",
+                    payload=observation.model_dump(),
+                    source="runner",
+                )
                 if hasattr(self.agent, "observe"):
                     self.agent.observe(observation.model_dump())
                 trace.append(
@@ -99,9 +123,21 @@ class CodingHarnessRunner:
                 )
                 last_observation = observation
                 continue
+
+            before = CodingLedger.model_validate(ledger.model_dump())
             ledger.apply_action(action)
+            mirror_ledger_delta(log, before, ledger, source="apply_action")
+            log.append("record_action", payload=action.model_dump(), source="runner")
+
             observation = self._execute(action, ledger)
+            before = CodingLedger.model_validate(ledger.model_dump())
             ledger.apply_observation(observation)
+            mirror_ledger_delta(log, before, ledger, source="apply_observation")
+            log.append(
+                "record_observation",
+                payload=observation.model_dump(),
+                source="runner",
+            )
             if hasattr(self.agent, "observe"):
                 self.agent.observe(observation.model_dump())
 
@@ -116,12 +152,34 @@ class CodingHarnessRunner:
             last_observation = observation
 
             if action.action_type == "finish":
-                checks = [CodingCheckResult.model_validate(item) for item in observation.data.get("checks", [])]
+                finish_action = action
+                checks = [
+                    CodingCheckResult.model_validate(item)
+                    for item in observation.data.get("checks", [])
+                ]
                 if observation.success:
-                    return self._result(task, ledger, trace, checks, t0, success=True)
+                    return self._result(
+                        task,
+                        ledger,
+                        trace,
+                        checks,
+                        t0,
+                        success=True,
+                        event_log=log,
+                        finish_action=finish_action,
+                    )
 
         checks = self.verifier.verify(self.workspace, ledger)
-        return self._result(task, ledger, trace, checks, t0, success=all(check.passed for check in checks))
+        return self._result(
+            task,
+            ledger,
+            trace,
+            checks,
+            t0,
+            success=all(check.passed for check in checks),
+            event_log=log,
+            finish_action=finish_action,
+        )
 
     def _execute(self, action: CodingAction, ledger: CodingLedger) -> CodingObservation:
         try:
@@ -212,7 +270,9 @@ class CodingHarnessRunner:
         failed = [check for check in checks if not check.passed]
         if not failed:
             return "verification failed"
-        return "verification failed: " + "; ".join(f"{check.name}: {check.reason}" for check in failed)
+        return "verification failed: " + "; ".join(
+            f"{check.name}: {check.reason}" for check in failed
+        )
 
     def _coerce_action(self, raw: CodingAction | dict[str, Any], step: int) -> CodingAction:
         if isinstance(raw, CodingAction):
@@ -230,19 +290,37 @@ class CodingHarnessRunner:
         t0: float,
         *,
         success: bool,
+        event_log: CodingEventLog | None = None,
+        finish_action: CodingAction | None = None,
     ) -> CodingRunResult:
         final_checks = checks or self.verifier.verify(self.workspace, ledger)
+        final_diff = self.workspace.diff()
+        modified_files = self.workspace.modified_files()
+        log = event_log or events_from_ledger(ledger)
+        certificate = make_finish_certificate(
+            task=task,
+            ledger=ledger,
+            checks=final_checks,
+            trace=trace,
+            final_diff=final_diff,
+            modified_files=modified_files,
+            action=finish_action,
+            event_log=log,
+        )
         return CodingRunResult(
             task_id=task.task_id,
             agent=getattr(self.agent, "name", "coding_agent"),
             success=success,
             steps=len(trace),
-            final_diff=self.workspace.diff(),
-            modified_files=self.workspace.modified_files(),
+            final_diff=final_diff,
+            modified_files=modified_files,
             ledger=ledger.model_dump(),
             trace=trace,
             checks=final_checks,
             wall_time_seconds=time.time() - t0,
+            certificates=[certificate],
+            event_log=log.model_dump(),
+            load_score=certificate.load_score,
         )
 
 

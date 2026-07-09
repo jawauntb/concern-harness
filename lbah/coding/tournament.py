@@ -11,6 +11,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, ValidationError
 
 from .actions import CodingTask
+from .events import CodingEventLog, events_from_ledger
 from .ledger import CodingLedger
 from .runner import CodingHarnessRunner, CodingRunResult
 from .verifier import CodingCheckResult, CodingVerifier
@@ -61,6 +62,7 @@ class CandidateRun(BaseModel):
     score: CandidateScore
     review_signals: list[CandidateReviewSignal] = Field(default_factory=list)
     selected: bool = False
+    event_log: dict[str, Any] | None = None
 
 
 class TournamentRunResult(BaseModel):
@@ -75,6 +77,7 @@ class TournamentRunResult(BaseModel):
     modified_files: list[str] = Field(default_factory=list)
     trace: list[dict[str, Any]] = Field(default_factory=list)
     wall_time_seconds: float = 0.0
+    event_log: dict[str, Any] | None = None
 
 
 class CandidatePatchTournamentRunner:
@@ -96,19 +99,53 @@ class CandidatePatchTournamentRunner:
         t0 = time.time()
         candidates: list[CandidateRun] = []
         trace: list[dict[str, Any]] = []
+        root_log = events_from_ledger(CodingLedger.from_task(task))
+        root_log.append(
+            "note",
+            payload={"kind": "tournament_start", "n_candidates": len(self.candidate_agents)},
+            source="tournament",
+        )
+        parent_seq = root_log.events[-1].seq if root_log.events else 0
 
         with tempfile.TemporaryDirectory(prefix="lbah-candidates-") as tmp:
             for index, agent in enumerate(self.candidate_agents):
                 candidate_id = f"candidate_{index}"
                 candidate_root = Path(tmp) / candidate_id
                 self._copy_workspace(candidate_root)
+                branch = root_log.fork_at(parent_seq, label=candidate_id)
+                branch.append(
+                    "fork_workspace",
+                    payload={
+                        "candidate_id": candidate_id,
+                        "repo_path": str(candidate_root),
+                        "agent": getattr(agent, "name", "coding_agent"),
+                    },
+                    source="tournament",
+                )
                 candidate_task = task.model_copy(update={"repo_path": str(candidate_root)})
                 candidate_workspace = CodingWorkspace(
                     candidate_root,
                     candidate_task,
                     timeout_seconds=self.workspace.timeout_seconds,
                 )
-                result = CodingHarnessRunner(agent, candidate_workspace, self.verifier).run(candidate_task)
+                result = CodingHarnessRunner(agent, candidate_workspace, self.verifier).run(
+                    candidate_task
+                )
+                # Merge candidate run lineage under the fork label.
+                if result.event_log:
+                    child = CodingEventLog.model_validate(result.event_log)
+                    for event in child.events:
+                        if event.type == "declare_concern" and any(
+                            e.concern_id == event.concern_id and e.type == "declare_concern"
+                            for e in branch.events
+                        ):
+                            continue
+                        branch.append(
+                            event.type,
+                            concern_id=event.concern_id,
+                            payload=event.payload,
+                            source=event.source or candidate_id,
+                        )
                 review_signals = extract_candidate_review_signals(result)
                 score = score_candidate_result(result, review_signals)
                 candidate = CandidateRun(
@@ -118,8 +155,20 @@ class CandidatePatchTournamentRunner:
                     result=result,
                     score=score,
                     review_signals=review_signals,
+                    event_log=branch.model_dump(),
                 )
                 candidates.append(candidate)
+                root_log.append(
+                    "note",
+                    payload={
+                        "kind": "candidate_finished",
+                        "candidate_id": candidate_id,
+                        "success": result.success,
+                        "score": score.score,
+                        "n_events": len(branch.events),
+                    },
+                    source="tournament",
+                )
                 trace.append(
                     {
                         "step": candidate_id,
@@ -127,14 +176,22 @@ class CandidatePatchTournamentRunner:
                         "success": result.success,
                         "score": score.model_dump(),
                         "modified_files": result.modified_files,
+                        "lineage_label": candidate_id,
                     }
                 )
 
             winner = select_winning_candidate(candidates)
             if winner is None:
-                return self._result(task, False, None, None, candidates, trace, t0)
+                return self._result(
+                    task, False, None, None, candidates, trace, t0, event_log=root_log
+                )
 
             winner.selected = True
+            root_log.append(
+                "note",
+                payload={"kind": "winner_selected", "candidate_id": winner.candidate_id},
+                source="tournament",
+            )
             winner_root = Path(tmp) / winner.candidate_id
             self._apply_candidate_files(winner_root, winner.result.modified_files)
             applied_result = self._applied_result(task, winner, trace, t0)
@@ -146,6 +203,7 @@ class CandidatePatchTournamentRunner:
                 candidates,
                 trace,
                 t0,
+                event_log=root_log,
             )
 
     def _copy_workspace(self, destination: Path) -> None:
@@ -191,6 +249,9 @@ class CandidatePatchTournamentRunner:
             trace=trace,
             checks=checks,
             wall_time_seconds=time.time() - t0,
+            certificates=list(winner.result.certificates),
+            event_log=winner.event_log or winner.result.event_log,
+            load_score=winner.result.load_score,
         )
 
     def _result(
@@ -202,6 +263,8 @@ class CandidatePatchTournamentRunner:
         candidates: list[CandidateRun],
         trace: list[dict[str, Any]],
         t0: float,
+        *,
+        event_log: CodingEventLog | None = None,
     ) -> TournamentRunResult:
         return TournamentRunResult(
             task_id=task.task_id,
@@ -213,6 +276,7 @@ class CandidatePatchTournamentRunner:
             modified_files=self.workspace.modified_files(),
             trace=trace,
             wall_time_seconds=time.time() - t0,
+            event_log=event_log.model_dump() if event_log is not None else None,
         )
 
 
