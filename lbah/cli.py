@@ -26,6 +26,7 @@ from .adapters import (
     ClaudeCodeCLIAdapter,
     ConcernMoERouter,
     DummyAgent,
+    EchoModel,
     HTTPAgentAdapter,
     LocalLLMAdapter,
     OpenAICompatibleHarnessAdapter,
@@ -69,6 +70,8 @@ from .environments.tool_use_env import ToolUseEnv
 from .modules import (
     CommitmentController,
     ConcernMapper,
+    LLMConcernMapper,
+    MetadataConcernMapper,
     OrchestrationAuditor,
     ProxyAdversary,
     ReopenabilityGovernor,
@@ -224,6 +227,57 @@ def _mode_defaults(mode: str) -> dict[str, Any]:
     }
 
 
+def _build_concern_mapper(
+    kind: str = "default",
+    *,
+    mapper_model_cfg: str | None = None,
+    prefer_metadata: bool = True,
+) -> Any:
+    """Build a concern mapper; ``llm`` uses ProviderLLMAdapter or EchoModel."""
+    if kind == "metadata":
+        return MetadataConcernMapper()
+    if kind == "default":
+        return ConcernMapper()
+    if kind != "llm":
+        raise click.ClickException(f"unknown concern mapper: {kind}")
+    if mapper_model_cfg:
+        cfg = _load_yaml(mapper_model_cfg)
+        model = _build_agent_from_config(cfg)
+        if not hasattr(model, "complete"):
+            raise click.ClickException(
+                "mapper model config must expose a ModelAdapter.complete()"
+            )
+    else:
+        # Deterministic stand-in for CI / offline runs.
+        model = EchoModel(
+            name="echo_concern_mapper",
+            canned={
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps(
+                                {
+                                    "concern_variables": [
+                                        {
+                                            "id": "echo_placeholder",
+                                            "name": "echo placeholder",
+                                            "value": None,
+                                            "concern": 0.5,
+                                            "source": "echo",
+                                            "required_surfaces": ["final_answer"],
+                                            "proxy_risks": [],
+                                        }
+                                    ]
+                                }
+                            )
+                        }
+                    }
+                ]
+            },
+        )
+    return LLMConcernMapper(model, prefer_metadata=prefer_metadata)
+
+
 def _build_harness(
     agent: Any,
     env: Environment,
@@ -232,9 +286,10 @@ def _build_harness(
     *,
     gauge_probe_budget: int = 0,
     gauge_min_concern: float = 0.5,
+    concern_mapper: Any | None = None,
 ) -> LoadBearingHarness:
     modules = HarnessModules(
-        concern_mapper=ConcernMapper(),
+        concern_mapper=concern_mapper or ConcernMapper(),
         surface_mapper=SurfaceMapper(),
         transport_auditor=TransportAuditor(),
         orchestration_auditor=OrchestrationAuditor(),
@@ -338,6 +393,24 @@ def cli() -> None:
     type=float,
     help="Minimum concern weight for gauge probing (default: mode YAML, else 0.5).",
 )
+@click.option(
+    "--concern-mapper",
+    "concern_mapper_kind",
+    default="default",
+    type=click.Choice(["default", "metadata", "llm"]),
+    help="Concern mapper backend (llm reads lbah/prompts/concern_mapper.txt).",
+)
+@click.option(
+    "--mapper-model",
+    "mapper_model_cfg",
+    default=None,
+    help="Optional model YAML for --concern-mapper llm (else EchoModel).",
+)
+@click.option(
+    "--mapper-force-llm/--mapper-prefer-metadata",
+    default=False,
+    help="When using llm mapper, ignore hand-authored metadata.concern_variables.",
+)
 def run(
     task_arg: str,
     agent_cfg: str,
@@ -345,6 +418,9 @@ def run(
     out_dir: str,
     gauge_budget: int | None,
     gauge_min_concern: float | None,
+    concern_mapper_kind: str,
+    mapper_model_cfg: str | None,
+    mapper_force_llm: bool,
 ) -> None:
     """Run a single task through the harness."""
     task = _load_task(task_arg)
@@ -354,6 +430,11 @@ def run(
     thresholds, budget, min_concern = _resolve_gauge(
         mode, gauge_budget, gauge_min_concern, cfg.get("thresholds") or {}
     )
+    mapper = _build_concern_mapper(
+        concern_mapper_kind,
+        mapper_model_cfg=mapper_model_cfg,
+        prefer_metadata=not mapper_force_llm,
+    )
     harness = _build_harness(
         agent,
         env,
@@ -361,6 +442,7 @@ def run(
         thresholds,
         gauge_probe_budget=budget,
         gauge_min_concern=min_concern,
+        concern_mapper=mapper,
     )
 
     result = harness.run(task)
@@ -383,6 +465,14 @@ def run(
 @click.option("--out", "out_dir", required=True)
 @click.option("--gauge-budget", default=None, type=int)
 @click.option("--gauge-min-concern", default=None, type=float)
+@click.option(
+    "--concern-mapper",
+    "concern_mapper_kind",
+    default="default",
+    type=click.Choice(["default", "metadata", "llm"]),
+)
+@click.option("--mapper-model", "mapper_model_cfg", default=None)
+@click.option("--mapper-force-llm/--mapper-prefer-metadata", default=False)
 def bench(
     suite: str,
     agent_cfg: str,
@@ -391,6 +481,9 @@ def bench(
     out_dir: str,
     gauge_budget: int | None,
     gauge_min_concern: float | None,
+    concern_mapper_kind: str,
+    mapper_model_cfg: str | None,
+    mapper_force_llm: bool,
 ) -> None:
     """Run a whole benchmark suite over N seeds."""
     suite_mod = load_suite(suite)
@@ -398,6 +491,11 @@ def bench(
     agent = _build_agent_from_config(cfg)
     thresholds, budget, min_concern = _resolve_gauge(
         mode, gauge_budget, gauge_min_concern, cfg.get("thresholds") or {}
+    )
+    mapper = _build_concern_mapper(
+        concern_mapper_kind,
+        mapper_model_cfg=mapper_model_cfg,
+        prefer_metadata=not mapper_force_llm,
     )
 
     Path(out_dir).mkdir(parents=True, exist_ok=True)
@@ -414,6 +512,7 @@ def bench(
                 thresholds,
                 gauge_probe_budget=budget,
                 gauge_min_concern=min_concern,
+                concern_mapper=mapper,
             )
             result = harness.run(task)
             row = _run_result_row(

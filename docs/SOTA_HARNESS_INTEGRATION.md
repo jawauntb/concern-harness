@@ -12,12 +12,35 @@ Finally, `lbah diagnose` turns run JSONL into a compact model-harness diagnostic
 
 ## Research grounding
 
-- [Sakana Fugu Technical Report](https://arxiv.org/abs/2606.21228): learned orchestration can route and coordinate frontier workers behind one model-like API. LBAH adopts the integration posture, not the proprietary training recipe.
-- [Harness-Bench](https://arxiv.org/abs/2605.27922): agent capability should be reported at the model-harness configuration level, with traces and validators beyond final task success. LBAH's comparison and diagnostic commands report exactly that configuration level.
-- [Code as Agent Harness](https://arxiv.org/abs/2605.18747): code is the executable, inspectable substrate for agent reasoning, acting, state, and verification. LBAH treats the ledger and certificate as code-level contracts around that substrate.
-- [Natural-Language Agent Harnesses](https://arxiv.org/abs/2603.25723): harness policy can become an inspectable artifact instead of hidden controller glue. LBAH keeps the theory in docs and the gates in small modules that can be ablated.
-- [Agentic Harness Engineering](https://arxiv.org/abs/2604.25850): harness edits should be tied to observability and falsifiable predictions. `lbah diagnose` is the first local loop for turning failed gates into candidate edits and next experiments.
-- [SWE-agent](https://arxiv.org/abs/2405.15793) and [OpenHands](https://arxiv.org/abs/2407.16741): interface and platform design materially change software-agent outcomes. LBAH's adapter layer lets those systems become measured workers rather than uninspected competitors.
+Verified citations only (see `docs/DESIGN_ROADMAP.md` §7). Unverified placeholder IDs
+were purged in Phase 4.
+
+- **Correlation is not control.** Static provenance / IFC systems nominate carriers;
+  LBAH confirms commitment effect under intervention. Compose cheap nomination with
+  gauge-fixing: [CaMeL](https://arxiv.org/abs/2503.18813),
+  [FIDES](https://arxiv.org/abs/2505.23643),
+  [Agent-Sentry](https://arxiv.org/abs/2603.22868),
+  [No-Certificate-No-Execution](https://arxiv.org/abs/2605.24462),
+  [PACT](https://arxiv.org/abs/2605.11039).
+- **Certificates as pre-execution authorization / replay.**
+  [No-Cert-No-Exec](https://arxiv.org/abs/2605.24462);
+  [Proof of Execution](https://arxiv.org/abs/2607.05397).
+- **Weak oracles and false passes.** Tournament winners must survive augmented tests:
+  [UTBoost](https://arxiv.org/abs/2506.09289),
+  [PatchDiff](https://arxiv.org/abs/2503.15223),
+  [SWE-ABS](https://arxiv.org/abs/2603.00520).
+- **Runtime contamination / leakage.**
+  [Cursor (2026-06-25)](https://cursor.com/blog/reward-hacking-coding-benchmarks);
+  [SWE-Bench+](https://arxiv.org/abs/2410.06992).
+- **Tool-use failure taxonomy → validators.**
+  [ToolFailBench](https://arxiv.org/abs/2607.04686),
+  [ToolScan](https://arxiv.org/abs/2411.13547).
+- **External harness posture (no primary paper claimed).** Fugu-style OpenAI-compatible
+  orchestrators are an *integration shape* LBAH can wrap; they are not cited as a
+  verified research result here. Interface design still matters for software agents
+  ([SWE-agent](https://arxiv.org/abs/2405.15793),
+  [OpenHands](https://arxiv.org/abs/2407.16741)) — LBAH's adapter layer measures those
+  systems as workers under load-bearing certificates.
 
 ## Theory extension
 

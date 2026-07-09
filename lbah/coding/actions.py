@@ -32,6 +32,13 @@ class CodingTask(BaseModel):
     instruction: str
     repo_path: str | None = None
     test_commands: list[list[str] | str] = Field(default_factory=list)
+    hardened_test_commands: list[list[str] | str] = Field(
+        default_factory=list,
+        description=(
+            "Augmented oracle commands (UTBoost/PatchDiff-style). Tournament "
+            "winners must pass these before the certificate records survival."
+        ),
+    )
     allowed_paths: list[str] = Field(default_factory=list)
     disallowed_paths: list[str] = Field(
         default_factory=lambda: [".git", ".pytest_cache", "__pycache__"]

@@ -11,6 +11,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, ValidationError
 
 from .actions import CodingTask
+from .certificates import make_finish_certificate
 from .events import CodingEventLog, events_from_ledger
 from .ledger import CodingLedger
 from .runner import CodingHarnessRunner, CodingRunResult
@@ -238,20 +239,37 @@ class CandidatePatchTournamentRunner:
     ) -> CodingRunResult:
         ledger = CodingLedger.model_validate(winner.result.ledger)
         checks = self.verifier.verify(self.workspace, ledger)
+        hardened = self.verifier.verify_hardened(self.workspace, ledger)
+        all_checks = list(checks) + list(hardened)
+        final_diff = self.workspace.diff()
+        modified_files = self.workspace.modified_files()
+        certificate = make_finish_certificate(
+            task=task,
+            ledger=ledger,
+            checks=all_checks,
+            trace=trace,
+            final_diff=final_diff,
+            modified_files=modified_files,
+            event_log=(
+                CodingEventLog.model_validate(winner.event_log)
+                if winner.event_log
+                else None
+            ),
+        )
         return CodingRunResult(
             task_id=task.task_id,
             agent=f"tournament:{winner.agent}",
-            success=all(check.passed for check in checks),
+            success=all(check.passed for check in all_checks),
             steps=winner.result.steps,
-            final_diff=self.workspace.diff(),
-            modified_files=self.workspace.modified_files(),
+            final_diff=final_diff,
+            modified_files=modified_files,
             ledger=ledger.model_dump(),
             trace=trace,
-            checks=checks,
+            checks=all_checks,
             wall_time_seconds=time.time() - t0,
-            certificates=list(winner.result.certificates),
+            certificates=[certificate],
             event_log=winner.event_log or winner.result.event_log,
-            load_score=winner.result.load_score,
+            load_score=certificate.load_score,
         )
 
     def _result(

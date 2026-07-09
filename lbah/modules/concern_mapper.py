@@ -6,6 +6,7 @@ import json
 from typing import Any
 
 from ..core.schemas import ConcernVariable, State, TaskSpec
+from ..prompts import load_prompt
 
 
 class ConcernMapper:
@@ -79,35 +80,51 @@ class LLMConcernMapper(ConcernMapper):
 
     Uses a `ModelAdapter` to identify variables. Falls back to the heuristic
     mapper if the model errors or returns invalid JSON.
+
+    When ``prefer_metadata`` is True (default), hand-authored
+    ``task.metadata.concern_variables`` short-circuit the model — useful in
+    production. Eval scripts that measure mapper quality should set
+    ``prefer_metadata=False`` (or strip metadata) so the model is forced.
     """
 
-    PROMPT = (
-        "You are the Concern Mapper in a load-bearing agent harness. "
-        "Identify the distinctions that must survive from the task into future "
-        "commitment surfaces. Return JSON: "
-        "{\"concern_variables\": [{id, name, value, concern, source, required_surfaces, proxy_risks, reopen_conditions}]}. "
-        "Do not solve the task. Return JSON only, no prose."
-    )
-
-    def __init__(self, model: Any):
+    def __init__(self, model: Any, *, prefer_metadata: bool = True):
         self.model = model
+        self.prefer_metadata = prefer_metadata
+        self.prompt = load_prompt("concern_mapper")
 
     def extract(self, task: TaskSpec, state: State) -> list[ConcernVariable]:
-        meta_vars = (task.metadata or {}).get("concern_variables")
-        if meta_vars:
-            return [ConcernVariable.model_validate(v) for v in meta_vars]
+        if self.prefer_metadata:
+            meta_vars = (task.metadata or {}).get("concern_variables")
+            if meta_vars:
+                return [ConcernVariable.model_validate(v) for v in meta_vars]
 
         prompt = json.dumps({"task": task.model_dump(), "state": state.model_dump()})
         try:
             response = self.model.complete(
                 [
-                    {"role": "system", "content": self.PROMPT},
+                    {"role": "system", "content": self.prompt},
                     {"role": "user", "content": prompt},
                 ],
                 schema={"type": "object"},
             )
-            text = response["choices"][0]["message"]["content"]
+            text = _response_content(response)
             data = json.loads(text)
-            return [ConcernVariable.model_validate(v) for v in data.get("concern_variables", [])]
+            variables = [
+                ConcernVariable.model_validate(v)
+                for v in data.get("concern_variables", [])
+            ]
+            if not variables:
+                return self._heuristic(task)
+            return variables
         except Exception:
             return self._heuristic(task)
+
+
+def _response_content(response: dict[str, Any]) -> str:
+    """Normalize OpenAI-style and EchoModel canned shapes to a content string."""
+    if "choices" in response:
+        return str(response["choices"][0]["message"]["content"])
+    if "content" in response:
+        content = response["content"]
+        return content if isinstance(content, str) else json.dumps(content)
+    raise KeyError("model response missing content")

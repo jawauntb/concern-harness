@@ -34,6 +34,7 @@ def task_to_spec(task: CodingTask) -> TaskSpec:
             "repo_path": task.repo_path,
             "allowed_paths": list(task.allowed_paths),
             "test_commands": list(task.test_commands),
+            "hardened_test_commands": list(task.hardened_test_commands),
         },
     )
 
