@@ -9,6 +9,7 @@ from .probe import (
     contamination_flag,
     policy_commit_fn,
     run_contamination_probe,
+    run_contamination_probe_on_real_diff,
 )
 from .read_set import (
     ReadCarrier,
@@ -54,6 +55,7 @@ __all__ = [
     "read_set_agent",
     "read_set_commit_fn",
     "run_contamination_probe",
+    "run_contamination_probe_on_real_diff",
     "run_read_set_probe",
     "write_toy_repo",
 ]

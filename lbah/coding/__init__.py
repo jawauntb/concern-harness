@@ -14,6 +14,7 @@ from .contamination import (
     agent_for,
     generate_slice,
     run_contamination_probe,
+    run_contamination_probe_on_real_diff,
 )
 from .events import CodingEvent, CodingEventLog, events_from_ledger
 from .ledger import CodingConcern, CodingLedger
@@ -25,11 +26,16 @@ from .replay import (
     tool_envelopes_from_log,
 )
 from .official_swebench import (
+    ContaminationMarker,
+    ContaminationProbeArtifact,
+    ContaminationProbePlan,
     DopplerRunConfig,
     OfficialSWEBenchRunPlan,
     OfficialSWEBenchTarget,
     load_official_swebench_command,
+    plan_contamination_probe_on_artifacts,
     plan_official_swebench_run,
+    run_contamination_probe_on_artifacts,
     run_official_swebench_plan,
 )
 from .recursive import (
@@ -127,11 +133,17 @@ __all__ = [
     "agent_for",
     "generate_slice",
     "run_contamination_probe",
+    "run_contamination_probe_on_real_diff",
+    "ContaminationMarker",
+    "ContaminationProbeArtifact",
+    "ContaminationProbePlan",
     "DopplerRunConfig",
     "OfficialSWEBenchRunPlan",
     "OfficialSWEBenchTarget",
     "load_official_swebench_command",
+    "plan_contamination_probe_on_artifacts",
     "plan_official_swebench_run",
+    "run_contamination_probe_on_artifacts",
     "run_official_swebench_plan",
     "CodingHarnessRunner",
     "CodingRunResult",
