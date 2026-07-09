@@ -85,6 +85,8 @@ def generate_instance(
     timeout_seconds: float,
     official_dataset: str,
     run_id: str,
+    seal_git_history: bool = False,
+    allow_git_history: bool = False,
 ) -> dict[str, Any]:
     instance_id = str(raw_instance["instance_id"])
     with tempfile.TemporaryDirectory() as tmp:
@@ -122,6 +124,10 @@ def generate_instance(
             "--out",
             str(out_dir),
         ]
+        if seal_git_history:
+            cmd.append("--seal-git-history")
+        elif allow_git_history:
+            cmd.append("--allow-git-history")
         proc = subprocess.run(
             cmd,
             cwd=REMOTE_ROOT,
@@ -153,6 +159,8 @@ def main(
     offset: int = 0,
     max_steps: int = 20,
     timeout_seconds: float = 120.0,
+    seal_git_history: bool = False,
+    allow_git_history: bool = False,
 ) -> None:
     rows = [
         json.loads(line)
@@ -173,6 +181,8 @@ def main(
                 "timeout_seconds": timeout_seconds,
                 "official_dataset": official_dataset,
                 "run_id": run_id,
+                "seal_git_history": seal_git_history,
+                "allow_git_history": allow_git_history and not seal_git_history,
             },
             order_outputs=True,
         )
