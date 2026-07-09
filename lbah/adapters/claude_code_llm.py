@@ -50,7 +50,7 @@ class ClaudeCodeCLIAdapter:
 
     # ------------------------------------------------------------------
 
-    def _call(self, prompt: str) -> str:
+    def _call(self, prompt: str, *, system_prompt: str | None = None) -> str:
         cmd = [
             "claude",
             "-p",
@@ -59,7 +59,7 @@ class ClaudeCodeCLIAdapter:
             "--output-format",
             "text",
             "--append-system-prompt",
-            self.system_prompt,
+            system_prompt if system_prompt is not None else self.system_prompt,
             *self.extra_args,
             prompt,
         ]
@@ -95,6 +95,43 @@ class ClaudeCodeCLIAdapter:
 
     def observe(self, observation: dict) -> None:
         return None
+
+    def complete(
+        self,
+        messages: list[dict],
+        *,
+        schema: dict | None = None,
+        tools: list[dict] | None = None,
+        temperature: float = 0.0,
+        max_tokens: int | None = None,
+    ) -> dict:
+        """ModelAdapter contract for LLM-backed modules (e.g. LLMConcernMapper).
+
+        Extracts the system prompt from ``messages`` (if any), sends the
+        remaining user/assistant content as the prompt, and returns the raw
+        text under an OpenAI-style ``choices[0].message.content`` shape so
+        callers using ``_response_content`` can consume it uniformly.
+        """
+        system_parts: list[str] = []
+        user_parts: list[str] = []
+        for m in messages:
+            role = m.get("role")
+            content = m.get("content", "")
+            if not isinstance(content, str):
+                content = json.dumps(content)
+            if role == "system":
+                system_parts.append(content)
+            else:
+                user_parts.append(content)
+        system_prompt = "\n\n".join(p for p in system_parts if p) or self.system_prompt
+        prompt = "\n\n".join(p for p in user_parts if p)
+        raw = self._call(prompt, system_prompt=system_prompt)
+        text = _strip_fences(raw)
+        return {
+            "choices": [{"message": {"content": text}}],
+            "raw": raw,
+            "usage": {"total_tokens": self.last_tokens},
+        }
 
     def propose_action(self, state: dict, ledger: dict) -> ActionProposal:
         prompt = (
