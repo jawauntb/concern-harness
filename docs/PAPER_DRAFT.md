@@ -24,9 +24,10 @@ its output continues to catch 100 % of held-out proxies. The live-agent
 pilot (Track D, Claude Opus 4.7 on n=2 seeds → 4 cells) shows the
 detector's *specificity* is intact on real-agent derived solves (0 FP)
 but produced no positives — Claude ignored a buried leak carrier and
-solved the task from the issue text. That is a live-agent behavioural
-finding, not a detector failure; validating sensitivity requires either
-a `--force-retrieve` variant or a contamination-known distribution.
+solved the task from the issue text. A `--force-retrieve` follow-up
+(same model, n=2 → 4 cells) that instructs leak-mode cells to consult
+the carrier induces marker retrieval and recovers catch = 1.00 at
+FP = 0.00 — sensitivity holds in vitro once positives exist.
 
 We do not claim to beat SWE-bench Verified, to certify intelligence, or
 to have validated any of this against human graders. We claim a
@@ -228,25 +229,43 @@ task from the issue text alone. This is not a detector failure. It is
 a live-agent behavioural finding: the leak carrier alone was not
 prominent enough in this toy setup to induce retrieved-not-derived on
 Opus 4.7. The detector's *specificity* (0 FP on real-agent derived
-solves) is intact; its *sensitivity* is untested because no positives
-were produced.
+solves) is intact; its *sensitivity* was untested until the
+force-retrieve follow-up below.
+
+#### Force-retrieve sensitivity (follow-up a)
+
+Same model and N, with leak-mode instructions rewritten to require
+reading `.lbah/leak/git_log.txt` and applying the recorded upstream fix
+(including marker comments). Derived-mode cells keep the anti-retrieve
+risks. Wall = 126.9 s. Full table:
+`docs/results/RUNTIME_CONTAMINATION_REAL_AGENT_FORCE_RETRIEVE.md`.
+
+| metric | value | target | reads |
+|---|---:|---:|---|
+| leak catch-rate | **1.00** | ≥ 0.80 | sensitivity holds |
+| derived FP rate | **0.00** | < 0.10 | specificity holds |
+| leak-marker-in-diff (leak cells) | **1.00** | 1.00 | induction worked |
+
+**Read.** Instructing the agent to consult the leak carrier induced
+retrieved-not-derived commitments on both leak cells; the
+marker-inspection detector caught them (2/2) with 0 FP on derived.
+This is an *in-vitro sensitivity* check, not a claim that natural
+contamination rates match Cursor's SWE-bench Pro figure.
 
 **Consequence for the flagship claim.** The detector's 100 % catch on
-the scripted `leak_tracking_agent` (4.1) demonstrates that a detector
-of this shape works when a contaminated commitment exists. What 4.4
-shows is that the *contamination-induction* half of a real-agent
-benchmark is nontrivial — it requires either a model that has already
-seen the fix during training, a more prominent leak surface than a
-buried file, or an explicit instruction to consult retrieved artefacts.
-The Cursor 2026-06-25 result (63 % retrieved on SWE-bench Pro) samples
-from a distribution where those conditions are met at scale.
+the scripted `leak_tracking_agent` (4.1) and on force-retrieve live
+cells shows that a detector of this shape works when a contaminated
+commitment exists. What the baseline 4.4 run shows is that the
+*contamination-induction* half of a real-agent benchmark is nontrivial
+— a buried file alone was not enough on Opus 4.7; an explicit consult
+instruction was. The Cursor 2026-06-25 result (63 % retrieved on
+SWE-bench Pro) samples from a distribution where those conditions are
+met at scale without prompting.
 
-**Immediate follow-ups.** (a) A `--force-retrieve` variant that
-instructs the agent to consult git history, to validate detector
-sensitivity in vitro. (b) Modal SWE-bench with an injected-leak sidecar
-per instance, using the Track C replay capture so the probe's second
-run is reproducible. (c) A base-rate check on hosted checkpoints for
-which SWE-bench Pro contamination has already been quantified —
+**Remaining follow-ups.** (b) Modal SWE-bench with an injected-leak
+sidecar per instance, using the Track C replay capture so the probe's
+second run is reproducible. (c) A base-rate check on hosted checkpoints
+for which SWE-bench Pro contamination has already been quantified —
 detector positives on an already-known-contaminated distribution would
 be the strongest external validation.
 
@@ -302,7 +321,9 @@ Corresponding anti-cheat rules:
 Retrieved-or-derived is testable at the harness boundary, per action,
 in polynomial time, and it survives being generalised to N reads. Real
 LLMs can drive the concern-mapping half of the certificate without
-collapsing catch rates. The next credibility step is a live-agent
+collapsing catch rates. On a live coding agent, specificity held without
+prompting and sensitivity held once retrieval was induced
+(`--force-retrieve`). The next credibility step is a live-agent
 Modal-graded run against a leak-injected SWE-bench variant, gated by
 the Phase-2 detector and reported at the same claim level as here.
 
@@ -327,7 +348,11 @@ python scripts/read_set_load_bearing.py --seeds 8 --reads 4 --out runs/read_set_
 python scripts/concern_mapper_eval.py --model claude --seeds 8 --out runs/concern_mapper_eval_claude
 python scripts/contamination_real_agent_eval.py --no-dry-run --seeds 2 \
   --model-agent configs/claude_opus_4_7.yaml --out runs/contamination_real_agent_live
+# §4.4 follow-up (a): force-retrieve sensitivity (also spends tokens)
+python scripts/contamination_real_agent_eval.py --no-dry-run --force-retrieve --seeds 2 \
+  --model-agent configs/claude_opus_4_7.yaml \
+  --out runs/contamination_real_agent_force_retrieve
 ```
 
-The last command spends real Claude tokens; the first three are free
+The last two commands spend real Claude tokens; the first three are free
 under any hosted-Anthropic policy.

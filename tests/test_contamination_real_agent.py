@@ -13,9 +13,12 @@ from typing import Any
 import pytest
 
 from lbah.coding.contamination import (
-    ContaminationInstance,
     make_instance,
     run_contamination_probe_on_real_diff,
+)
+from lbah.coding.contamination.slice import (
+    FORCE_RETRIEVE_INSTRUCTION,
+    ISSUE_TEXT,
 )
 from lbah.coding.ledger import CodingLedger
 from lbah.coding.official_swebench import (
@@ -40,6 +43,30 @@ def _load_pilot_module() -> Any:
 # ---------------------------------------------------------------------------
 # Stage 1: local pilot
 # ---------------------------------------------------------------------------
+
+
+def test_force_retrieve_rewrites_leak_instruction_only(tmp_path: Path) -> None:
+    """force_retrieve induces consult-git-history on leak cells; derived stays clean."""
+
+    leak = make_instance(tmp_path, seed=0, solve_mode="leak", force_retrieve=True)
+    derived = make_instance(tmp_path, seed=0, solve_mode="derived", force_retrieve=True)
+    baseline = make_instance(tmp_path / "base", seed=1, solve_mode="leak", force_retrieve=False)
+
+    assert leak.force_retrieve is True
+    assert leak.task.instruction == FORCE_RETRIEVE_INSTRUCTION
+    assert ".lbah/leak/git_log.txt" in leak.task.instruction
+    assert any("Consult" in r for r in leak.task.known_risks)
+    assert leak.issue_text == ISSUE_TEXT  # semantic issue for probe unchanged
+    assert leak.task.metadata["issue_text"] == ISSUE_TEXT
+    assert leak.task.metadata["force_retrieve"] is True
+
+    # Derived remains the FP control even when the flag is set on generate_slice.
+    assert derived.force_retrieve is False
+    assert derived.task.instruction == ISSUE_TEXT
+    assert any("Do not retrieve" in r for r in derived.task.known_risks)
+
+    assert baseline.force_retrieve is False
+    assert baseline.task.instruction == ISSUE_TEXT
 
 
 def test_dry_run_uses_dummy_agent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -90,6 +117,7 @@ def test_dry_run_uses_dummy_agent(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
     for row in rows:
         assert row["agent"].startswith(("leak_tracker_", "derived_"))
         assert "claude" not in row["agent"].lower()
+        assert row["force_retrieve"] is False
 
     # Leak agent's diff carries the marker; derived does not (dry-run baseline).
     leak_row = next(row for row in rows if row["solve_mode"] == "leak")
@@ -98,6 +126,54 @@ def test_dry_run_uses_dummy_agent(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
     assert derived_row["leak_marker_in_diff"] is False
     assert leak_row["flagged"] is True
     assert derived_row["flagged"] is False
+
+
+def test_dry_run_force_retrieve_writes_sibling_report(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """--force-retrieve dry-run still catches via scripted leak agent; sibling doc."""
+
+    out = tmp_path / "out"
+    monkeypatch.chdir(tmp_path)
+    argv = [
+        "contamination_real_agent_eval.py",
+        "--seeds",
+        "1",
+        "--out",
+        str(out),
+        "--dry-run",
+        "--force-retrieve",
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    monkeypatch.setattr(
+        "lbah.adapters.claude_code_llm.ClaudeCodeCLIAdapter.__init__",
+        lambda *a, **k: (_ for _ in ()).throw(AssertionError("no claude")),
+    )
+
+    module = _load_pilot_module()
+    module.main()
+
+    rows = [
+        json.loads(line)
+        for line in (out / "results.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    leak_row = next(row for row in rows if row["solve_mode"] == "leak")
+    derived_row = next(row for row in rows if row["solve_mode"] == "derived")
+    assert leak_row["force_retrieve"] is True
+    assert derived_row["force_retrieve"] is False
+    assert leak_row["flagged"] is True
+    assert derived_row["flagged"] is False
+
+    sibling = out / "RUNTIME_CONTAMINATION_REAL_AGENT_FORCE_RETRIEVE.md"
+    assert sibling.exists()
+    assert "force-retrieve" in sibling.read_text().lower()
+    # Must not overwrite the baseline Track D filename.
+    assert not (out / "RUNTIME_CONTAMINATION_REAL_AGENT.md").exists()
+    assert not (tmp_path / "docs" / "results" / "RUNTIME_CONTAMINATION_REAL_AGENT.md").exists()
+    assert (
+        tmp_path / "docs" / "results" / "RUNTIME_CONTAMINATION_REAL_AGENT_FORCE_RETRIEVE.md"
+    ).exists()
 
 
 def test_probe_on_real_diff_marker_detection(tmp_path: Path) -> None:
