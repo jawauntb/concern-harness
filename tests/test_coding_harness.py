@@ -463,6 +463,105 @@ def test_recursive_runner_blocks_missing_required_child_evidence(tmp_path: Path)
     assert "return a - b" in (repo / "math_utils.py").read_text()
 
 
+def test_candidate_tournament_records_survived_hardened_tests(tmp_path: Path):
+    """Winner that passes base + hardened oracles gets the certificate gate."""
+    repo = _toy_repo(tmp_path)
+    (repo / "test_hardened.py").write_text(
+        "from math_utils import add\n\n"
+        "def test_adds_negatives():\n"
+        "    assert add(-1, -2) == -3\n"
+    )
+    task = _task(repo)
+    # Scope base vs hardened so default collection does not mix oracles.
+    task = task.model_copy(
+        update={
+            "test_commands": [
+                [sys.executable, "-m", "pytest", "-q", "test_math_utils.py"]
+            ],
+            "hardened_test_commands": [
+                [sys.executable, "-m", "pytest", "-q", "test_hardened.py"]
+            ],
+        }
+    )
+    good_agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="good_edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a + b"},
+                rationale="Correct sum.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="good_tests", action_type="run_tests"),
+            CodingAction(action_id="good_finish", action_type="finish"),
+        ],
+        name="good_candidate",
+    )
+    result = CandidatePatchTournamentRunner(
+        [good_agent], CodingWorkspace(repo, task)
+    ).run(task)
+    assert result.success
+    assert result.applied_result is not None
+    assert any(c.name == "hardened_tests_pass" and c.passed for c in result.applied_result.checks)
+    cert = result.applied_result.certificates[0]
+    hardened_gates = [
+        g for g in cert.validator_results if g.gate_name == "validator::hardened_tests_pass"
+    ]
+    assert hardened_gates and hardened_gates[0].passed
+    assert hardened_gates[0].evidence.get("survived_hardened_tests") is True
+
+
+def test_candidate_tournament_rejects_winner_failing_hardened_tests(tmp_path: Path):
+    """Base tests can pass while hardened oracle fails → certificate does not stand."""
+    repo = _toy_repo(tmp_path)
+    # Hardened oracle requires product behavior the base suite does not check.
+    (repo / "test_hardened.py").write_text(
+        "from math_utils import add\n\n"
+        "def test_must_multiply_for_hardened():\n"
+        "    assert add(2, 3) == 6\n"
+    )
+    task = _task(repo)
+    task = task.model_copy(
+        update={
+            "test_commands": [
+                [sys.executable, "-m", "pytest", "-q", "test_math_utils.py"]
+            ],
+            "hardened_test_commands": [
+                [sys.executable, "-m", "pytest", "-q", "test_hardened.py"]
+            ],
+        }
+    )
+    # Patch that satisfies base add(2,3)==5 but fails hardened multiply check.
+    agent = ScriptedCodingAgent(
+        [
+            CodingAction(
+                action_id="edit",
+                action_type="edit_file",
+                payload={"path": "math_utils.py", "old": "return a - b", "new": "return a + b"},
+                rationale="Passes base tests only.",
+                concerns_addressed=["task", "risk_0"],
+            ),
+            CodingAction(action_id="tests", action_type="run_tests"),
+            CodingAction(action_id="finish", action_type="finish"),
+        ],
+        name="base_only",
+    )
+    result = CandidatePatchTournamentRunner(
+        [agent], CodingWorkspace(repo, task)
+    ).run(task)
+    assert result.applied_result is not None
+    assert result.success is False
+    hardened = [
+        c for c in result.applied_result.checks if c.name == "hardened_tests_pass"
+    ]
+    assert hardened and hardened[0].passed is False
+    cert = result.applied_result.certificates[0]
+    assert any(
+        g.gate_name == "validator::hardened_tests_pass" and not g.passed
+        for g in cert.validator_results
+    )
+
+
 def test_candidate_tournament_applies_best_verified_patch(tmp_path: Path):
     repo = _toy_repo(tmp_path)
     task = _task(repo)

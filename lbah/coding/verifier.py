@@ -32,6 +32,43 @@ class CodingVerifier:
         results.append(self._concerns_have_evidence(ledger))
         return results
 
+    def verify_hardened(
+        self, workspace: CodingWorkspace, ledger: CodingLedger
+    ) -> list[CodingCheckResult]:
+        """Run augmented-oracle commands; empty list means no hardened suite."""
+        commands = list(workspace.task.hardened_test_commands or [])
+        if not commands:
+            return [
+                CodingCheckResult(
+                    name="hardened_tests_pass",
+                    passed=True,
+                    reason="no hardened test commands configured",
+                    evidence={"survived_hardened_tests": True, "configured": False},
+                    weight=0.2,
+                )
+            ]
+        test_results = workspace.run_tests(commands)
+        base = self._tests_pass(test_results)
+        survived = base.passed
+        return [
+            CodingCheckResult(
+                name="hardened_tests_pass",
+                passed=survived,
+                reason=(
+                    "survived hardened tests"
+                    if survived
+                    else f"hardened tests failed: {base.reason}"
+                ),
+                evidence={
+                    "survived_hardened_tests": survived,
+                    "configured": True,
+                    "commands": commands,
+                    "failures": base.evidence.get("failures", []),
+                },
+                weight=1.0,
+            )
+        ]
+
     def _tests_pass(self, test_results: list[CommandResult]) -> CodingCheckResult:
         if not test_results:
             return CodingCheckResult(

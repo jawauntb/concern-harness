@@ -19,6 +19,17 @@ proposes a four-obligation contract — concern, transport, gauge, commitment
 and [`docs/A Load-Bearing Standard for Representation Claims.pdf`](docs/A%20Load-Bearing%20Standard%20for%20Representation%20Claims.pdf)
 for the paper.
 
+### Correlation is not control
+
+Provenance and IFC systems (CaMeL, FIDES, Agent-Sentry) can *nominate* which
+carriers look sensitive. Certificates-as-authorization (No-Certificate-No-Execution)
+can refuse to run without paperwork. LBAH's differentiator is the missing confirm
+step: **black-box interventional gauge-fixing at the harness boundary** — does
+perturbing the claimed concern change the commitment? Static taint alone is
+correlation; LBAH asks for control. Positioning detail and the verified citation
+ledger live in [`docs/DESIGN_ROADMAP.md`](docs/DESIGN_ROADMAP.md) (§0, §7) and
+[`docs/SOTA_HARNESS_INTEGRATION.md`](docs/SOTA_HARNESS_INTEGRATION.md).
+
 ## Install
 
 ```
